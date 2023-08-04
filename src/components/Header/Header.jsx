@@ -1,15 +1,19 @@
-import React from "react";
-
+import React, { useState } from "react";
 import { CiPaperplane } from "react-icons/ci";
 import { AiOutlineSearch } from "react-icons/ai";
-
 import { RxHamburgerMenu } from "react-icons/rx";
-
 import { CgProfile } from "react-icons/cg";
+import { Link } from "react-router-dom";
 
 const Header = () => {
+  const [active, setActive] = useState(false);
+  const loginActiveHandler = () => {
+    setActive((state) => !state);
+  };
+
   return (
-    <div className="flex flex-col min-h-screen max-w-4xl mx-auto  py-4 px-8">
+    //className="flex flex-col min-h-screen max-w-4xl mx-auto  py-4 px-8"
+    <div>
       <header className="p-4 flex justify-between ">
         <a href="" className="flex items-center gap-1">
           <CiPaperplane className="logo cursor-pointer w-8 h-8 -rotate-90" />
@@ -27,10 +31,14 @@ const Header = () => {
           </button>
         </div>
 
-        <div className="flex border border-gray-300 rounded-full py-2 px-4 gap-4 items-center">
+        <Link
+          to={"/login"}
+          className="flex border border-gray-300 rounded-full py-2 px-4 gap-4 items-center cursor-pointer"
+          onClick={() => loginActiveHandler()}
+        >
           <RxHamburgerMenu className="w-6 h-6 cursor-pointer" />
           <CgProfile className="w-6 h-6 cursor-pointer bg-gray-300 rounded-full" />
-        </div>
+        </Link>
       </header>
     </div>
   );
