@@ -36,7 +36,7 @@ const Register = () => {
     return errors;
   };
 
-  const registerHandler = (e) => {
+  const registerHandler = async (e) => {
     // validateion
     e.preventDefault();
 
@@ -48,12 +48,14 @@ const Register = () => {
         console.log("EROROR");
       });
     } else {
-      console.log("Form Submitted:", name);
-      axios.get(RegisterRoute);
-
-      setName("");
-      setEmail("");
-      setPassword("");
+      try {
+        await axios.post(RegisterRoute, { name, email, password });
+        setName("");
+        setEmail("");
+        setPassword("");
+      } catch (err) {
+        toast.error(err.response.data.error, toastOptions);
+      }
     }
   };
 
