@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
+import axios from "axios";
+
+import { RegisterRoute } from "../../utils/Routes";
 
 import { Link } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
@@ -46,13 +49,12 @@ const Register = () => {
       });
     } else {
       console.log("Form Submitted:", name);
-      // send data to db
+      axios.get(RegisterRoute);
+
       setName("");
       setEmail("");
       setPassword("");
     }
-
-    
   };
 
   return (
