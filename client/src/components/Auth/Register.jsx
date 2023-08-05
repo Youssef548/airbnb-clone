@@ -45,7 +45,6 @@ const Register = () => {
     if (Object.keys(validationErrors).length > 0) {
       Object.values(validationErrors).forEach((errorMsg) => {
         toast.error(errorMsg, toastOptions);
-        console.log("EROROR");
       });
     } else {
       try {
