@@ -8,6 +8,7 @@ export const UserContext = createContext({});
 
 export function UserContextProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const fecthProfile = async () => {
       if (!user) {
@@ -16,6 +17,7 @@ export function UserContextProvider({ children }) {
             withCredentials: true,
           });
           setUser(data.user);
+          setIsLoading(false);
         } catch (err) {
           console.log(err);
         }
@@ -25,7 +27,7 @@ export function UserContextProvider({ children }) {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, isLoading }}>
       {children}
     </UserContext.Provider>
   );

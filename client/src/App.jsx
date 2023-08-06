@@ -1,4 +1,4 @@
-import { IndexPage, LoginPage, RegisterPage } from "./pages";
+import { IndexPage, LoginPage, RegisterPage, AccountPage } from "./pages";
 import { Layout, Header, Login } from "./components";
 import { Routes, Route } from "react-router-dom";
 import { UserContextProvider } from "./store/UserContext";
@@ -12,6 +12,7 @@ function App() {
             <Route index element={<IndexPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/account" element={<AccountPage />} />
           </Route>
         </Routes>
       </UserContextProvider>
