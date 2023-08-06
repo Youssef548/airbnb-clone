@@ -1,15 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
+import { UserContext } from "../../store/UserContext";
 
 import { LoginRoute } from "../../utils/Routes";
 
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [redirect, setRedirect] = useState(false);
+  const { setUser } = useContext(UserContext);
+  // const { setUser } = useContext(Usercontext);
 
   const toastOptions = { position: toast.POSITION.BOTTOM_RIGHT };
 
@@ -41,16 +45,26 @@ const Login = () => {
       });
     } else {
       try {
-        await axios.post(LoginRoute, { email, password });
+        const { data } = await axios.post(
+          LoginRoute,
+          { email, password },
+          { withCredentials: true }
+        );
+        setRedirect(true);
+        setUser(data.user);
+
         setEmail("");
         setPassword("");
-        // Redirect or perform other actions after successful login
       } catch (err) {
         console.log(err.response.data);
         toast.error(err.response.data.message, toastOptions);
       }
     }
   };
+
+  if (redirect) {
+    return <Navigate to={"/"} />;
+  }
 
   return (
     <>

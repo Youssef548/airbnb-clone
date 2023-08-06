@@ -38,7 +38,6 @@ userController.registerUser = async (req, res) => {
 };
 
 userController.loginUser = async (req, res, next) => {
-  console.log("TESTING");
   passport.authenticate("local", (err, user, info) => {
     if (err) {
       return res.status(500).json({ error: err.message });
