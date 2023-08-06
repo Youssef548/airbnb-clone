@@ -56,4 +56,19 @@ userController.loginUser = async (req, res, next) => {
   })(req, res, next);
 };
 
+userController.getUser = async (req, res) => {
+  console.log("REQUEST STARTED");
+  if (req.isAuthenticated()) {
+    // The user object is available in req.user
+
+    const user = req.user;
+
+    console.log(user.name);
+    // Now you can use the user data as needed
+    res.json({ user });
+  } else {
+    res.send(404);
+  }
+};
+
 module.exports = userController;
