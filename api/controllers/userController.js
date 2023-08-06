@@ -56,15 +56,25 @@ userController.loginUser = async (req, res, next) => {
   })(req, res, next);
 };
 
-userController.getUser = async (req, res) => {
-  console.log("REQUEST STARTED");
-  if (req.isAuthenticated()) {
-    // The user object is available in req.user
+userController.logoutUser = (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      console.error("Error during logout:", err);
+      return res
+        .status(500)
+        .json({ error: "An error occurred while logging out." });
+    }
 
+    res.status(200).json({ message: "Logged out successfully." });
+  });
+};
+
+userController.getUser = async (req, res) => {
+  if (req.isAuthenticated()) {
     const user = req.user;
 
     console.log(user.name);
-    // Now you can use the user data as needed
+
     res.json({ user });
   } else {
     res.send(404);

@@ -15,10 +15,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Session middleware
+
 app.use(
   session({
     secret: "your_secret_key_here", // Replace with your own secret key
     resave: false,
+    httpOnly: false,
     saveUninitialized: false,
   })
 );
