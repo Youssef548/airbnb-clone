@@ -1,6 +1,8 @@
 const { hashPassword } = require("../utils/bcryptUtils");
+const path = require("path");
 const User = require("../db/schemas/user");
 const passport = require("passport");
+const imageDownloader = require("image-downloader");
 
 const userController = {};
 
@@ -78,6 +80,36 @@ userController.getUser = async (req, res) => {
     res.json({ user });
   } else {
     res.send(404);
+  }
+};
+
+userController.uploadByLink = async (req, res) => {
+  const { link } = req.body;
+
+  if (!link) {
+    return res.status(400).json({ error: "Image URL is required." });
+  }
+
+  try {
+    // Construct the absolute path to the "uploads" directory
+    const uploadsDir = path.join(__dirname, "..", "uploads");
+
+    const newName = "photo" + Date.now() + ".jpg";
+
+    const options = {
+      url: link, // URL of the image to download
+      dest: `${uploadsDir}/${newName}`, // Destination directory
+    };
+
+    const { filename } = await imageDownloader.image(options);
+
+    // Respond with the filename of the downloaded image
+    res.json({ message: "Image downloaded successfully.", filename: newName });
+  } catch (error) {
+    console.log("Error downloading image:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while downloading the image." });
   }
 };
 
