@@ -110,10 +110,11 @@ const PlacesPage = () => {
                   );
                 })}
               {console.log(addedPhotos)}
-              <button className="flex items-center justify-center gap-1 border bg-transparent rounded-2xl p-2 text-2xl text-gray-600">
+              <label className="cursor-pointer flex items-center justify-center gap-1 border bg-transparent rounded-2xl p-2 text-2xl text-gray-600">
+                <input type="file" className="hidden" />
                 <AiOutlineCloudUpload className="w-8 h-8" />
                 Upload
-              </button>
+              </label>
             </div>
             {preInput("Description", "description of that place")}
             <textarea
