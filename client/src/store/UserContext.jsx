@@ -11,7 +11,7 @@ export function UserContextProvider({ children }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (user) setIsLoading(false);
+    
     const fecthProfile = async () => {
       if (!user) {
         try {
@@ -29,7 +29,7 @@ export function UserContextProvider({ children }) {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser, isLoading }}>
+    <UserContext.Provider value={{ user, setUser, isLoading, setIsLoading }}>
       {children}
     </UserContext.Provider>
   );

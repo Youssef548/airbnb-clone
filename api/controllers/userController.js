@@ -113,4 +113,8 @@ userController.uploadByLink = async (req, res) => {
   }
 };
 
+userController.upload = async (req, res) => {
+  res.json(req.files);
+};
+
 module.exports = userController;

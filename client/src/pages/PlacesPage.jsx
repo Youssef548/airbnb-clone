@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { Perks } from "../components";
 
 import { AiOutlinePlus, AiOutlineCloudUpload } from "react-icons/ai";
-import { UploadByLink } from "../utils/Routes";
+import { UploadByLink, UploadRoute } from "../utils/Routes";
 import axios from "axios";
 
 const PlacesPage = () => {
@@ -46,6 +46,33 @@ const PlacesPage = () => {
       return [...prev, data.filename];
     });
     // setPhotoLink("");
+  };
+
+  const uploadPhotoHandler = async (ev) => {
+    try {
+      const files = ev.target.files;
+      const data = new FormData();
+
+      // Append each file to the FormData
+      Array.from(files).forEach((file) => {
+        data.append("photos", file);
+      });
+
+      const response = await axios.post(UploadRoute, data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      const { data: uploadedFile } = response;
+
+      // Construct image URLs for each uploaded file
+      const imageUrls = uploadedFile.map((file) => {
+        return `${file.filename}`;
+      });
+
+      setAddedPhotos((prev) => [...prev, ...imageUrls]);
+    } catch (error) {
+      console.error("Error uploading photo:", error);
+    }
   };
 
   return (
@@ -99,19 +126,23 @@ const PlacesPage = () => {
               {addedPhotos.length > 0 &&
                 addedPhotos.map((link, index) => {
                   return (
-                    <div key={index}>
+                    <div key={index} className="h-32 flex">
                       {/* {link} */}
                       <img
-                        className="rounded-2xl"
+                        className="rounded-2xl w-full object-cover"
                         src={`http://localhost:3000/uploads/${link}`}
                         alt=""
                       />
                     </div>
                   );
                 })}
-              {console.log(addedPhotos)}
-              <label className="cursor-pointer flex items-center justify-center gap-1 border bg-transparent rounded-2xl p-2 text-2xl text-gray-600">
-                <input type="file" className="hidden" />
+              <label className="cursor-pointer h-32 flex items-center justify-center gap-1 border bg-transparent rounded-2xl p-2 text-2xl text-gray-600">
+                <input
+                  multiple
+                  type="file"
+                  className="hidden"
+                  onChange={uploadPhotoHandler}
+                />
                 <AiOutlineCloudUpload className="w-8 h-8" />
                 Upload
               </label>

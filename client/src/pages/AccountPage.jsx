@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { UserContext } from "../store/UserContext";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { LogoutRoute } from "../utils/Routes";
@@ -9,13 +9,17 @@ import { AiOutlineUser, AiOutlineUnorderedList } from "react-icons/ai";
 import { HiOutlineHomeModern } from "react-icons/hi2";
 
 const AccountPage = () => {
-  const { isLoading, user, setUser } = useContext(UserContext);
+  const { isLoading, setIsLoading, user, setUser } = useContext(UserContext);
   const [redirect, setRedirect] = useState(null);
 
   let { subpage } = useParams();
   if (subpage === undefined) {
     subpage = "profile";
   }
+
+  useEffect(() => {
+    if (user) setIsLoading(false);
+  }, []);
 
   const logoutHandler = async () => {
     try {
