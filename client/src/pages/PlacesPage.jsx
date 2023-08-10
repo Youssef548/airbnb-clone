@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { Perks } from "../components";
+import { Link, Navigate, useParams } from "react-router-dom";
+import { Perks, PhotosUploader } from "../components";
 
-import { AiOutlinePlus, AiOutlineCloudUpload } from "react-icons/ai";
-import { UploadByLink, UploadRoute } from "../utils/Routes";
+import { AiOutlinePlus } from "react-icons/ai";
+import { UploadByLink, UploadRoute, addPlaceRoute } from "../utils/Routes";
 import axios from "axios";
 
 const PlacesPage = () => {
@@ -18,6 +18,7 @@ const PlacesPage = () => {
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [maxGuests, setMaxGuests] = useState(1);
+  const [redirect, setRedirect] = useState("");
 
   const inputHeader = (text) => {
     return <h2 className="text-2xl mt-4">{text}</h2>;
@@ -36,7 +37,7 @@ const PlacesPage = () => {
     );
   };
 
-  const addPhotoLink = async (e) => {
+  const addPhotoByLink = async (e) => {
     e.preventDefault();
     const { data } = await axios.post(UploadByLink, {
       link: photoLink,
@@ -75,6 +76,31 @@ const PlacesPage = () => {
     }
   };
 
+  const addNewPlaceHandler = async (ev) => {
+    console.log("HELLO WORLD");
+    ev.preventDefault();
+    const placeData = {
+      title,
+      address,
+      addedPhotos,
+      photoLink,
+      description,
+      perks,
+      extraInfo,
+      checkIn,
+      checkOut,
+      maxGuests,
+    };
+    console.log(JSON.stringify(placeData));
+
+    await axios.post(addPlaceRoute, placeData);
+    setRedirect("/account/places");
+  };
+
+  if (redirect) {
+    <Navigate to={redirect} />;
+  }
+
   return (
     <div>
       {action !== "new" && (
@@ -89,7 +115,7 @@ const PlacesPage = () => {
       )}
       {action == "new" && (
         <div>
-          <form action="">
+          <form action="" onSubmit={addNewPlaceHandler}>
             {preInput(
               "Title",
               "title/heading for your place. should be short and catchy as in advertisment"
@@ -108,45 +134,13 @@ const PlacesPage = () => {
               onChange={(e) => setAddress(e.target.value)}
             />
             {preInput("Photos", "more = better")}
-            <div className="flex gap-2">
-              <input
-                type="text"
-                placeholder={"Add using a link ...jpg"}
-                value={photoLink}
-                onChange={(e) => setPhotoLink(e.target.value)}
-              />
-              <button
-                className="bg-gray-200 px-4 rounded-2xl"
-                onClick={addPhotoLink}
-              >
-                Add&nbsp;photo
-              </button>
-            </div>
-            <div className="mt-2 grid gap-2 grid-cols-3 lg:grid-cols-6 md:grid-cols-4">
-              {addedPhotos.length > 0 &&
-                addedPhotos.map((link, index) => {
-                  return (
-                    <div key={index} className="h-32 flex">
-                      {/* {link} */}
-                      <img
-                        className="rounded-2xl w-full object-cover"
-                        src={`http://localhost:3000/uploads/${link}`}
-                        alt=""
-                      />
-                    </div>
-                  );
-                })}
-              <label className="cursor-pointer h-32 flex items-center justify-center gap-1 border bg-transparent rounded-2xl p-2 text-2xl text-gray-600">
-                <input
-                  multiple
-                  type="file"
-                  className="hidden"
-                  onChange={uploadPhotoHandler}
-                />
-                <AiOutlineCloudUpload className="w-8 h-8" />
-                Upload
-              </label>
-            </div>
+            <PhotosUploader
+              addPhotoByLink={addPhotoByLink}
+              photoLink={photoLink}
+              setPhotoLink={setPhotoLink}
+              addedPhotos={addedPhotos}
+              uploadPhotoHandler={uploadPhotoHandler}
+            />
             {preInput("Description", "description of that place")}
             <textarea
               value={description}

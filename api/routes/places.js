@@ -3,6 +3,8 @@ const router = express.Router();
 const userController = require("../controllers/userController");
 const multer = require("multer");
 const path = require("path");
+const passport = require("passport");
+const isAuthMiddleware = require("../middleware/isAuth");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -22,5 +24,6 @@ router.post(
   photosMiddleware.array("photos", 100),
   userController.upload
 );
+router.post("/add", isAuthMiddleware, userController.addPlace);
 
 module.exports = router;

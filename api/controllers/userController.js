@@ -1,6 +1,7 @@
 const { hashPassword } = require("../utils/bcryptUtils");
 const path = require("path");
 const User = require("../db/schemas/user");
+const Place = require("../db/schemas/Place");
 const passport = require("passport");
 const imageDownloader = require("image-downloader");
 
@@ -115,6 +116,50 @@ userController.uploadByLink = async (req, res) => {
 
 userController.upload = async (req, res) => {
   res.json(req.files);
+};
+
+userController.addPlace = async (req, res) => {
+  // Check if req.user._id exists
+  if (!req.user || !req.user._id) {
+    return res.status(400).json({ error: "User not authorized" });
+  }
+
+  try {
+    const {
+      title,
+      address,
+      addedPhotos,
+      description,
+      price,
+      perks,
+      extraInfo,
+      checkIn,
+      checkOut,
+      maxGuests,
+    } = req.body;
+
+    // Create a new place document with owner as req.user._id
+    const placeDoc = await Place.create({
+      owner: req.user._id,
+      price,
+      title,
+      address,
+      photos: addedPhotos,
+      description,
+      perks,
+      extraInfo,
+      checkIn,
+      checkOut,
+      maxGuests,
+    });
+
+    res.json(placeDoc);
+  } catch (err) {
+    console.error("Error creating place:", err);
+    res
+      .status(500)
+      .json({ error: "An error occurred while creating the place" });
+  }
 };
 
 module.exports = userController;
