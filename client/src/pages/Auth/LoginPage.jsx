@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Login } from "../components";
+import { Login } from "../../components";
 
 const LoginPage = () => {
   return (
