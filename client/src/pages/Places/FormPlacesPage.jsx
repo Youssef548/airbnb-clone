@@ -29,9 +29,27 @@ const FormPlacesPage = () => {
 
   useEffect(() => {
     if (!id) {
+      return;
     }
 
-    axios.get(`${GetPlacesRoute}/${id}`);
+    axios
+      .get(`${GetPlacesRoute}/${id}`, { withCredentials: true })
+      .then((res) => {
+        const { data } = res;
+        setTitle(data.title);
+        setAddress(data.address);
+        setAddedPhotos(data.photos);
+        setPhotoLink(data.photoLink);
+        setDescription(data.description);
+        setPerks(data.perks);
+        setExtraInfo(data.extraInfo);
+        setCheckIn(data.checkIn);
+        setCheckOut(data.checkOut);
+        setMaxGuests(data.maxGuests);
+      })
+      .catch((error) => {
+        console.error("Error fetching place:", error);
+      });
   }, [id]);
 
   const inputHeader = (text) => {
@@ -90,8 +108,9 @@ const FormPlacesPage = () => {
     }
   };
 
-  const addNewPlaceHandler = async (ev) => {
+  const savePlaceHandler = async (ev) => {
     ev.preventDefault();
+
     const placeData = {
       title,
       address,
@@ -106,19 +125,23 @@ const FormPlacesPage = () => {
     };
 
     try {
-      await axios.post(addPlaceRoute, placeData, { withCredentials: true });
-      setRedirectToPlacesList(true);
+      if (id) {
+        // update
 
-      setTitle("");
-      setAddress("");
-      setAddedPhotos([]);
-      setPhotoLink("");
-      setDescription("");
-      setPerks([]);
-      setExtraInfo("");
-      setCheckIn("");
-      setCheckOut("");
-      setMaxGuests(1);
+        await axios.put(
+          `${addPlaceRoute}/${id}`,
+          { id, ...placeData },
+          {
+            withCredentials: true,
+          }
+        );
+        setRedirectToPlacesList(true);
+      } else {
+        // new place
+
+        await axios.post(addPlaceRoute, placeData, { withCredentials: true });
+        setRedirectToPlacesList(true);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -130,7 +153,7 @@ const FormPlacesPage = () => {
 
   return (
     <div>
-      <form action="" onSubmit={addNewPlaceHandler}>
+      <form action="" onSubmit={savePlaceHandler}>
         {preInput(
           "Title",
           "title/heading for your place. should be short and catchy as in advertisment"

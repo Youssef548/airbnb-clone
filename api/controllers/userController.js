@@ -174,4 +174,51 @@ userController.getPlaces = async (req, res) => {
   }
 };
 
+userController.updatePlace = async (req, res) => {
+  const { id } = req.params;
+
+  if (!req.user || !req.user._id) {
+    return res.status(400).json({ error: "User not authorized" });
+  }
+
+  try {
+    const userId = req.user._id;
+    const updatedPlace = {
+      owner: userId,
+      ...req.body,
+    };
+
+    const place = await Place.findByIdAndUpdate(id, updatedPlace, {
+      new: true,
+    });
+
+    if (!place) {
+      return res.status(404).json({ error: "Place not found" });
+    }
+
+    res.json(place);
+  } catch (err) {
+    console.error("Error fetching places:", err);
+    res.status(500).json({ err: "An error occurred while fetching places" });
+  }
+};
+
+userController.getPlaceById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const place = await Place.findById(id);
+
+    if (!place) {
+      return res.status(404).json({ error: "Place not found" });
+    }
+
+    res.json(place);
+  } catch (err) {
+    console.error(`Error getting place by ID ${id}:`, err);
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching the place" });
+  }
+};
+
 module.exports = userController;
