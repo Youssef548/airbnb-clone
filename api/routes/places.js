@@ -25,5 +25,6 @@ router.post(
   userController.upload
 );
 router.post("/add", isAuthMiddleware, userController.addPlace);
+router.get("/", isAuthMiddleware, userController.getPlaces);
 
 module.exports = router;

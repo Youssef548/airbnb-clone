@@ -162,4 +162,16 @@ userController.addPlace = async (req, res) => {
   }
 };
 
+userController.getPlaces = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const places = await Place.find({ owner: userId });
+
+    res.json(places);
+  } catch (err) {
+    console.error("Error fetching places:", err);
+    res.status(500).json({ err: "An error occurred while fetching places" });
+  }
+};
+
 module.exports = userController;

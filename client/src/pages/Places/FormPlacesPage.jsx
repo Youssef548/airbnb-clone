@@ -1,14 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, Navigate } from "react-router-dom";
 
 import { PhotosUploader, Perks } from "../../components";
 
-import { UploadRoute, UploadByLink, addPlaceRoute } from "../../utils/Routes";
+import {
+  UploadRoute,
+  UploadByLink,
+  addPlaceRoute,
+  GetPlacesRoute,
+} from "../../utils/Routes";
 
 import axios from "axios";
 
 const FormPlacesPage = () => {
-  const { action } = useParams();
+  const { id } = useParams();
+  console.log(id);
   const [title, setTitle] = useState("");
   const [address, setAddress] = useState("");
   const [addedPhotos, setAddedPhotos] = useState([]);
@@ -20,6 +26,13 @@ const FormPlacesPage = () => {
   const [checkOut, setCheckOut] = useState("");
   const [maxGuests, setMaxGuests] = useState(1);
   const [redirectToPlacesList, setRedirectToPlacesList] = useState(false);
+
+  useEffect(() => {
+    if (!id) {
+    }
+
+    axios.get(`${GetPlacesRoute}/${id}`);
+  }, [id]);
 
   const inputHeader = (text) => {
     return <h2 className="text-2xl mt-4">{text}</h2>;
