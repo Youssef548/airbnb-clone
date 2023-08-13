@@ -114,7 +114,7 @@ const FormPlacesPage = () => {
     const placeData = {
       title,
       address,
-      addedPhotos,
+      photos: addedPhotos,
       photoLink,
       description,
       perks,
@@ -177,6 +177,7 @@ const FormPlacesPage = () => {
           photoLink={photoLink}
           setPhotoLink={setPhotoLink}
           addedPhotos={addedPhotos}
+          setAddedPhotos={setAddedPhotos}
           uploadPhotoHandler={uploadPhotoHandler}
         />
         {preInput("Description", "description of that place")}
