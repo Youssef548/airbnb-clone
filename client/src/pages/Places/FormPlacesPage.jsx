@@ -7,14 +7,14 @@ import {
   UploadRoute,
   UploadByLink,
   addPlaceRoute,
-  GetPlacesRoute,
+  GetUserPlacesRoute,
 } from "../../utils/Routes";
 
 import axios from "axios";
 
 const FormPlacesPage = () => {
   const { id } = useParams();
-  console.log(id);
+
   const [title, setTitle] = useState("");
   const [address, setAddress] = useState("");
   const [addedPhotos, setAddedPhotos] = useState([]);
@@ -25,6 +25,7 @@ const FormPlacesPage = () => {
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [maxGuests, setMaxGuests] = useState(1);
+  const [price, setPrice] = useState(100);
   const [redirectToPlacesList, setRedirectToPlacesList] = useState(false);
 
   useEffect(() => {
@@ -33,7 +34,7 @@ const FormPlacesPage = () => {
     }
 
     axios
-      .get(`${GetPlacesRoute}/${id}`, { withCredentials: true })
+      .get(`${GetUserPlacesRoute}/${id}`, { withCredentials: true })
       .then((res) => {
         const { data } = res;
         setTitle(data.title);
@@ -46,6 +47,7 @@ const FormPlacesPage = () => {
         setCheckIn(data.checkIn);
         setCheckOut(data.checkOut);
         setMaxGuests(data.maxGuests);
+        setPrice(data.price);
       })
       .catch((error) => {
         console.error("Error fetching place:", error);
@@ -74,8 +76,9 @@ const FormPlacesPage = () => {
     const { data } = await axios.post(UploadByLink, {
       link: photoLink,
     });
-    console.log(data.fileName);
+
     setAddedPhotos((prev) => {
+      console.log(data.filename);
       return [...prev, data.filename];
     });
     // setPhotoLink("");
@@ -122,8 +125,8 @@ const FormPlacesPage = () => {
       checkIn,
       checkOut,
       maxGuests,
+      price,
     };
-
     try {
       if (id) {
         // update
@@ -138,8 +141,9 @@ const FormPlacesPage = () => {
         setRedirectToPlacesList(true);
       } else {
         // new place
-
+        console.log(`Hello ${placeData.photos}`);
         await axios.post(addPlaceRoute, placeData, { withCredentials: true });
+
         setRedirectToPlacesList(true);
       }
     } catch (err) {
@@ -185,15 +189,13 @@ const FormPlacesPage = () => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
-        <h2 className="text-2xl mt-4">Perks</h2>
-        <p className="text-gray-500 text-sm">
-          Select all the perks of your place
-        </p>
-        <div className="mt-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+        {preInput("Select all the perks of your place")}
+
+        <div className="mt-2 grid grid-cols-2  md:grid-cols-4 lg:grid-cols-6 gap-2">
           <Perks selected={perks} onChange={setPerks} />
         </div>
-        <h2 className="text-2xl mt-4">Extra info</h2>
-        <p className="text-gray-500 text-sm">house rule, etc</p>
+        {preInput("Extra in&out times", "house rule, etc")}
+
         <textarea
           value={extraInfo}
           onChange={(e) => setExtraInfo(e.target.value)}
@@ -204,7 +206,7 @@ const FormPlacesPage = () => {
           cleaning the room between guests
         </p>
 
-        <div className="grid sm:grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           <div>
             <h3 className="mt-2 -mb-1">Check in time</h3>
             <input
@@ -230,6 +232,15 @@ const FormPlacesPage = () => {
               value={maxGuests}
               placeholder="2"
               onChange={(e) => setMaxGuests(e.target.value)}
+            />
+          </div>
+          <div>
+            <h3 className="mt-2 -mb-1">Price</h3>
+            <input
+              type="text"
+              value={price}
+              placeholder="2"
+              onChange={(e) => setPrice(e.target.value)}
             />
           </div>
         </div>

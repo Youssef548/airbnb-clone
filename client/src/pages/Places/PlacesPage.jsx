@@ -4,15 +4,17 @@ import { Link } from "react-router-dom";
 import { AiOutlinePlus } from "react-icons/ai";
 import AccountNavPage from "../Profile/AccountNavPage";
 import axios from "axios";
-import { GetPlacesRoute } from "../../utils/Routes";
+import { GetUserPlacesRoute } from "../../utils/Routes";
 
 const PlacesPage = () => {
   const [places, setPlaces] = useState([]);
 
   useEffect(() => {
-    axios.get(GetPlacesRoute, { withCredentials: true }).then(({ data }) => {
-      setPlaces(data);
-    });
+    axios
+      .get(GetUserPlacesRoute, { withCredentials: true })
+      .then(({ data }) => {
+        setPlaces(data);
+      });
   }, []);
 
   return (

@@ -128,14 +128,14 @@ userController.addPlace = async (req, res) => {
     const {
       title,
       address,
-      addedPhotos,
+      photos: addedPhotos,
       description,
-      price,
       perks,
       extraInfo,
       checkIn,
       checkOut,
       maxGuests,
+      price,
     } = req.body;
 
     // Create a new place document with owner as req.user._id
@@ -151,6 +151,7 @@ userController.addPlace = async (req, res) => {
       checkIn,
       checkOut,
       maxGuests,
+      price,
     });
 
     res.json(placeDoc);
@@ -162,7 +163,7 @@ userController.addPlace = async (req, res) => {
   }
 };
 
-userController.getPlaces = async (req, res) => {
+userController.getUserPlaces = async (req, res) => {
   try {
     const userId = req.user._id;
     const places = await Place.find({ owner: userId });
@@ -219,6 +220,10 @@ userController.getPlaceById = async (req, res) => {
       .status(500)
       .json({ error: "An error occurred while fetching the place" });
   }
+};
+
+userController.getPlaces = async (req, res) => {
+  res.json(await Place.find());
 };
 
 module.exports = userController;

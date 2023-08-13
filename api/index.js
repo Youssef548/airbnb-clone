@@ -5,6 +5,7 @@ const passport = require("passport");
 const cors = require("cors");
 const usersRouters = require("./routes/users");
 const infoRouters = require("./routes/info");
+const userPlacesRouter = require("./routes/userPlaces");
 const placesRouter = require("./routes/places");
 
 const connectDB = require("./db/connect");
@@ -35,6 +36,7 @@ app.use(passport.session());
 
 app.use("/auth", usersRouters);
 app.use("/profile", infoRouters);
+app.use("/user-places", userPlacesRouter);
 app.use("/places", placesRouter);
 
 app.listen(process.env.PORT, () => {
