@@ -226,4 +226,9 @@ userController.getPlaces = async (req, res) => {
   res.json(await Place.find());
 };
 
+userController.getPlaceById = async (req, res) => {
+  const { id } = req.params;
+  res.json(await Place.findById(id));
+};
+
 module.exports = userController;

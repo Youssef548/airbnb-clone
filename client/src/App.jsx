@@ -3,7 +3,7 @@ import { Layout, Header, Login } from "./components";
 import { Routes, Route } from "react-router-dom";
 import { UserContextProvider } from "./store/UserContext";
 // import PlacesPage from "./pages/PlacesPage";
-import { PlacesPage, PlacesFormPage } from "./pages";
+import { PlacesPage, PlacePage, PlacesFormPage } from "./pages";
 
 function App() {
   return (
@@ -18,6 +18,7 @@ function App() {
             <Route path="/account/places" element={<PlacesPage />} />
             <Route path="/account/places/new" element={<PlacesFormPage />} />
             <Route path="/account/places/:id" element={<PlacesFormPage />} />
+            <Route path="/place/:id" element={<PlacePage />} />
           </Route>
         </Routes>
       </UserContextProvider>

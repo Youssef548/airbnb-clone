@@ -4,6 +4,7 @@ import RegisterPage from "./Auth/RegisterPage";
 import AccountPage from "./Profile/AccountPage";
 import AccountNavPage from "./Profile/AccountNavPage";
 import PlacesPage from "./Places/PlacesPage";
+import PlacePage from "./Places/PlacePage";
 import PlacesFormPage from "./Places/FormPlacesPage";
 
 export {
@@ -14,4 +15,5 @@ export {
   AccountNavPage,
   PlacesPage,
   PlacesFormPage,
+  PlacePage,
 };

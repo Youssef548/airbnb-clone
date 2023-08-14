@@ -7,3 +7,4 @@ export const UploadRoute = "http://localhost:3000/user-places/upload";
 export const addPlaceRoute = "http://localhost:3000/user-places/add";
 export const GetUserPlacesRoute = "http://localhost:3000/user-places";
 export const GetPlaces = "http://localhost:3000/places";
+export const GetPlaceyByIdRoute = "http://localhost:3000/places/";

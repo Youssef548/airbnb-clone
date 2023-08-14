@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Header } from "../components";
 import { GetPlaces } from "../utils/Routes";
 
+import { Link } from "react-router-dom";
+
 import axios from "axios";
 
 const IndexPage = () => {
@@ -17,7 +19,7 @@ const IndexPage = () => {
       {places.length > 0 &&
         places.map((place, index) => {
           return (
-            <div key={index}>
+            <Link key={index} to={`/place/${place._id}`}>
               <div className="bg-gray-500 rounded-2xl flex mb-2">
                 {place.photos?.[0] && (
                   <img
@@ -31,7 +33,7 @@ const IndexPage = () => {
               <div className="mt-1">
                 <span className="font-bold">${place.price}</span> per night
               </div>
-            </div>
+            </Link>
           );
         })}
     </div>
