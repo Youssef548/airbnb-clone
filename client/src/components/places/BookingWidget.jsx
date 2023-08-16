@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { differenceInCalendarDays } from "date-fns";
 import { bookPlaceRoute } from "../../utils/Routes";
 import axios from "axios";
-import { useParams, Navigate } from "react-router-dom";
+import { useParams, Navigate, useNavigate } from "react-router-dom";
+import { UserContext } from "../../store/UserContext";
 
 const BookingWidget = ({ place }) => {
   const [checkIn, setCheckIn] = useState("");
@@ -11,6 +12,8 @@ const BookingWidget = ({ place }) => {
   const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
   const [redirect, setRedirect] = useState("");
+  const { user } = useContext(UserContext);
+  const navigate = useNavigate();
 
   let numberOfNights = 0;
   if (checkIn && checkOut) {
@@ -22,20 +25,26 @@ const BookingWidget = ({ place }) => {
 
   const bookPlaceHandler = async () => {
     try {
-      const bookData = {
-        place: place._id,
-        checkIn,
-        checkOut,
-        numberOfGuests,
-        name,
-        mobile,
-        price: numberOfNights * place.price,
-      };
+      if (user) {
+        const bookData = {
+          place: place._id,
+          checkIn,
+          checkOut,
+          numberOfGuests,
+          name,
+          mobile,
+          price: numberOfNights * place.price,
+        };
 
-      const response = await axios.post(bookPlaceRoute, bookData);
+        const response = await axios.post(bookPlaceRoute, bookData);
 
-      const bookingId = response.data._id;
-      setRedirect(`/account/booking/${bookingId}`);
+        const bookingId = response.data.data._id;
+        console.log(bookingId);
+        setRedirect(`/account/bookings/${bookingId}`);
+      } else {
+        navigate("/login");
+        alert("you need to login first");
+      }
     } catch (err) {
       console.log(err);
     }
