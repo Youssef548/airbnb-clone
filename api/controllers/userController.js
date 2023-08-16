@@ -2,6 +2,7 @@ const { hashPassword } = require("../utils/bcryptUtils");
 const path = require("path");
 const User = require("../db/schemas/user");
 const Place = require("../db/schemas/Place");
+const Booking = require("../db/schemas/Booking");
 const passport = require("passport");
 const imageDownloader = require("image-downloader");
 
@@ -229,6 +230,30 @@ userController.getPlaces = async (req, res) => {
 userController.getPlaceById = async (req, res) => {
   const { id } = req.params;
   res.json(await Place.findById(id));
+};
+
+userController.addBooking = async (req, res) => {
+  try {
+    const { place, checkIn, checkOut, numberOfGuests, name, mobile, price } =
+      req.body;
+
+    await Booking.create({
+      place,
+      checkIn,
+      checkOut,
+      numberOfGuests,
+      name,
+      mobile,
+      price,
+    });
+
+    res.json({ message: "Booking added successfully" });
+  } catch (err) {
+    console.error("Error adding booking:", err);
+    res
+      .status(500)
+      .json({ error: "An error occurred while adding the booking" });
+  }
 };
 
 module.exports = userController;

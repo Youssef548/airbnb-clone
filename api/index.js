@@ -7,6 +7,7 @@ const usersRouters = require("./routes/users");
 const infoRouters = require("./routes/info");
 const userPlacesRouter = require("./routes/userPlaces");
 const placesRouter = require("./routes/places");
+const bookingRouter = require("./routes/bookingRouter");
 
 const connectDB = require("./db/connect");
 
@@ -38,6 +39,7 @@ app.use("/auth", usersRouters);
 app.use("/profile", infoRouters);
 app.use("/user-places", userPlacesRouter);
 app.use("/places", placesRouter);
+app.use("/booking", bookingRouter);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server listening on ${process.env.PORT}`);

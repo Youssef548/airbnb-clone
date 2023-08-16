@@ -8,3 +8,4 @@ export const addPlaceRoute = "http://localhost:3000/user-places/add";
 export const GetUserPlacesRoute = "http://localhost:3000/user-places";
 export const GetPlaces = "http://localhost:3000/places";
 export const GetPlaceyByIdRoute = "http://localhost:3000/places/";
+export const bookPlaceRoute = "http://localhost:3000/booking";
