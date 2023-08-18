@@ -5,6 +5,15 @@ const Place = require("../db/schemas/Place");
 const Booking = require("../db/schemas/Booking");
 const passport = require("passport");
 const imageDownloader = require("image-downloader");
+const getUserDataFromCookies = (req) => {
+  if (req.isAuthenticated()) {
+    // Access user data from the session object
+    const userData = req.user;
+    return userData;
+  } else {
+    return null; // User is not authenticated
+  }
+};
 
 const userController = {};
 
@@ -233,12 +242,14 @@ userController.getPlaceById = async (req, res) => {
 };
 
 userController.addBooking = async (req, res) => {
+  const userData = await getUserDataFromCookies(req);
   try {
     const { place, checkIn, checkOut, numberOfGuests, name, mobile, price } =
       req.body;
 
-    await Booking.create({
+    const booking = await Booking.create({
       place,
+      user: userData._id,
       checkIn,
       checkOut,
       numberOfGuests,
@@ -247,12 +258,24 @@ userController.addBooking = async (req, res) => {
       price,
     });
 
-    res.json({ message: "Booking added successfully" });
+    res.json({ data: booking, message: "Booking added successfully" });
   } catch (err) {
     console.error("Error adding booking:", err);
     res
       .status(500)
       .json({ error: "An error occurred while adding the booking" });
+  }
+};
+
+userController.getUserBooking = async (req, res) => {
+  try {
+    const userData = getUserDataFromCookies(req);
+    res.json(await Booking.find({ user: userData._id }).populate("place"));
+  } catch (err) {
+    console.error(`Error getting user's booking with ID ${id}:`, err);
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching user's booking" });
   }
 };
 

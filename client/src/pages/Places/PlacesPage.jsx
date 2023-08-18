@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { AiOutlinePlus } from "react-icons/ai";
-import AccountNavPage from "../Profile/AccountNavPage";
+import { AccountNav } from "../../components";
 import axios from "axios";
 import { GetUserPlacesRoute } from "../../utils/Routes";
+import { PlaceImg } from "../../components";
 
 const PlacesPage = () => {
   const [places, setPlaces] = useState([]);
@@ -19,7 +20,7 @@ const PlacesPage = () => {
 
   return (
     <div>
-      <AccountNavPage />
+      <AccountNav />
 
       <div className="text-center">
         list of all places
@@ -41,13 +42,7 @@ const PlacesPage = () => {
                 className="bg-gray-200 p-4 rounded-2xl flex gap-4 cursor-pointer"
               >
                 <div className="flex w-32 h-32 bg-gray-300 shrink">
-                  {place.photos.length > 0 && (
-                    <img
-                      className="object-cover"
-                      src={"http://localhost:3000/uploads/" + place.photos[0]}
-                      alt="placePhoto"
-                    />
-                  )}
+                  <PlaceImg place={place} />
                 </div>
 
                 <div className="grow-0">

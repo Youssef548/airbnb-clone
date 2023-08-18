@@ -2,18 +2,20 @@ import IndexPage from "./IndexPage";
 import LoginPage from "./Auth/LoginPage";
 import RegisterPage from "./Auth/RegisterPage";
 import AccountPage from "./Profile/AccountPage";
-import AccountNavPage from "./Profile/AccountNavPage";
 import PlacesPage from "./Places/PlacesPage";
 import PlacePage from "./Places/PlacePage";
 import PlacesFormPage from "./Places/FormPlacesPage";
+import BookingsPage from "./Booking/BookingsPage";
+import BookingPage from "./Booking/BookingPage";
 
 export {
   IndexPage,
   LoginPage,
   RegisterPage,
   AccountPage,
-  AccountNavPage,
   PlacesPage,
   PlacesFormPage,
   PlacePage,
+  BookingsPage,
+  BookingPage,
 };

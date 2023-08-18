@@ -4,7 +4,7 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import { LogoutRoute } from "../../utils/Routes";
 import axios from "axios";
 import PlacesPage from "../Places/PlacesPage";
-import { AccountNavPage } from "../index";
+import { AccountNav } from "../../components";
 
 const AccountPage = () => {
   const { isLoading, setIsLoading, user, setUser } = useContext(UserContext);
@@ -41,7 +41,7 @@ const AccountPage = () => {
 
   return (
     <div>
-      <AccountNavPage />
+      <AccountNav />
 
       {subpage === "profile" && (
         <div className="text-center max-w-lg mx-auto">

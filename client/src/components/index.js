@@ -5,6 +5,8 @@ import Layout from "./Layout/Layout";
 import Perks from "./perks/perks";
 import PhotosUploader from "./PhotosUploader/PhotosUploader";
 import BookingWidget from "./places/BookingWidget";
+import AccountNav from "./Navbar/AccoutNav";
+import PlaceImg from "./places/PlaceImg";
 export {
   Header,
   Login,
@@ -13,4 +15,6 @@ export {
   Perks,
   PhotosUploader,
   BookingWidget,
+  AccountNav,
+  PlaceImg,
 };
