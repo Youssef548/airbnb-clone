@@ -7,6 +7,10 @@ import PhotosUploader from "./PhotosUploader/PhotosUploader";
 import BookingWidget from "./places/BookingWidget";
 import AccountNav from "./Navbar/AccoutNav";
 import PlaceImg from "./places/PlaceImg";
+import PlaceGallery from "./places/PlaceGallery";
+import AddressLink from "./places/AddressLink";
+import BookingDate from "./Booking/BookingDate";
+
 export {
   Header,
   Login,
@@ -17,4 +21,7 @@ export {
   BookingWidget,
   AccountNav,
   PlaceImg,
+  PlaceGallery,
+  AddressLink,
+  BookingDate,
 };
