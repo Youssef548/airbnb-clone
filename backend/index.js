@@ -22,7 +22,9 @@ const app = express();
 
 const port = process.env.PORT || 5000;
 
-app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
+app.use(
+  cors({ credentials: true, origin: "https://airbnb-clone-jhzx.vercel.app" })
+);
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static(__dirname + "/uploads"));
 app.use(express.json());
