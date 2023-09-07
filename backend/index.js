@@ -1,63 +1,75 @@
-require("dotenv").config();
-
-if (process.env.NODE_ENV !== "production") {
-  require("dotenv").config({ path: __dirname + "/.env" });
-}
-
-const express = require("express");
-const session = require("express-session");
-const passport = require("passport");
-const cors = require("cors");
-const usersRouters = require("./routes/users");
-const infoRouters = require("./routes/info");
-const userPlacesRouter = require("./routes/userPlaces");
-const placesRouter = require("./routes/places");
-const bookingRouter = require("./routes/bookingRouter");
-
-const connectDB = require("./db/connect");
-
-require("./passport/passportConfig");
-
+import express from "express";
+import session from "express-session";
+import { config } from "dotenv";
+import homeRouter from "./routes/home.router.js";
+import placeRouter from "./routes/place.router.js";
+import userRouter from "./routes/user.router.js";
+import bookingRouter from "./routes/booking.router.js";
+import infoRouter from "./routes/info.router.js";
+import userPlacesRouter from "./routes/userPlaces.router.js";
+import mongoose from "mongoose";
+import "./passport/passportConfig.js";
+import MongoStore from "connect-mongo";
+import passport from "passport";
+import cors from "cors";
+config();
 const app = express();
+const port = 3000;
 
-const port = process.env.PORT || 5000;
+const MongoDBStore = new MongoStore(session);
 
-app.use(
-  cors({ credentials: true, origin: "https://airbnb-clone-jhzx.vercel.app" })
-);
-app.use(express.urlencoded({ extended: true }));
-app.use("/uploads", express.static(__dirname + "/uploads"));
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+const sessionStore = new MongoDBStore({
+  mongooseConnection: mongoose.connection,
+  collection: "sessions", // Collection where session data will be stored
+});
+
 app.use(express.json());
-
-// Session middleware
+app.use(express.urlencoded({ extended: true }));
 
 app.use(
   session({
-    secret: "your_secret_key_here", // Replace with your own secret key
-    resave: false,
-    httpOnly: false,
+    secret: "qwpjepqjwekpqekqe",
     saveUninitialized: false,
+    resave: false,
+    store: sessionStore,
   })
 );
 
-// Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use("/auth", usersRouters);
-app.use("/profile", infoRouters);
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Check if the origin is allowed (you can implement your own logic here)
+      const allowedOrigins = [process.env.frontEndOrigin];
+      if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true, // You can include credentials with this setup
+  })
+);
+
+app.use(homeRouter);
+app.use("/auth", userRouter);
+app.use("/profile", infoRouter);
 app.use("/user-places", userPlacesRouter);
-app.use("/places", placesRouter);
+app.use("/places", placeRouter);
 app.use("/booking", bookingRouter);
 
-app.listen(port, () => {
-  console.log(`Server listening on ${port}`);
-  connectDB(process.env.MONGO_URI);
-});
+async function bootstrap() {
+  await mongoose.connect(process.env.MONGODB_URI);
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../frontend", "build")));
-  app.get("/*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend", "build", "index.html"));
+  app.listen(port, () => {
+    console.log(`localhost:${port}`);
   });
 }
+bootstrap();

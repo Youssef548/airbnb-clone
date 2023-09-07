@@ -11,7 +11,7 @@ const PlaceImg = ({ place, index = 0, className = null }) => {
     <img
       className={className}
       //   src={"http://localhost:3000/uploads/" + place.photos[0]}
-      src={`http://localhost:3000/uploads/${place.photos[index]}`}
+      src={`${place.photos[index]}`}
     ></img>
   );
 };

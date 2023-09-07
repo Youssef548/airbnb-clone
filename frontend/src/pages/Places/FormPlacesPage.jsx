@@ -11,7 +11,9 @@ import {
 } from "../../utils/Routes";
 
 import axios from "axios";
-
+import { storage } from "../../firebaseConfig/firebase.js"; // Import Firebase storage
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { v4 } from "uuid";
 const FormPlacesPage = () => {
   const { id } = useParams();
 
@@ -84,30 +86,53 @@ const FormPlacesPage = () => {
     // setPhotoLink("");
   };
 
-  const uploadPhotoHandler = async (ev) => {
+  // const uploadPhotoHandler = async (ev) => {
+
+  //   try {
+  //     const files = ev.target.files;
+  //     const data = new FormData();
+
+  //     // Append each file to the FormData
+  //     Array.from(files).forEach((file) => {
+  //       data.append("photos", file);
+  //     });
+
+  //     const response = await axios.post(UploadRoute, data, {
+  //       headers: { "Content-Type": "multipart/form-data" },
+  //     });
+
+  //     const { data: uploadedFile } = response;
+
+  //     // Construct image URLs for each uploaded file
+  //     const imageUrls = uploadedFile.map((file) => {
+  //       return `${file.filename}`;
+  //     });
+
+  //     setAddedPhotos((prev) => [...prev, ...imageUrls]);
+  //   } catch (error) {
+  //     console.error("Error uploading photo:", error);
+  //   }
+  // };
+
+  const uploadPhotoHandler = async (e) => {
+    const files = e.target.files;
+    const uploadedImageUrls = [];
+
     try {
-      const files = ev.target.files;
-      const data = new FormData();
+      for (let i = 0; i < files.length; i++) {
+        const imageUpload = files[i];
+        const imageRef = ref(storage, `images/${imageUpload.name + v4()}`);
+        await uploadBytes(imageRef, imageUpload);
+        const imageUrl = await getDownloadURL(imageRef);
+        uploadedImageUrls.push(imageUrl);
+      }
 
-      // Append each file to the FormData
-      Array.from(files).forEach((file) => {
-        data.append("photos", file);
-      });
-
-      const response = await axios.post(UploadRoute, data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      const { data: uploadedFile } = response;
-
-      // Construct image URLs for each uploaded file
-      const imageUrls = uploadedFile.map((file) => {
-        return `${file.filename}`;
-      });
-
-      setAddedPhotos((prev) => [...prev, ...imageUrls]);
+      setAddedPhotos((prev) => [...prev, ...uploadedImageUrls]);
+      alert("IMAGES UPLOADED SUCCESSFULLY");
+      // Handle success, e.g., update state with the image URLs.
     } catch (error) {
-      console.error("Error uploading photo:", error);
+      console.error("Error uploading images:", error);
+      // Handle error, e.g., display an error message.
     }
   };
 

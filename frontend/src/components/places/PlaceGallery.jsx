@@ -34,7 +34,7 @@ const PlaceGallery = ({ place }) => {
                     <div key={index}>
                       <img
                         className=""
-                        src={`http://localhost:3000/uploads/${photo}`}
+                        src={`${photo}`}
                         alt={`Photo ${index}`}
                       />
                     </div>
@@ -55,7 +55,7 @@ const PlaceGallery = ({ place }) => {
               <img
                 onClick={() => setShowAllPhotos(true)}
                 className="aspect-square object-cover cursor-pointer hover:opacity-90 transition-all w-full"
-                src={`http://localhost:3000/uploads/${place.photos[0]}`}
+                src={`${place.photos[0]}`}
               />
             </div>
           )}
@@ -66,7 +66,7 @@ const PlaceGallery = ({ place }) => {
               <img
                 onClick={() => setShowAllPhotos(true)}
                 className="aspect-square object-cover cursor-pointer hover:opacity-90 transition-all"
-                src={`http://localhost:3000/uploads/${place.photos[1]}`}
+                src={`${place.photos[1]}`}
               />
             </div>
           )}
@@ -76,7 +76,7 @@ const PlaceGallery = ({ place }) => {
                 <img
                   onClick={() => setShowAllPhotos(true)}
                   className="aspect-square object-cover relative top-2 cursor-pointer hover:opacity-90 transition-all"
-                  src={`http://localhost:3000/uploads/${place.photos[2]}`}
+                  src={`${place.photos[2]}`}
                 />
               </div>
             )}
