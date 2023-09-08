@@ -27,7 +27,6 @@ const IndexPage = () => {
                   <img
                     className="rounded-2xl object-cover aspect-square"
                     src={`${place.photos?.[0]}`}
-                    // src={"http://localhost:5000/uploads/" + place.photos?.[0]}
                   />
                 )}
               </div>

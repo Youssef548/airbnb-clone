@@ -13,11 +13,10 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [redirect, setRedirect] = useState(false);
   const { setUser } = useContext(UserContext);
-  // const { setUser } = useContext(Usercontext);
 
   const toastOptions = { position: toast.POSITION.BOTTOM_RIGHT };
 
-  const validationForm = (data) => {
+  const validationLoginForm = (data) => {
     const errors = {};
 
     if (!data.email.trim()) {
@@ -37,7 +36,7 @@ const Login = () => {
     // validation
     e.preventDefault();
 
-    const validationErrors = validationForm({ email, password });
+    const validationErrors = validationLoginForm({ email, password });
 
     if (Object.keys(validationErrors).length > 0) {
       Object.values(validationErrors).forEach((errorMsg) => {

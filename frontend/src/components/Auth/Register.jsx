@@ -14,7 +14,7 @@ const Register = () => {
 
   const toastOptions = { position: toast.POSITION.BOTTOM_RIGHT };
 
-  const validationForm = (data) => {
+   const validationRegisterForm = (data) => {
     const errors = {};
 
     if (!data.name.trim()) {
@@ -40,7 +40,7 @@ const Register = () => {
     // validateion
     e.preventDefault();
 
-    const validationErrors = validationForm({ name, email, password });
+    const validationErrors = validationRegisterForm({ name, email, password });
 
     if (Object.keys(validationErrors).length > 0) {
       Object.values(validationErrors).forEach((errorMsg) => {
@@ -106,5 +106,7 @@ const Register = () => {
     </>
   );
 };
+
+
 
 export default Register;
