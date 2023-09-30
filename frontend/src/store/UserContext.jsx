@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { createContext } from "react";
 import axios from "axios";
 import { GetProfile } from "../utils/Routes";
+import makeReq from "../libs/axiosInstance";
 
 export const UserContext = createContext({});
 
@@ -11,15 +12,13 @@ export function UserContextProvider({ children }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    
     const fecthProfile = async () => {
       if (!user) {
         try {
-          const { data } = await axios.get(GetProfile, {
-            withCredentials: true,
-          });
+          const { data } = await makeReq.get(GetProfile);
           setUser(data.user);
           setIsLoading(false);
+          console.log("HAMDA");
         } catch (err) {
           console.log(err);
         }

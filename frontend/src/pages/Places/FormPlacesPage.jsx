@@ -1,21 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams, Navigate } from "react-router-dom";
 
 import { PhotosUploader, Perks } from "../../components";
 
-import {
-  UploadRoute,
-  UploadByLink,
-  addPlaceRoute,
-  GetUserPlacesRoute,
-} from "../../utils/Routes";
+import { addPlaceRoute, GetUserPlacesRoute } from "../../utils/Routes";
 
-import axios from "axios";
 import { storage } from "../../firebaseConfig/firebase.js"; // Import Firebase storage
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { v4 } from "uuid";
+import makeReq from "../../libs/axiosInstance";
+import { UserContext } from "../../store/UserContext";
 const FormPlacesPage = () => {
   const { id } = useParams();
+  const { user } = useContext(UserContext);
 
   const [title, setTitle] = useState("");
   const [address, setAddress] = useState("");
@@ -30,13 +27,18 @@ const FormPlacesPage = () => {
   const [price, setPrice] = useState(100);
   const [redirectToPlacesList, setRedirectToPlacesList] = useState(false);
 
+  const [titleError, setTitleError] = useState("");
+  const [addressError, setAddressError] = useState("");
+  const [descriptionError, setDescriptionError] = useState("");
+  const [priceError, setPriceError] = useState("");
+
   useEffect(() => {
     if (!id) {
       return;
     }
 
-    axios
-      .get(`${GetUserPlacesRoute}/${id}`, { withCredentials: true })
+    makeReq
+      .get(`${GetUserPlacesRoute}/${id}`)
       .then((res) => {
         const { data } = res;
         setTitle(data.title);
@@ -54,7 +56,7 @@ const FormPlacesPage = () => {
       .catch((error) => {
         console.error("Error fetching place:", error);
       });
-  }, [id]);
+  }, [id, user]);
 
   const inputHeader = (text) => {
     return <h2 className="text-2xl mt-4">{text}</h2>;
@@ -73,46 +75,67 @@ const FormPlacesPage = () => {
     );
   };
 
-  const addPhotoByLink = async (e) => {
-    e.preventDefault();
-    const { data } = await axios.post(UploadByLink, {
-      link: photoLink,
-    });
+  const validateAndSanitizeImageUrl = (link) => {
+    // Regular expression to match valid image file extensions
+    const validExtensions = /\.(jpg|jpeg|png|gif|bmp|webp)$/i;
 
-    setAddedPhotos((prev) => {
-      console.log(data.filename);
-      return [...prev, data.filename];
-    });
-    // setPhotoLink("");
+    // Remove leading and trailing whitespaces from the URL
+    link = link.trim();
+
+    // Check if the URL matches a valid image file extension
+    if (!validExtensions.test(link)) {
+      throw new Error(
+        "Invalid image URL. Please provide a URL with a valid image extension."
+      );
+    }
+
+    return link;
   };
 
-  // const uploadPhotoHandler = async (ev) => {
+  const resizeImage = (file, maxWidth, maxHeight) => {
+    return new Promise((resolve, reject) => {
+      const image = new Image();
 
-  //   try {
-  //     const files = ev.target.files;
-  //     const data = new FormData();
+      image.onload = () => {
+        let width = image.width;
+        let height = image.height;
 
-  //     // Append each file to the FormData
-  //     Array.from(files).forEach((file) => {
-  //       data.append("photos", file);
-  //     });
+        if (width > maxWidth || height > maxHeight) {
+          const aspectRatio = width / height;
 
-  //     const response = await axios.post(UploadRoute, data, {
-  //       headers: { "Content-Type": "multipart/form-data" },
-  //     });
+          if (width > maxWidth) {
+            width = maxWidth;
+            height = width / aspectRatio;
+          }
 
-  //     const { data: uploadedFile } = response;
+          if (height > maxHeight) {
+            height = maxHeight;
+            width = height * aspectRatio;
+          }
+        }
 
-  //     // Construct image URLs for each uploaded file
-  //     const imageUrls = uploadedFile.map((file) => {
-  //       return `${file.filename}`;
-  //     });
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = width;
+        canvas.height = height;
 
-  //     setAddedPhotos((prev) => [...prev, ...imageUrls]);
-  //   } catch (error) {
-  //     console.error("Error uploading photo:", error);
-  //   }
-  // };
+        ctx.drawImage(image, 0, 0, width, height);
+        canvas.toBlob(
+          (blob) => {
+            resolve(blob);
+          },
+          file.type || "image/jpeg",
+          0.9
+        );
+      };
+
+      image.onerror = (error) => {
+        reject(error);
+      };
+
+      image.src = URL.createObjectURL(file);
+    });
+  };
 
   const uploadPhotoHandler = async (e) => {
     const files = e.target.files;
@@ -121,8 +144,9 @@ const FormPlacesPage = () => {
     try {
       for (let i = 0; i < files.length; i++) {
         const imageUpload = files[i];
+        const resizedImageBlob = await resizeImage(imageUpload, 800, 600); // Adjust maxWidth and maxHeight as needed
         const imageRef = ref(storage, `images/${imageUpload.name + v4()}`);
-        await uploadBytes(imageRef, imageUpload);
+        await uploadBytes(imageRef, resizedImageBlob);
         const imageUrl = await getDownloadURL(imageRef);
         uploadedImageUrls.push(imageUrl);
       }
@@ -139,6 +163,39 @@ const FormPlacesPage = () => {
   const savePlaceHandler = async (ev) => {
     ev.preventDefault();
 
+    // Clear previous error messages
+    setTitleError("");
+    setAddressError("");
+    setDescriptionError("");
+    setPriceError("");
+
+    // Validate input fields
+    let isValid = true;
+
+    if (!title.trim()) {
+      setTitleError("Title is required");
+      isValid = false;
+    }
+
+    if (!address.trim()) {
+      setAddressError("Address is required");
+      isValid = false;
+    }
+
+    if (!description.trim()) {
+      setDescriptionError("Description is required");
+      isValid = false;
+    }
+
+    if (!price || isNaN(price)) {
+      setPriceError("Price must be a valid number");
+      isValid = false;
+    }
+
+    if (!isValid) {
+      return; // Prevent form submission if validation fails
+    }
+
     const placeData = {
       title,
       address,
@@ -152,22 +209,17 @@ const FormPlacesPage = () => {
       maxGuests,
       price,
     };
+
     try {
       if (id) {
         // update
 
-        await axios.put(
-          `${addPlaceRoute}/${id}`,
-          { id, ...placeData },
-          {
-            withCredentials: true,
-          }
-        );
+        await makeReq.put(`${addPlaceRoute}/${id}`, { id, ...placeData });
         setRedirectToPlacesList(true);
       } else {
         // new place
-        console.log(`Hello ${placeData.photos}`);
-        await axios.post(addPlaceRoute, placeData, { withCredentials: true });
+
+        await makeReq.post(addPlaceRoute, placeData);
 
         setRedirectToPlacesList(true);
       }
@@ -181,7 +233,7 @@ const FormPlacesPage = () => {
   }
 
   return (
-    <div>
+    <div className="px-4">
       <form action="" onSubmit={savePlaceHandler}>
         {preInput(
           "Title",
@@ -193,18 +245,17 @@ const FormPlacesPage = () => {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
+        <span className="text-red-500">{titleError}</span>
         {preInput("Address", "Address to this place")}
         <input
           type="text"
           placeholder="address"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
-        />
+        />{" "}
+        <span className="text-red-500">{addressError}</span>
         {preInput("Photos", "more = better")}
         <PhotosUploader
-          addPhotoByLink={addPhotoByLink}
-          photoLink={photoLink}
-          setPhotoLink={setPhotoLink}
           addedPhotos={addedPhotos}
           setAddedPhotos={setAddedPhotos}
           uploadPhotoHandler={uploadPhotoHandler}
@@ -213,14 +264,13 @@ const FormPlacesPage = () => {
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-        />
+        />{" "}
+        <span className="text-red-500">{descriptionError}</span>
         {preInput("Select all the perks of your place")}
-
         <div className="mt-2 grid grid-cols-2  md:grid-cols-4 lg:grid-cols-6 gap-2">
           <Perks selected={perks} onChange={setPerks} />
         </div>
         {preInput("Extra in&out times", "house rule, etc")}
-
         <textarea
           value={extraInfo}
           onChange={(e) => setExtraInfo(e.target.value)}
@@ -230,7 +280,6 @@ const FormPlacesPage = () => {
           add check in and out times , remember to have some time window for
           cleaning the room between guests
         </p>
-
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           <div>
             <h3 className="mt-2 -mb-1">Check in time</h3>
@@ -267,6 +316,7 @@ const FormPlacesPage = () => {
               placeholder="2"
               onChange={(e) => setPrice(e.target.value)}
             />
+            <span className="text-red-500">{priceError}</span>
           </div>
         </div>
         <button className="primary my-4">Save</button>

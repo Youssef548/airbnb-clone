@@ -14,7 +14,7 @@ const Login = () => {
   const [redirect, setRedirect] = useState(false);
   const { setUser } = useContext(UserContext);
 
-  const toastOptions = { position: toast.POSITION.BOTTOM_RIGHT };
+  // const toastOptions = { position: toast.POSITION.BOTTOM_RIGHT };
 
   const validationLoginForm = (data) => {
     const errors = {};
@@ -40,7 +40,7 @@ const Login = () => {
 
     if (Object.keys(validationErrors).length > 0) {
       Object.values(validationErrors).forEach((errorMsg) => {
-        toast.error(errorMsg, toastOptions);
+        // toast.error(errorMsg, toastOptions);
       });
     } else {
       try {
@@ -56,7 +56,7 @@ const Login = () => {
         setPassword("");
       } catch (err) {
         console.log(err.response.data);
-        toast.error(err.response.data.message, toastOptions);
+        // toast.error(err.response.data.message, toastOptions);
       }
     }
   };
@@ -81,10 +81,12 @@ const Login = () => {
             <input
               type="password"
               placeholder="Password"
-              className="rounded border-gray-300"
+              className="rounded border-gray-300 "
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            <hr className="my-5" />
+
             <button className="primary">Login</button>
             <div className="text-center py-2  text-gray-500">
               Don't have an account yet?{" "}

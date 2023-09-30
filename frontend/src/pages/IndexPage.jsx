@@ -1,41 +1,44 @@
-import React, { useEffect, useState } from "react";
-import { Header } from "../components";
+import React, { useEffect, useState, Suspense } from "react";
 import { GetPlaces } from "../utils/Routes";
-
 import { Link } from "react-router-dom";
-
 import axios from "axios";
+import Skeleton from "../components/Skeleton/Skeleton";
 
-const url = import.meta.env.VITE_URL;
+import PlaceBox from "../components/PlaceBox/PlaceBox";
 
 const IndexPage = () => {
   const [places, setPlaces] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); // Set initial loading state to true
 
   useEffect(() => {
-    axios.get(GetPlaces).then((res) => {
-      setPlaces([...res.data]);
-    });
+    axios
+      .get(GetPlaces)
+      .then((res) => {
+        setPlaces([...res.data]);
+      })
+      .finally(() => {
+        setTimeout(() => {
+          setIsLoading(false); // Set loading state to false after a delay
+        }, 1000); // Adjust the delay time (in milliseconds) as needed
+      });
   }, []);
+
+  // Function to handle image load
+  const handleImageLoad = () => {
+    setIsLoading(false); // Set loading state to false when the image has loaded
+  };
+
   return (
-    <div className="mt-8 gap-x-6 gap-y-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    <div className="mt-8 gap-x-6 gap-y-4 sm:gap-y-6 md:gap-y-12 lg:gap-y-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 px-16">
       {places.length > 0 &&
         places.map((place, index) => {
           return (
-            <Link key={index} to={`/place/${place._id}`}>
-              <div className="bg-gray-500 rounded-2xl flex mb-2">
-                {place.photos?.[0] && (
-                  <img
-                    className="rounded-2xl object-cover aspect-square"
-                    src={`${place.photos?.[0]}`}
-                  />
-                )}
-              </div>
-              <h2 className="font-bold">{place.address}</h2>
-              <h3 className="text-sm truncate text-gray">{place.title}</h3>
-              <div className="mt-1">
-                <span className="font-bold">${place.price}</span> per night
-              </div>
-            </Link>
+            <PlaceBox
+              key={place._id}
+              place={place}
+              isLoading={isLoading}
+              handleImageLoad={handleImageLoad}
+            />
           );
         })}
     </div>

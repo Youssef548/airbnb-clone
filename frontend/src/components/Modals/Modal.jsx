@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { IoMdClose } from "react-icons/io";
+import { AiOutlineClose } from "react-icons/ai";
 import Button from "../Button/Button";
 import ReactDOM from "react-dom";
 
@@ -53,11 +53,12 @@ const Modal = ({
               <div className="translate h-full lg:h-auto md:h-auto border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                 <div className="flex items-center p-6 rounded-t justify-center relative border-b-[1px]">
                   <button
-                    className="p-1 border-0 hover:opacity-70 transition absolute left-9"
+                    className="bg-white rounded-full hover:opacity-70 transition absolute left-9"
                     onClick={handleClose}
                   >
-                    <IoMdClose size={18} />
+                    <AiOutlineClose size={18} className="" />
                   </button>
+
                   <div className="text-lg font-semibold">{title}</div>
                 </div>
                 <div className="relative p-6 flex-auto">{body}</div>

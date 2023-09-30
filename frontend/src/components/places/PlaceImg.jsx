@@ -9,6 +9,7 @@ const PlaceImg = ({ place, index = 0, className = null }) => {
 
   return (
     <img
+      loading="lazy"
       className={className}
       //   src={"http://localhost:3000/uploads/" + place.photos[0]}
       src={`${place.photos[index]}`}

@@ -5,9 +5,10 @@ import axios from "axios";
 import { UserContext } from "../../store/UserContext";
 
 import { LoginRoute } from "../../utils/Routes";
-import RegisterModal from "./RegisterModal";
+import useLoginModal from "../../hooks/useLoginModal";
 
 const LoginModal = ({ isOpen, onClose }) => {
+  const loginModal = useLoginModal();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setUser } = useContext(UserContext);
@@ -57,17 +58,17 @@ const LoginModal = ({ isOpen, onClose }) => {
         setUser(data.user);
         setEmail("");
         setPassword("");
+        loginModal.onClose();
       } catch (err) {
-        console.log(err.response.data);
-        toast.error(err.response.data.message, toastOptions);
+        console.log(err);
       }
     }
   };
 
   return (
     <Modal
-      isOpen={isOpen}
-      onClose={onClose}
+      isOpen={loginModal.isOpen}
+      onClose={loginModal.onClose}
       title={"Login"}
       body={
         <>

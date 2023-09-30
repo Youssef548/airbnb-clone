@@ -44,19 +44,23 @@ const Register = () => {
 
     if (Object.keys(validationErrors).length > 0) {
       Object.values(validationErrors).forEach((errorMsg) => {
-        toast.error(errorMsg, toastOptions);
+        // toast.error(errorMsg, toastOptions);
       });
     } else {
       try {
         await axios.post(RegisterRoute, { name, email, password });
+        
         setName("");
         setEmail("");
         setPassword("");
       } catch (err) {
-        toast.error(err.response.data.error, toastOptions);
+        console.log(err);
+        // toast.error(err.response.data.error, toastOptions);
       }
     }
   };
+
+
 
   return (
     <>
@@ -89,7 +93,7 @@ const Register = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <button className="primary">Register</button>
+            <button className="primary" onClick={registerHandler}>Register</button>
             <div className="text-center py-2  text-gray-500">
               Already have an account?{" "}
               <Link

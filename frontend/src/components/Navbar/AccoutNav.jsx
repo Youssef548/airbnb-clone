@@ -1,7 +1,10 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { AiOutlineUser, AiOutlineUnorderedList } from "react-icons/ai";
-import { HiOutlineHomeModern } from "react-icons/hi2";
+import {
+  AiOutlineUser,
+  AiOutlineUnorderedList,
+  AiOutlineHome,
+} from "react-icons/ai";
 
 const AccountNav = () => {
   const { pathname } = useLocation();
@@ -22,18 +25,18 @@ const AccountNav = () => {
   };
 
   return (
-    <nav className=" w-full flex justify-center mt-8 mb-8 gap-2 ">
+    <nav className="w-full flex justify-center mt-8 mb-8 gap-2 flex-wrap">
       <Link className={linkClasses("profile")} to={"/account"}>
         <AiOutlineUser />
         My Profile
       </Link>
       <Link className={linkClasses("bookings")} to={"/account/bookings"}>
-        <AiOutlineUnorderedList /> My bookings
+        <AiOutlineUnorderedList />
+        My Bookings
       </Link>
-
       <Link className={linkClasses("places")} to={"/account/places"}>
-        <HiOutlineHomeModern />
-        My accommodations
+        <AiOutlineHome />
+        My Accommodations
       </Link>
     </nav>
   );

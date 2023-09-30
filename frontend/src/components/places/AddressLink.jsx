@@ -1,5 +1,5 @@
 import React from "react";
-import { HiOutlineMap } from "react-icons/hi2";
+// import { HiOutlineMap } from "react-icons/hi2";
 
 const AddressLink = ({ children, className = null }) => {
   if (!className) {
@@ -13,7 +13,7 @@ const AddressLink = ({ children, className = null }) => {
       target="_blank"
       href={`https://maps.google.com/?q=${children}`}
     >
-      <HiOutlineMap />
+      {/* <HiOutlineMap /> */}
       {children}
     </a>
   );

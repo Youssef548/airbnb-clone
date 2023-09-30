@@ -2,52 +2,63 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  background-color: white;
+  overflow-x: hidden;
+}
+* {
+  outline: none;
+}
 
 input[type="text"],
-input[type="password"], input[type="email"], input[type="number"], input[type="tel"], textarea {
-    @apply w-full border my-2 py-2 px-3 rounded-2xl
+input[type="password"],
+input[type="email"],
+input[type="number"],
+input[type="tel"],
+textarea {
+  @apply w-full border my-2 py-2 px-3 rounded-2xl;
 }
 
 textarea {
-    height: 140px;
+  height: 140px;
 }
 
 button {
-    @apply bg-gray-300;
+  @apply bg-gray-300;
 }
 
 button.primary {
-    background-color: '#F5385D';
-    @apply bg-primary p-2 w-full text-white rounded-full
+  background-color: "#F5385D";
+  @apply bg-primary p-2 w-full text-white rounded-full;
 }
 
 .container {
-    padding-left: 15px;
-    padding-right: 15px;
-    margin-left: auto;
-    margin-right: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Small */
 
 @media (min-width: 768px) {
-    .container {
-        width: 750px;
-    }
+  .container {
+    width: 750px;
+  }
 }
 
 /* Medium */
 
 @media (min-width: 992px) {
-    .container {
-        width: 970px;
-    }
+  .container {
+    width: 970px;
+  }
 }
 
 /* Large */
 
 @media (min-width: 1200px) {
-    .container {
-        width: 1170px;
-    }
+  .container {
+    width: 1170px;
+  }
 }

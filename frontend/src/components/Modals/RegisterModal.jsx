@@ -3,8 +3,13 @@ import Modal from "./Modal";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
-
+import { RegisterRoute } from "../../utils/Routes";
+import useRegisterModal from "../../hooks/useRegisterModal";
+import useLoginModal from "../../hooks/useLoginModal";
 const RegisterModal = ({ isOpen, onClose }) => {
+  const registerModal = useRegisterModal();
+  const loginModal = useLoginModal();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,10 +51,13 @@ const RegisterModal = ({ isOpen, onClose }) => {
     } else {
       try {
         await axios.post(RegisterRoute, { name, email, password });
+        registerModal.onClose();
+        loginModal.onOpen();
         setName("");
         setEmail("");
         setPassword("");
       } catch (err) {
+        console.log(err);
         toast.error(err.response.data.error, toastOptions);
       }
     }
@@ -58,8 +66,8 @@ const RegisterModal = ({ isOpen, onClose }) => {
   return (
     <>
       <Modal
-        isOpen={isOpen}
-        onClose={onClose}
+        isOpen={registerModal.isOpen}
+        onClose={registerModal.onClose}
         title={"Register"}
         body={
           <>

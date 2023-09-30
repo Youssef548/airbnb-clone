@@ -6,7 +6,8 @@ import { useParams, Navigate, useNavigate } from "react-router-dom";
 import { UserContext } from "../../store/UserContext";
 
 const BookingWidget = ({ place }) => {
-  const [checkIn, setCheckIn] = useState("");
+  const today = new Date().toISOString().split("T")[0];
+  const [checkIn, setCheckIn] = useState(today);
   const [checkOut, setCheckOut] = useState("");
   const [numberOfGuests, setNumberOfGuests] = useState(1);
   const [name, setName] = useState("");
@@ -14,6 +15,8 @@ const BookingWidget = ({ place }) => {
   const [redirect, setRedirect] = useState("");
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
+
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (user) {
@@ -30,6 +33,34 @@ const BookingWidget = ({ place }) => {
   }
 
   const bookPlaceHandler = async () => {
+    // Perform validation
+    const validationErrors = {};
+    if (checkIn === "") {
+      validationErrors.checkIn = "Check-in date is required";
+    }
+    if (checkOut === "") {
+      validationErrors.checkOut = "Check-out date is required";
+    }
+    if (numberOfGuests === "") {
+      validationErrors.numberOfGuests = "Number of guests is required";
+    }
+
+    if (name === "") {
+      validationErrors.name = "Full name is required";
+    }
+
+    if (mobile === "") {
+      validationErrors.mobile = "Phone number is required";
+    } else if (!/^\d{10}$/.test(mobile)) {
+      validationErrors.mobile = "Invalid phone number format";
+    }
+
+    // If there are validation errors, update the errors state
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
     try {
       if (user) {
         const bookData = {
@@ -76,6 +107,9 @@ const BookingWidget = ({ place }) => {
               value={checkIn}
               onChange={(ev) => setCheckIn(ev.target.value)}
             />
+            {errors.checkIn && (
+              <span className="text-red-500">{errors.checkIn}</span>
+            )}
           </div>
           <div className="py-3 px-4  mb-4 border-l">
             <label>Checkout</label>
@@ -84,6 +118,9 @@ const BookingWidget = ({ place }) => {
               value={checkOut}
               onChange={(ev) => setCheckOut(ev.target.value)}
             />
+            {errors.checkOut && (
+              <span className="text-red-500">{errors.checkOut}</span>
+            )}
           </div>
         </div>
         <div className="py-3 px-4 border-t">
@@ -93,6 +130,9 @@ const BookingWidget = ({ place }) => {
             value={numberOfGuests}
             onChange={(ev) => setNumberOfGuests(ev.target.value)}
           />
+          {errors.numberOfGuests && (
+            <span className="text-red-500">{errors.numberOfGuests}</span>
+          )}
         </div>
 
         {numberOfNights > 0 && (
@@ -103,12 +143,17 @@ const BookingWidget = ({ place }) => {
               value={name}
               onChange={(ev) => setName(ev.target.value)}
             />
+            {errors.name && <span className="text-red-500">{errors.name}</span>}
+
             <label>Phone number:</label>
             <input
               type="tel"
               value={mobile}
               onChange={(ev) => setMobile(ev.target.value)}
             />
+            {errors.mobile && (
+              <span className="text-red-500">{errors.mobile}</span>
+            )}
           </div>
         )}
       </div>

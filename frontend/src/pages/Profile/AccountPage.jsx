@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { UserContext } from "../../store/UserContext";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { LogoutRoute } from "../../utils/Routes";
-import axios from "axios";
+import makeReq from "../../libs/axiosInstance";
 import PlacesPage from "../Places/PlacesPage";
 import { AccountNav } from "../../components";
 
@@ -21,7 +21,7 @@ const AccountPage = () => {
 
   const logoutHandler = async () => {
     try {
-      await axios.post(LogoutRoute, { withCredentials: true });
+      await makeReq.post(LogoutRoute);
       setRedirect("/");
       setUser(null);
     } catch (err) {
