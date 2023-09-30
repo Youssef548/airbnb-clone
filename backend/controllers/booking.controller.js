@@ -18,6 +18,22 @@ class BookingController {
       const { place, checkIn, checkOut, numberOfGuests, name, mobile, price } =
         req.body;
 
+      const validationErrors = {};
+
+      if (!name) {
+        validationErrors.name = "Full name is required";
+      }
+
+      if (!mobile) {
+        validationErrors.mobile = "Phone number is required";
+      } else if (!/^\d{10}$/.test(mobile)) {
+        validationErrors.mobile = "Invalid phone number format";
+      }
+
+      if (Object.keys(validationErrors).length > 0) {
+        return res.status(400).json({ errors: validationErrors });
+      }
+
       const booking = await bookingModel.create({
         place,
         user: userData._id,

@@ -16,6 +16,22 @@ config();
 const app = express();
 const port = 3000;
 
+app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header("Access-Control-Allow-Origin", req.headers.origin);
+  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token,Authorization"
+  );
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  } else {
+    next();
+  }
+});
+
 const MongoDBStore = new MongoStore(session);
 
 mongoose.connect(process.env.MONGODB_URI, {
@@ -42,21 +58,6 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
-
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      // Check if the origin is allowed (you can implement your own logic here)
-      const allowedOrigins = [process.env.frontEndOrigin];
-      if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true, // You can include credentials with this setup
-  })
-);
 
 app.use(homeRouter);
 app.use("/auth", userRouter);

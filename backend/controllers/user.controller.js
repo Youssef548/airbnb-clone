@@ -52,15 +52,19 @@ class UserController {
   }
 
   static async logoutUser(req, res, next) {
-    req.logout((err) => {
+    req.logout(function (err) {
       if (err) {
-        console.error("Error during logout:", err);
-        return res
-          .status(500)
-          .json({ error: "An error occurred while logging out." });
+        return next(err);
       }
 
-      res.status(200).json({ message: "Logged out successfully." });
+      req.session.destroy(function (err) {
+        if (err) {
+          console.error("Error destroying session:", err);
+          return next(err);
+        }
+        res.clearCookie("connect.sid", { path: "/" });
+        res.status(200).json({ status: "Success" });
+      });
     });
   }
 }
