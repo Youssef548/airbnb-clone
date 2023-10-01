@@ -4,6 +4,7 @@ import { bookPlaceRoute } from "../../utils/Routes";
 import axios from "axios";
 import { useParams, Navigate, useNavigate } from "react-router-dom";
 import { UserContext } from "../../store/UserContext";
+import makeReq from "../../libs/axiosInstance";
 
 const BookingWidget = ({ place }) => {
   const today = new Date().toISOString().split("T")[0];
@@ -73,9 +74,7 @@ const BookingWidget = ({ place }) => {
           price: numberOfNights * place.price,
         };
 
-        const response = await axios.post(bookPlaceRoute, bookData, {
-          withCredentials: true,
-        });
+        const response = await makeReq.post(bookPlaceRoute, bookData);
 
         const bookingId = response.data.data._id;
         console.log(bookingId);
@@ -158,7 +157,10 @@ const BookingWidget = ({ place }) => {
         )}
       </div>
 
-      <button className="primary" onClick={bookPlaceHandler}>
+      <button
+        className="primary hover:opacity-80 duration-150 mt-6"
+        onClick={bookPlaceHandler}
+      >
         Book this place
         {numberOfNights > 0 && (
           <>

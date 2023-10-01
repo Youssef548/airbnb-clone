@@ -41,7 +41,7 @@ const PlacePage = () => {
   return (
     <div className=" bg-gray-100 -mx-8  pt-8">
       <div className="container">
-        <h1 className="text-3xl">{place?.title}</h1>
+        <h1 className="text-3xl relative">{place?.title}</h1>
         <AddressLink>{place.address}</AddressLink>
 
         <PlaceGallery place={place} isLoading={isLoading} />

@@ -1,12 +1,12 @@
 import React, { useState, useContext } from "react";
 import { toast, ToastContainer } from "react-toastify";
-import axios from "axios";
 import { UserContext } from "../../store/UserContext";
 
 import { LoginRoute } from "../../utils/Routes";
 
 import { Link, Navigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
+import makeReq from "../../libs/axiosInstance";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -14,7 +14,7 @@ const Login = () => {
   const [redirect, setRedirect] = useState(false);
   const { setUser } = useContext(UserContext);
 
-  // const toastOptions = { position: toast.POSITION.BOTTOM_RIGHT };
+  const toastOptions = { position: toast.POSITION.BOTTOM_RIGHT };
 
   const validationLoginForm = (data) => {
     const errors = {};
@@ -40,15 +40,11 @@ const Login = () => {
 
     if (Object.keys(validationErrors).length > 0) {
       Object.values(validationErrors).forEach((errorMsg) => {
-        // toast.error(errorMsg, toastOptions);
+        toast.error(errorMsg, toastOptions);
       });
     } else {
       try {
-        const { data } = await axios.post(
-          LoginRoute,
-          { email, password },
-          { withCredentials: true }
-        );
+        const { data } = await makeReq.post(LoginRoute, { email, password });
         setRedirect(true);
         setUser(data.user);
 
@@ -56,7 +52,7 @@ const Login = () => {
         setPassword("");
       } catch (err) {
         console.log(err.response.data);
-        // toast.error(err.response.data.message, toastOptions);
+        toast.error(err.response.data.message, toastOptions);
       }
     }
   };

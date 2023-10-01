@@ -1,7 +1,6 @@
 import express from "express";
 import session from "express-session";
 import { config } from "dotenv";
-import homeRouter from "./routes/home.router.js";
 import placeRouter from "./routes/place.router.js";
 import userRouter from "./routes/user.router.js";
 import bookingRouter from "./routes/booking.router.js";
@@ -14,9 +13,9 @@ import passport from "passport";
 import cors from "cors";
 config();
 const app = express();
-const port = 3000;
+const port = process.env.PORT | 3000;
 
-app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
+app.use(cors({ credentials: true, origin: process.env.FRONT_END_URL }));
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Credentials", true);
   res.header("Access-Control-Allow-Origin", req.headers.origin);
@@ -49,7 +48,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   session({
-    secret: "qwpjepqjwekpqekqe",
+    secret: process.env.SESSION_SECRET,
     saveUninitialized: false,
     resave: false,
     store: sessionStore,
@@ -59,7 +58,6 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(homeRouter);
 app.use("/auth", userRouter);
 app.use("/profile", infoRouter);
 app.use("/user-places", userPlacesRouter);

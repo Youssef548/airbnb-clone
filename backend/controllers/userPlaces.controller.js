@@ -1,5 +1,5 @@
 import placeModel from "../models/place.model.js";
-
+import { validatePlace } from "../validators/placeValidtor.js";
 class userPlacesController {
   static async addPlace(req, res, next) {
     try {
@@ -18,13 +18,10 @@ class userPlacesController {
         } = req.body;
 
         // Validate the request body against the schema
-        const { error } = PlaceSchemalac.validate(req.body);
-
+        const { error } = validatePlace(req.body);
         if (error) {
-          // If validation fails, return a 400 Bad Request response with error details
-          return res
-            .status(400)
-            .json({ error: error.details.map((detail) => detail.message) });
+          // Return a 400 error if the update data is invalid
+          return res.status(400).json({ error: error.details[0].message });
         }
 
         const placeDoc = await placeModel.create({
@@ -89,10 +86,17 @@ class userPlacesController {
     try {
       if (req.isAuthenticated()) {
         const userId = req.user._id;
+
         const updatedPlace = {
           owner: userId,
           ...req.body,
         };
+
+        const { error } = validatePlace(req.body);
+        if (error) {
+          // Return a 400 error if the update data is invalid
+          return res.status(400).json({ error: error.details[0].message });
+        }
 
         const place = await placeModel.findByIdAndUpdate(id, updatedPlace, {
           new: true,

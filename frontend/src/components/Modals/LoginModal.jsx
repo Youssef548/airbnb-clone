@@ -1,13 +1,15 @@
 import React, { useState, useContext } from "react";
 import Modal from "./Modal";
 import { toast, ToastContainer } from "react-toastify";
-import axios from "axios";
 import { UserContext } from "../../store/UserContext";
 
 import { LoginRoute } from "../../utils/Routes";
 import useLoginModal from "../../hooks/useLoginModal";
+import makeReq from "../../libs/axiosInstance";
+import {useNavigate} from "react-router-dom";
 
 const LoginModal = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
   const loginModal = useLoginModal();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,7 +25,7 @@ const LoginModal = ({ isOpen, onClose }) => {
     setShowRegisterModal(false);
   };
 
-  const toastOptions = { position: toast.POSITION.BOTTOM_RIGHT };
+  const toastOptions = { position: toast.POSITION.TOP };
 
   const validationLoginForm = (data) => {
     const errors = {};
@@ -46,19 +48,17 @@ const LoginModal = ({ isOpen, onClose }) => {
 
     if (Object.keys(validationErrors).length > 0) {
       Object.values(validationErrors).forEach((errorMsg) => {
-        toast.error(errorMsg, toastOptions);
+        toast.error(errorMsg, toastOptions, { id: "error1" });
       });
     } else {
       try {
-        const { data } = await axios.post(
-          LoginRoute,
-          { email, password },
-          { withCredentials: true }
-        );
+        const { data } = await makeReq.post(LoginRoute, { email, password });
         setUser(data.user);
         setEmail("");
         setPassword("");
         loginModal.onClose();
+        
+        navigate("/account")
       } catch (err) {
         console.log(err);
       }
@@ -86,7 +86,6 @@ const LoginModal = ({ isOpen, onClose }) => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-
           <ToastContainer />
         </>
       }

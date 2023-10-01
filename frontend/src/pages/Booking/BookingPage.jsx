@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { bookPlaceRoute } from "../../utils/Routes";
 import { useEffect, useState } from "react";
 import { AddressLink, BookingDate, PlaceGallery } from "../../components";
-import axios from "axios";
+import makeReq from "../../libs/axiosInstance";
 
 const BookingPage = () => {
   const { id } = useParams();
@@ -10,7 +10,7 @@ const BookingPage = () => {
 
   useEffect(() => {
     if (id) {
-      axios.get(bookPlaceRoute, { withCredentials: true }).then((res) => {
+      makeReq.get(bookPlaceRoute).then((res) => {
         const foundBooking = res.data.find(({ _id }) => _id === id);
         if (foundBooking) {
           console.log(foundBooking);

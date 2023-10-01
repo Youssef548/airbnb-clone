@@ -10,10 +10,10 @@ const PlaceGallery = ({ place, isLoading }) => {
   if (showAllPhotos) {
     return (
       <>
-        <AnimatePresence>
+        <AnimatePresence className="relative">
           {showAllPhotos && (
             <motion.div
-              className="absolute inset-0  text-white min-h-screen opacity-[50%]"
+              className="absolute inset-0 text-white min-h-screen opacity-[50%] z-20"
               initial={{ opacity: 0, y: "100%" }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: "100%" }}
@@ -21,7 +21,7 @@ const PlaceGallery = ({ place, isLoading }) => {
             >
               <div className=" p-8 grid gap-10 justify-center relative">
                 <button
-                  className="fixed left-8 top-4 p-2 rounded-full hover:bg-gray-200  bg-white text-black"
+                  className="sticky w-fit left-12 top-4 p-2 rounded-full hover:bg-gray-200 bg-white text-black z-10"
                   onClick={() => setShowAllPhotos(false)}
                 >
                   <svg
@@ -39,11 +39,13 @@ const PlaceGallery = ({ place, isLoading }) => {
                     />
                   </svg>
                 </button>
-                <div className="absolute top-0 left-0 w-full h-full  bg-black/50 -z-[1] backdrop-blur-sm"></div>
-                <div className="">
-                  <h2 className="text-3xl mr-48 text-white drop-shadow-md">
-                    Photos of {place.title}
-                  </h2>
+                <div className="flex gap-4">
+                  <div className="absolute top-0 left-0 w-full h-full  bg-black/50 -z-[1] backdrop-blur-sm"></div>
+                  <div className="">
+                    <h2 className="text-3xl mr-48 text-white drop-shadow-md">
+                      Photos of {place.title}
+                    </h2>
+                  </div>
                 </div>
                 {place?.photos?.length > 0 &&
                   place.photos.map((photo, index) => (
@@ -59,7 +61,7 @@ const PlaceGallery = ({ place, isLoading }) => {
               </div>
             </motion.div>
           )}
-        </AnimatePresence>{" "}
+        </AnimatePresence>
       </>
     );
   }

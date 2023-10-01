@@ -1,9 +1,6 @@
 import placeModel from "../models/place.model.js";
 
 class PlacesController {
-
-    
-
   static async index(req, res) {
     try {
       const places = await placeModel.find();
@@ -33,9 +30,6 @@ class PlacesController {
         .json({ error: "An error occurred while fetching the place" });
     }
   }
-
-
-
 }
 
 export default PlacesController;

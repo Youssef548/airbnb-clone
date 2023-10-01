@@ -7,10 +7,12 @@ import axios from "axios";
 import { LogoutRoute } from "../../utils/Routes";
 import { UserContext } from "../../store/UserContext";
 import { toast, ToastContainer } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import makeReq from "../../libs/axiosInstance";
 
 const Profile = () => {
+  const navigate = useNavigate();
+
   const [profileToggler, setProfileToggler] = useState(false);
 
   const registerModal = useRegisterModal();
@@ -45,10 +47,9 @@ const Profile = () => {
       // Make the logout request
       await makeReq.post(LogoutRoute);
       setUser(null);
-      toast.success("Logout successful", toastOptions);
+      navigate("/login");
     } catch (err) {
       console.log(err);
-
       toast.error(err.response.data.error, toastOptions);
     }
   };
@@ -76,11 +77,7 @@ const Profile = () => {
   };
 
   return (
-    <nav
-      className={`flex relative items-center gap-6 ${
-        profileToggler ? "" : "z-[999]"
-      } z-10`}
-    >
+    <nav className={`flex relative items-center gap-6  z-10`}>
       <div
         className="hidden sm:flex border border-gray-300 rounded-full py-2 px-2 md:px-4 gap-4 items-center cursor-pointer shadow-sm hover:shadow-md profile-menu"
         onClick={toggleMenu}
@@ -105,8 +102,8 @@ const Profile = () => {
       {profileToggler && (
         <nav
           className="absolute top-[60px] -right-16 flex flex-col gap-2 w-48 bg-white py-4 list-none border shadow-md hover:shadow-lg rounded-md text-black-500 profile-menu"
-          ref={modalContainerRef} // Add a ref to the modal container
-          onClick={handleModalClick} // Attach the click event handler to the modal container
+          ref={modalContainerRef}
+          onClick={handleModalClick}
         >
           {!user && (
             <>
@@ -146,8 +143,6 @@ const Profile = () => {
           )}
         </nav>
       )}
-
-      <ToastContainer />
     </nav>
   );
 };

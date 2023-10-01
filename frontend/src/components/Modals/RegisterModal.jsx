@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { RegisterRoute } from "../../utils/Routes";
 import useRegisterModal from "../../hooks/useRegisterModal";
 import useLoginModal from "../../hooks/useLoginModal";
+import makeReq from "../../libs/axiosInstance";
 const RegisterModal = ({ isOpen, onClose }) => {
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
@@ -50,7 +51,7 @@ const RegisterModal = ({ isOpen, onClose }) => {
       });
     } else {
       try {
-        await axios.post(RegisterRoute, { name, email, password });
+        await makeReq.post(RegisterRoute, { name, email, password });
         registerModal.onClose();
         loginModal.onOpen();
         setName("");
