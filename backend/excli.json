@@ -1,5 +1,0 @@
-{
- "lang": "js",
- "template": "MVC",
- "orm": "mongoose"
-}
