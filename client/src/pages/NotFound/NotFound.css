@@ -1,0 +1,27 @@
+.not-found-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f7f7f7;
+}
+
+.not-found-content {
+  text-align: center;
+}
+
+.not-found-title {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.not-found-message {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.not-found-link {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+}
