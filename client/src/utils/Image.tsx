@@ -5,9 +5,16 @@ interface ImageProps {
   alt?: string;
   width?: string;
   height?: string;
+  className?: string;
 }
 
-const Image: React.FC<ImageProps> = ({ src, alt, width, height }) => {
+const Image: React.FC<ImageProps> = ({
+  src,
+  alt,
+  width,
+  height,
+  className,
+}) => {
   try {
     const NextImage = require("next/image").default;
     return (
@@ -16,6 +23,7 @@ const Image: React.FC<ImageProps> = ({ src, alt, width, height }) => {
         alt={alt}
         width={width}
         height={height}
+        className={className}
       />
     );
   } catch (error) {
@@ -26,6 +34,7 @@ const Image: React.FC<ImageProps> = ({ src, alt, width, height }) => {
         alt={alt}
         width={width}
         height={height}
+        className={className}
       />
     );
   }

@@ -1,10 +1,12 @@
 import Container from "../../Container";
 import Logo from "./Logo";
+import Search from "./Search";
+import UserMenu from "./UserMenu";
 
 const Navbar = () => {
   return (
-    <div className="w-full bg-white z-10 shadow-sm">
-      <div className="p-4 border-b-[1px]">
+    <div className=" w-full bg-white z-10 shadow-sm">
+      <div className="py-4 border-b-[1px]">
         <Container>
           <div
             className="
@@ -17,6 +19,8 @@ const Navbar = () => {
           "
           >
             <Logo />
+            <Search />
+            <UserMenu />
           </div>
         </Container>
       </div>
