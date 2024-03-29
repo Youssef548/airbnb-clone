@@ -3,16 +3,13 @@ import Footer from "../../components/layouts/Footer";
 import Sidebar from "../../components/layouts/Sidebar";
 import Navbar from "../../components/layouts/Navbar/Navbar";
 import Modal from "../../components/Modals/Modal";
+import RegisterModal from "../../components/Modals/RegisterModal";
 
 const Home = () => {
   return (
     <div>
-      <Modal
-        isOpen={true}
-        onClose={() => {}}
-        onSubmit={() => {}}
-        actionLabel="dasdas"
-      />
+      <RegisterModal />
+
       <Navbar />
       <Header />
       <Sidebar />

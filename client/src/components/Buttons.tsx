@@ -1,4 +1,4 @@
-import { IconType } from "@heroicons/react";
+import { Icon } from "@iconify/react";
 
 interface ButtonProps {
   label: string;
@@ -6,7 +6,8 @@ interface ButtonProps {
   disabled?: boolean;
   outline?: boolean;
   small?: boolean;
-  icon?: IconType; // Assuming HeroIcons also provide an IconType type
+  icon?: string;
+  iconSize?: string;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -15,7 +16,9 @@ const Button: React.FC<ButtonProps> = ({
   disabled,
   outline,
   small,
-  icon: Icon, // Using HeroIcons Icon type
+  icon,
+  iconSize,
+  // Using HeroIcons Icon type
 }) => {
   return (
     <button
@@ -38,13 +41,15 @@ const Button: React.FC<ButtonProps> = ({
         ${small ? "border-[1px]" : "border-2"}
       `}
     >
-      {Icon && (
+      {icon && (
         <Icon
+          icon={icon}
           className="
             absolute
             left-4
             top-3
           "
+          style={{ fontSize: iconSize ? iconSize : "" }}
         />
       )}
       {label}
