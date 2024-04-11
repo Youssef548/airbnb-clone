@@ -1,37 +1,21 @@
 // controllers/userController.js
-const User = require("../models/userModel");
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
 
-// Create a new user
-exports.createUser = async (req, res) => {
-  try {
-    const { name, email, password } = req.body;
-    const newUser = new User({ name, email, password });
-    await newUser.save();
-    res.status(201).json({ message: "User created successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+async function createUser(req, res) {
+  const { username, email, password } = req.body;
+  if (!username || !email || !password) {
+    return res.status(400).json({ message: "please provide correct data" });
   }
-};
+  try {
+    const newUser = await prisma.user.create({
+      data: { username, email, password },
+    });
+    return res.status(201).json(newUser);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to create user" });
+  }
+}
 
-// Get all users
-exports.getAllUsers = async (req, res) => {
-  try {
-    const users = await User.find();
-    res.status(200).json(users);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-// Get a user by ID
-exports.getUserById = async (req, res) => {
-  try {
-    const user = await User.findById(req.params.userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    res.status(200).json(user);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
+module.exports = { createUser };
