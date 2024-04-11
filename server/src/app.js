@@ -8,7 +8,6 @@ const connectDB = require("./config/database");
 const userRoutes = require("./routes/userRoutes");
 const authRoutes = require("./routes/authRoutes");
 
-const prisma = new PrismaClient();
 const app = express();
 
 const PORT = process.env.PORT || 3000;
@@ -25,7 +24,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Connect to MongoDB
-// connectDB();
+connectDB();
 
 // Middleware setup
 app.use(express.json());
