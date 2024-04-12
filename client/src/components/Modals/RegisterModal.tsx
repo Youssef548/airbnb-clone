@@ -5,6 +5,9 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 
 import useRegisterModal from "../../hooks/useRegisterModal";
 
+import { BASEURL } from "../../apis/baseurl.js";
+import {registerWithGoogle , registerWithGithub} from "../../apis/oauth.js";
+
 import Modal from "./Modal";
 import Heading from "../Heading";
 import Input from "../Inputs/Input";
@@ -16,12 +19,30 @@ const RegisterModal = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
+    const handleGoogleRegister = async () => {
+      try {
+        const response = await registerWithGoogle();
+        console.log(response); // Handle the response as needed
+      } catch (error) {
+        console.error('Error registering with Google:', error);
+      }
+    }
+    const handleGithubRegister = async () => {
+      try {
+        const response = await registerWithGithub();
+        console.log(response); // Handle the response as needed
+      } catch (error) {
+        console.error('Error registering with Google:', error);
+      }
+    }
+
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FieldValues>({
-    name: "",
+    username: "",
     email: "",
     password: "",
   });
@@ -38,7 +59,7 @@ const RegisterModal = () => {
         required
       />
       <Input
-        id="name"
+        id="username"
         label="Name"
         disabled={isLoading}
         register={register}
@@ -65,14 +86,14 @@ const RegisterModal = () => {
         label="Continue with Google"
         icon="logos:facebook"
         iconSize="24px"
-        onClick={() => {}}
+        onClick={handleGoogleRegister}
       />
       <Button
         outline
         label="Continue with Github"
         icon="mdi:github"
         iconSize="24px"
-        onClick={() => {}}
+        onClick={handleGithubRegister}
       />
 
       <div
@@ -104,13 +125,17 @@ const RegisterModal = () => {
     setIsLoading(true);
 
     axios
-      .post("/api/register", data)
+      .post(`${BASEURL}/api/register`, data)
       .then(() => {
         registerModal.onClose();
       })
       .catch((err) => {
-        toast.error(`something went wrong`);
-        // console.error(err);
+        if(err.response.data.message && err.response.status !== 500) {
+           toast.error(err.response.data.message);
+        } else {
+          toast.error(`something went wrong`);
+        }
+        
       })
       .finally(() => {
         setIsLoading(false);

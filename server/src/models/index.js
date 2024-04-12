@@ -8,6 +8,9 @@ const UserSchema = new mongoose.Schema({
   bookings: [{ type: mongoose.Schema.Types.ObjectId, ref: "Booking" }],
   reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
   createdAt: { type: Date, default: Date.now },
+  googleId: { type: String },
+  githubId: { type: String },
+  facebookId: { type: String },
 });
 
 const ListingSchema = new mongoose.Schema({
