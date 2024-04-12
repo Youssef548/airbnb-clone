@@ -40,8 +40,8 @@ passport.use(
   new GoogleStrategy(
     {
       clientID:
-        "643592862216-io0i9oprku8l43hrgr16bt7n0f54f2qm.apps.googleusercontent.com",
-      clientSecret: "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",
+        // "643592862216-io0i9oprku8l43hrgr16bt7n0f54f2qm.apps.googleusercontent.com",
+      // clientSecret: "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",
       callbackURL: "http://localhost:3000/auth/google/callback",
       scope: ["profile", "email"], // Add the required scope parameter here
     },
@@ -75,8 +75,8 @@ passport.use(
 passport.use(
   new GitHubStrategy(
     {
-      clientID: "709d0284611e250ae014",
-      clientSecret: "709d0284611e250ae014",
+      // clientID: "709d0284611e250ae014",
+      // clientSecret: "709d0284611e250ae014",
       callbackURL: "http://localhost:3000/api/auth/github",
       scope: ["read:user", "user:email"], // Add the required scope parameter here
     },
