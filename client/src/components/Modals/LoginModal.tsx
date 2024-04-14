@@ -3,19 +3,21 @@ import { useCallback, useState } from "react";
 import axios from "axios";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 
-import useRegisterModal from "../../hooks/useRegisterModal";
+import useRegisterModal from "../../hooks/useRegisterModal.js";
 
 import { BASEURL } from "../../apis/baseurl.js";
 import {registerWithGoogle , registerWithGithub} from "../../apis/oauth.js";
 
-import Modal from "./Modal";
-import Heading from "../Heading";
-import Input from "../Inputs/Input";
+import Modal from "./Modal.js";
+import Heading from "../Heading.js";
+import Input from "../Inputs/Input.js";
 import toast from "react-hot-toast";
-import Button from "../Buttons";
+import Button from "../Buttons.js";
+import useLoginModal from "../../hooks/useLoginModal.js";
 
-const RegisterModal = () => {
+const LoginModal = () => {
   const registerModal = useRegisterModal();
+  const loginModal = useLoginModal();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -43,7 +45,6 @@ const RegisterModal = () => {
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
-      username: "",
       email: "",
       password: "",
     }
@@ -52,18 +53,10 @@ const RegisterModal = () => {
 
   const bodyContent = (
     <div>
-      <Heading title="Welcome to Airbnb" subTitle="Create an account!" />
+      <Heading title="Welcome to Airbnb" subTitle="Login to your account!" />
       <Input
         id="email"
         label="Email"
-        disabled={isLoading}
-        register={register}
-        errors={errors}
-        required
-      />
-      <Input
-        id="username"
-        label="Name"
         disabled={isLoading}
         register={register}
         errors={errors}
@@ -89,14 +82,14 @@ const RegisterModal = () => {
         label="Continue with Google"
         icon="logos:facebook"
         iconSize="24px"
-        onClick={handleGoogleRegister}
+        onClick={() => {}}
       />
       <Button
         outline
         label="Continue with Github"
         icon="mdi:github"
         iconSize="24px"
-        onClick={handleGithubRegister}
+        onClick={() => {}}
       />
 
       <div
@@ -110,7 +103,7 @@ const RegisterModal = () => {
         <p>
           Already have an account?
           <span
-            onClick={registerModal.onClose}
+            onClick={loginModal.onClose}
             className="
               text-neutral-800
               cursor-pointer 
@@ -128,9 +121,10 @@ const RegisterModal = () => {
     setIsLoading(true);
 
     axios
-      .post(`${BASEURL}/register`, data)
+      .post(`${BASEURL}/auth/login`, data)
       .then(() => {
-        registerModal.onClose();
+        toast.success("Login succufully")
+        loginModal.onClose();
       })
       .catch((err) => {
         if(err.response.data.message && err.response.status !== 500) {
@@ -147,15 +141,15 @@ const RegisterModal = () => {
   return (
     <Modal
       disabled={isLoading}
-      title="Register"
+      title="Login"
       actionLabel="Continue"
       onSubmit={handleSubmit(onSubmit)}
-      isOpen={registerModal.isOpen}
-      onClose={registerModal.onClose}
+      isOpen={loginModal.isOpen}
+      onClose={loginModal.onClose}
       body={bodyContent}
       footer={footerContent}
     />
   );
 };
 
-export default RegisterModal;
+export default LoginModal;
