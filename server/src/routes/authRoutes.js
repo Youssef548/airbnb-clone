@@ -5,6 +5,7 @@ const {
   loginUser,
   loginByGoogle,
   loginByGithub,
+  getCurrentUser,
 } = require("../controllers/authController");
 
 const router = express.Router();
@@ -13,6 +14,7 @@ const router = express.Router();
 router.post("/login", loginUser);
 router.get("/github", loginByGithub);
 router.get("/google", loginByGoogle);
+router.get("/get-user", getCurrentUser);
 
 router.get("/logout", (req, res) => {
   req.logout();

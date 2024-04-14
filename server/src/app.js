@@ -1,4 +1,5 @@
 // app.js
+require('dotenv').config();
 const express = require("express");
 const session = require("express-session");
 const passport = require("./config/passport"); // Assuming passport configuration is in config/passport.js
@@ -10,7 +11,10 @@ const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.CLEINT_URL,
+  credentials: true,
+}));
 
 const PORT = process.env.PORT || 3000;
 

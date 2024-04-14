@@ -1,4 +1,5 @@
 // controllers/userController.js
+const passport = require("passport");
 const { User } = require("../models");
 const bcrypt = require("bcrypt");
 
@@ -25,5 +26,7 @@ async function createUser(req, res) {
     res.status(500).json({ error: "Failed to create user" });
   }
 }
+
+
 
 module.exports = { createUser };
