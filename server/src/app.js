@@ -32,6 +32,10 @@ app.use(
     secret: "dasmdlaldmasmldlams",
     resave: false,
     saveUninitialized: false,
+    cookie: {
+      sameSite: "None",
+      secure: true,
+    },
   })
 );
 
