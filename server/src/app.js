@@ -15,7 +15,7 @@ app.use(
   cors({
     origin: (origin, callback) => {
       // Check if the origin is in the allowedOrigins array
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin || process.env.ALLOWED_ORIGINS.includes(origin)) {
         callback(null, true); // Allow the request
       } else {
         callback(new Error("Not allowed by CORS")); // Deny the request
