@@ -23,7 +23,11 @@ const loginUser = (req, res, next) => {
   })(req, res, next);
 };
 
-// TODO : create logout
+const logOut = (req, res , next) => {
+  
+}
+
+
 
 const loginByGithub = (req, res, next) => {
   passport.authenticate("github", (err, user, info) => {
@@ -70,7 +74,8 @@ const loginByGoogle = (req, res, next) => {
 
 const getCurrentUser = (req, res) => {
   if (req.isAuthenticated()) {
-    res.json(req.user);
+    const user = req.user;
+    res.json({id: user._id, email:user.email , username: user.username });
   } else {
     res.status(401).json({ message: "Not authenticated" });
   }

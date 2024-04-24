@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const UserSchema = new mongoose.Schema({
   username: { type: String },
   email: { type: String, unique: true },
+  emailVerified: {type: Date},
+  image: {type: String},
   password: String,
   listings: [{ type: mongoose.Schema.Types.ObjectId, ref: "Listing" }],
   bookings: [{ type: mongoose.Schema.Types.ObjectId, ref: "Booking" }],
