@@ -7,11 +7,13 @@ const {
   loginByGithub,
   getCurrentUser,
 } = require("../controllers/authController");
+const validateSchema = require("../middleware/validationFactory");
+const {loginUserShema} = require("../schemas/userSchema");
 
 const router = express.Router();
 // const { loginUser } = require("../controllers/authController");
 
-router.post("/login", loginUser);
+router.post("/login", validateSchema(loginUserShema), loginUser);
 router.get("/github", loginByGithub);
 router.get("/google", loginByGoogle);
 router.get("/get-user", getCurrentUser);
