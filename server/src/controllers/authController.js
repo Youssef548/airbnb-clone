@@ -1,29 +1,36 @@
 // controllers/authController.js
-const passport = require("../config/passport.js");
+require('dotenv').config();
+const bcrypt = require('bcrypt');
+const { User } = require("../models");
+const jwt = require("jsonwebtoken")
+const loginUser = async (req, res, next) => {
+  try {
+    // Get the email and password from the request body
+    const { email, password } = req.body;
 
-const loginUser = (req, res, next) => {
-  passport.authenticate("local", (err, user, info) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Failed to login" });
-    }
+    
+    const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ message: info.message });
+      return res.status(401).json({ message: 'User not found' });
     }
-    req.logIn(user, (err) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({ error: "Failed to login" });
-      }
 
-      return res
-        .status(200)
-        .json({ message: "Login successful", IdleDeadline: user._id });
+    // Compare passwords
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: 'Invalid password' });
+    }
+
+    // Password is valid, create JWT token
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_KEY, {
+      expiresIn: '1h', // Token expiry time
     });
-  })(req, res, next);
-};
 
-const logOut = (req, res , next) => {
+    return res.status(200).json({ message: 'Login successful', token });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Failed to login' });
+  }
+};const logOut = (req, res , next) => {
   
 }
 

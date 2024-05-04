@@ -1,8 +1,6 @@
 // app.js
 require("dotenv").config();
 const express = require("express");
-const session = require("express-session");
-const passport = require("./config/passport"); // Assuming passport configuration is in config/passport.js
 const cors = require("cors");
 
 const connectDB = require("./config/database");
@@ -27,19 +25,8 @@ app.use(
 
 const PORT = process.env.PORT || 3000;
 
-app.use(
-  session({
-    secret: "dasmdlaldmasmldlams",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      sameSite: "None",
-    },
-  })
-);
 
-app.use(passport.initialize());
-app.use(passport.session());
+
 
 // Connect to MongoDB
 connectDB();
