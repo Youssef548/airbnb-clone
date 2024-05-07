@@ -1,10 +1,15 @@
-import React, { useCallback, useState } from "react";
+import  { useCallback, useState } from "react";
 import Avatar from "../../Avatar";
 import MenuItem from "./MenuItem";
 import useRegisterModal from "../../../hooks/useRegisterModal";
 import useLoginModal from "../../../hooks/useLoginModal";
+import { UserType } from "../../../types/user";
 
-const UserMenu = () => {
+interface UserMenuProps {
+  user: UserType | null | undefined;
+}
+
+const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
   const [isOpen, setIsOpen] = useState(false);
@@ -78,10 +83,21 @@ const UserMenu = () => {
         "
         >
           <div className="flex flex-col cursor-pointer">
-            <>
-              <MenuItem onClick={loginModal.onOpen} label="Login" />
-              <MenuItem onClick={registerModal.onOpen} label="Sign up" />
-            </>
+            {user ? (
+              <>
+                <MenuItem onClick={() => {}} label="My trips" />
+                <MenuItem onClick={() => {}} label="My favourites" />
+                <MenuItem onClick={() => {}} label="My Reservations" />
+                <MenuItem onClick={() => {}} label="Airbnb my home" />
+                <hr />
+                <MenuItem onClick={() => {}} label="Logout" />
+              </>
+            ) : (
+              <>
+                <MenuItem onClick={loginModal.onOpen} label="Login" />
+                <MenuItem onClick={registerModal.onOpen} label="Sign up" />
+              </>
+            )}
           </div>
         </div>
       )}

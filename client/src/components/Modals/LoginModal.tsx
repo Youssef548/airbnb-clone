@@ -1,12 +1,6 @@
-import { Icon } from "@iconify/react";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-
-import useRegisterModal from "../../hooks/useRegisterModal.js";
-
-import { BASEURL } from "../../apis/baseurl.js";
-import {registerWithGoogle , registerWithGithub} from "../../apis/oauth.js";
 
 import Modal from "./Modal.js";
 import Heading from "../Heading.js";
@@ -14,30 +8,12 @@ import Input from "../Inputs/Input.js";
 import toast from "react-hot-toast";
 import Button from "../Buttons.js";
 import useLoginModal from "../../hooks/useLoginModal.js";
+import { BASEURL } from "../../apis/baseurl.js";
 
 const LoginModal = () => {
-  const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
 
   const [isLoading, setIsLoading] = useState(false);
-
-    const handleGoogleRegister = async () => {
-      try {
-        const response = await registerWithGoogle();
-        console.log(response); // Handle the response as needed
-      } catch (error) {
-        console.error('Error registering with Google:', error);
-      }
-    }
-    const handleGithubRegister = async () => {
-      try {
-        const response = await registerWithGithub();
-        console.log(response); // Handle the response as needed
-      } catch (error) {
-        console.error('Error registering with Google:', error);
-      }
-    }
-
 
   const {
     register,
@@ -47,8 +23,7 @@ const LoginModal = () => {
     defaultValues: {
       email: "",
       password: "",
-    }
-
+    },
   });
 
   const bodyContent = (
@@ -123,16 +98,16 @@ const LoginModal = () => {
     axios
       .post(`${BASEURL}/auth/login`, data)
       .then(() => {
-        toast.success("Login succufully")
+        toast.success("Login succufully");
         loginModal.onClose();
       })
       .catch((err) => {
-        if(err.response.data.message && err.response.status !== 500) {
-           toast.error(err.response.data.message);
+        console.log(err);
+        if (err.response.data.message && err.response.status !== 500) {
+          toast.error(err.response.data.message);
         } else {
           toast.error(`something went wrong`);
         }
-        
       })
       .finally(() => {
         setIsLoading(false);

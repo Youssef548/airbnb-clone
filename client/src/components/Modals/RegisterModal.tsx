@@ -1,12 +1,11 @@
-import { Icon } from "@iconify/react";
-import { useCallback, useState } from "react";
+import {  useState } from "react";
 import axios from "axios";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 
 import useRegisterModal from "../../hooks/useRegisterModal";
 
-import { BASEURL } from "../../apis/baseurl.js";
-import {registerWithGoogle , registerWithGithub} from "../../apis/oauth.js";
+import { BASEURL } from "../../apis/baseurl";
+import {registerWithGoogle , registerWithGithub} from "../../apis/oauth";
 
 import Modal from "./Modal";
 import Heading from "../Heading";

@@ -2,8 +2,13 @@ import Container from "../../Container";
 import Logo from "./Logo";
 import Search from "./Search";
 import UserMenu from "./UserMenu";
+import { UserType } from "../../../types/user";
 
-const Navbar = () => {
+interface NavBarProps {
+  user?: UserType | null | undefined;
+}
+
+const Navbar: React.FC<NavBarProps> = ({ user }) => {
   return (
     <div className=" w-full bg-white z-10 shadow-sm">
       <div className="py-4 border-b-[1px]">
@@ -20,7 +25,7 @@ const Navbar = () => {
           >
             <Logo />
             <Search />
-            <UserMenu />
+            <UserMenu user={user} />
           </div>
         </Container>
       </div>
