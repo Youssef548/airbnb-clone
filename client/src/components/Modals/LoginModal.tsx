@@ -1,5 +1,4 @@
 import { useState } from "react";
-import axios from "axios";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 
 import Modal from "./Modal.js";
@@ -8,10 +7,17 @@ import Input from "../Inputs/Input.js";
 import toast from "react-hot-toast";
 import Button from "../Buttons.js";
 import useLoginModal from "../../hooks/useLoginModal.js";
-import { BASEURL } from "../../apis/baseurl.js";
+
+import { setAuthToken } from "../../utils/authUtils";
+import { loginRequest } from "../../apis/login.js";
+import { getUserDataRequest } from "../../apis/getUser.js";
+
+import useUserStore from "../../store/useStore";
 
 const LoginModal = () => {
   const loginModal = useLoginModal();
+  const userStore = useUserStore(); // Access the store
+
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -21,6 +27,7 @@ const LoginModal = () => {
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
+   
       email: "",
       password: "",
     },
@@ -92,26 +99,32 @@ const LoginModal = () => {
     </div>
   );
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setIsLoading(true);
 
-    axios
-      .post(`${BASEURL}/auth/login`, data)
-      .then(() => {
-        toast.success("Login succufully");
-        loginModal.onClose();
-      })
-      .catch((err) => {
-        console.log(err);
-        if (err.response.data.message && err.response.status !== 500) {
-          toast.error(err.response.data.message);
-        } else {
-          toast.error(`something went wrong`);
-        }
-      })
-      .finally(() => {
-        setIsLoading(false);
+
+     loginRequest(data).then((res) => {
+      toast.success("Login succufully");
+      loginModal.onClose();
+      setAuthToken(res.data.token);
+      getUserDataRequest().then(({data}) => {
+        userStore.setUser({ _id: data.id, email: data.email, username: data.username})
       });
+    })
+    .catch((err) => {
+      console.log(err);
+      if (err.response.data.message && err.response.status !== 500) {
+        toast.error(err.response.data.message);
+      } else {
+        toast.error(`something went wrong`);
+      }
+    })
+    .finally(() => {
+      setIsLoading(false);
+    });;
+
+    
+     
   };
   return (
     <Modal
