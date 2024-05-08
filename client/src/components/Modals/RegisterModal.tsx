@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import {  useCallback, useState } from "react";
 import axios from "axios";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 
@@ -12,9 +12,11 @@ import Heading from "../Heading";
 import Input from "../Inputs/Input";
 import toast from "react-hot-toast";
 import Button from "../Buttons";
+import useLoginModal from "../../hooks/useLoginModal";
 
 const RegisterModal = () => {
   const registerModal = useRegisterModal();
+  const loginModal = useLoginModal();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -48,6 +50,14 @@ const RegisterModal = () => {
     }
 
   });
+
+
+  
+  const toggle = useCallback(() => {
+    registerModal.onClose();
+    loginModal.onOpen();
+  
+  }, [loginModal, registerModal])
 
   const bodyContent = (
     <div>
@@ -109,7 +119,7 @@ const RegisterModal = () => {
         <p>
           Already have an account?
           <span
-            onClick={registerModal.onClose}
+            onClick={toggle}
             className="
               text-neutral-800
               cursor-pointer 

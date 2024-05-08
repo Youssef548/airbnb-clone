@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 
 import Modal from "./Modal.js";
@@ -13,9 +13,11 @@ import { loginRequest } from "../../apis/login.js";
 import { getUserDataRequest } from "../../apis/getUser.js";
 
 import useUserStore from "../../store/useStore";
+import useRegisterModal from "../../hooks/useRegisterModal.js";
 
 const LoginModal = () => {
   const loginModal = useLoginModal();
+  const registerModal = useRegisterModal();
   const userStore = useUserStore(); // Access the store
 
 
@@ -32,6 +34,12 @@ const LoginModal = () => {
       password: "",
     },
   });
+
+  const toggle = useCallback(() => {
+    loginModal.onClose();
+    registerModal.onOpen();
+  
+  }, [loginModal, registerModal])
 
   const bodyContent = (
     <div>
@@ -83,16 +91,16 @@ const LoginModal = () => {
         "
       >
         <p>
-          Already have an account?
+          First time usign Airbnb?
           <span
-            onClick={loginModal.onClose}
+            onClick={toggle}
             className="
               text-neutral-800
               cursor-pointer 
               hover:underline
             "
           >
-            Log in
+            Create an account
           </span>
         </p>
       </div>
