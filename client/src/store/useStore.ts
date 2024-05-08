@@ -5,7 +5,7 @@ import { UserType } from "../types/user";
 // Define the state type
 export type UserStore = {
  user: undefined | null | UserType; // Assuming the user object has a name and age
- setUser: (user: UserType) => void;
+ setUser: (user: UserType | null) => void;
  clearUser: () => void;
 };
 
