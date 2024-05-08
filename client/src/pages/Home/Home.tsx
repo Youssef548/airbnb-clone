@@ -9,7 +9,7 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 
 const Home = () => {
-  const user = useUserStore((state) => state.user); // Access the user data from the store
+  const user = useUserStore((state) => state.user);
 
   return (
     <div>
