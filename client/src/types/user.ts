@@ -2,7 +2,7 @@ export type UserType =   {
     _id: string;
     username: string;
     email: string;
-    name: string;
-    age: number;
+    name?: string;
+    age?: number;
   }
   
