@@ -1,15 +1,20 @@
-import  { useCallback, useState } from "react";
+import { useCallback,  useState } from "react";
 import Avatar from "../../Avatar";
 import MenuItem from "./MenuItem";
 import useRegisterModal from "../../../hooks/useRegisterModal";
 import useLoginModal from "../../../hooks/useLoginModal";
 import { UserType } from "../../../types/user";
+import { removeAuthToken } from "../../../utils/authUtils";
+import useUserStore from "../../../store/useStore";
 
 interface UserMenuProps {
   user: UserType | null | undefined;
 }
 
+
 const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
+  
+  const userStore = useUserStore(); // Access the store
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
   const [isOpen, setIsOpen] = useState(false);
@@ -90,7 +95,13 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
                 <MenuItem onClick={() => {}} label="My Reservations" />
                 <MenuItem onClick={() => {}} label="Airbnb my home" />
                 <hr />
-                <MenuItem onClick={() => {}} label="Logout" />
+                <MenuItem
+                  onClick={() => {
+                    removeAuthToken();
+                    userStore.setUser(null)
+                  }}
+                  label="Logout"
+                />
               </>
             ) : (
               <>
