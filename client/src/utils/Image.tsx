@@ -6,6 +6,7 @@ interface ImageProps {
   width?: string;
   height?: string;
   className?: string;
+  onClick?: () => void;
 }
 
 const Image: React.FC<ImageProps> = ({
@@ -14,6 +15,7 @@ const Image: React.FC<ImageProps> = ({
   width,
   height,
   className,
+  onClick,
 }) => {
   try {
     const NextImage = require("next/image").default;
@@ -24,6 +26,7 @@ const Image: React.FC<ImageProps> = ({
         width={width}
         height={height}
         className={className}
+        onClick={onClick}
       />
     );
   } catch (error) {
@@ -35,6 +38,7 @@ const Image: React.FC<ImageProps> = ({
         width={width}
         height={height}
         className={className}
+        onClick={onClick}
       />
     );
   }
