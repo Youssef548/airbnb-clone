@@ -1,13 +1,13 @@
 import React, { useCallback } from 'react';
-import { Icon } from '@iconify/react';
+import { Icon, IconifyIcon } from '@iconify/react';
 import {  useSearchParams } from 'react-router-dom';
 import queryString from 'qs';
 
 interface CategoryBoxProps {
   label: string;
-  description?: string; // Made optional since it's not always used
+  description?: string; 
   selected?: boolean;
-  icon: any; // Assuming `IconifyIcon` is the correct type for your icon
+  icon: IconifyIcon; 
 }
 
 const CategoryBox: React.FC<CategoryBoxProps> = ({
