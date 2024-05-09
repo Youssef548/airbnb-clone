@@ -12,7 +12,7 @@ import musicNoteIcon from '@iconify/icons-bi/music-note';
 import bookIcon from '@iconify/icons-bi/book';
 import heartIcon from '@iconify/icons-bi/heart';
 
-const categories = [
+export const categories = [
   {
     id: "1",
     label: "Homes",
