@@ -6,6 +6,7 @@ import RegisterModal from "../../components/Modals/RegisterModal";
 import LoginModal from "../../components/Modals/LoginModal";
 import useUserStore from "../../store/useStore";
 import axios from "axios";
+import RentModal from "../../components/Modals/RentModal";
 axios.defaults.withCredentials = true;
 
 const Home = () => {
@@ -14,6 +15,7 @@ const Home = () => {
   return (
     <div>
       <LoginModal />
+      <RentModal />
       <RegisterModal />
 
       <Navbar user={user} />

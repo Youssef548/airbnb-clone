@@ -6,10 +6,13 @@ import useLoginModal from "../../../hooks/useLoginModal";
 import { UserType } from "../../../types/user";
 import { removeAuthToken } from "../../../utils/authUtils";
 import useUserStore from "../../../store/useStore";
+import useRentModal from "../../../hooks/useRentModal";
 
 interface UserMenuProps {
   user: UserType | null | undefined;
 }
+
+
 
 
 const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
@@ -17,17 +20,32 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
   const userStore = useUserStore(); // Access the store
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
+
+  const rentModal = useRentModal();
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleOpen = useCallback(() => {
     setIsOpen((value) => !value);
   }, []);
 
+
+  const onRent = useCallback(() => {
+    if(!user) {
+      return loginModal.onOpen();
+    }
+
+
+    // open Rent modal
+
+    rentModal.onOpen();
+  } , [user , loginModal])
+
+
   return (
     <div className="relative">
       <div className="flex flex-row items-center gap-3">
         <div
-          onClick={() => {}}
+          onClick={onRent}
           className="
         hidden md:block text-sm font-semibold py-3 px-4 rounded-full 
         transition cursor-pointer hover:bg-neutral-100
@@ -93,7 +111,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
                 <MenuItem onClick={() => {}} label="My trips" />
                 <MenuItem onClick={() => {}} label="My favourites" />
                 <MenuItem onClick={() => {}} label="My Reservations" />
-                <MenuItem onClick={() => {}} label="Airbnb my home" />
+                <MenuItem onClick={rentModal.onOpen} label="Airbnb my home" />
                 <hr />
                 <MenuItem
                   onClick={() => {
