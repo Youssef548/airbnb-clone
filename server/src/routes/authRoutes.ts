@@ -5,7 +5,6 @@ import validateSchema from "../middleware/validationFactory.middleware";
 import { loginUserShema, registerUserSchema } from "../schemas/userSchema";
 
 const router = express.Router();
-// const { loginUser } = require("../controllers/authController");
 
 router.post("/login", validateSchema(loginUserShema), loginUser);
 router.post("/register",validateSchema(registerUserSchema), createUser);
