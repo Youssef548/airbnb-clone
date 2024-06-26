@@ -18,6 +18,10 @@ enum STEPS {
   PRICE = 5,
 }
 
+interface StepComponents {
+  [key: string]: JSX.Element;
+}
+
 const RentModal = () => {
   const rentModal = useRentModal();
 
@@ -28,8 +32,6 @@ const RentModal = () => {
     setStep((value) => value - 1);
     setError(null); // Clear error when navigating back
   };
-
-
 
   const {
     register,
@@ -52,7 +54,6 @@ const RentModal = () => {
     },
   });
 
-  
   const onClose = () => {
     rentModal.onClose();
     reset();
@@ -103,7 +104,6 @@ const RentModal = () => {
     [STEPS.PRICE]: "Please set a price.",
   };
   
-  // Function to get the error message for a given step
   const getStepErrorMessage = (step: STEPS) => {
     return stepErrorMessages[step] || "Please complete all required fields.";
   };
@@ -134,48 +134,58 @@ const RentModal = () => {
     return "Back";
   }, [step]);
 
-  let bodyContent = (
-    <div className="flex flex-col gap-8">
-      <Heading
-        title="Which of these best describes your place?"
-        subTitle="Pick a category"
-      />
-      <div
-        className="
-    grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto"
-      >
-        {categories.map((item) => {
-          return (
-            <div key={item.label} className="col-span-1">
-              <CategoryInput
-                onClick={(category) => {
-                  setCustomValue("category", category);
-                }}
-                selected={category === item.label}
-                label={item.label}
-                icon={item.icon}
-              />
-            </div>
-          );
-        })}
-      </div>
+  const CategoryContent = () => {
+    return  <div className="flex flex-col gap-8">
+    <Heading
+      title="Which of these best describes your place?"
+      subTitle="Pick a category"
+    />
+    <div
+      className="
+  grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto"
+    >
+      {categories.map((item) => {
+        return (
+          <div key={item.label} className="col-span-1">
+            <CategoryInput
+              onClick={(category) => {
+                setCustomValue("category", category);
+              }}
+              selected={category === item.label}
+              label={item.label}
+              icon={item.icon}
+            />
+          </div>
+        );
+      })}
     </div>
-  );
-  if (step === STEPS.LOCATION) {
-    bodyContent = (
-      <div className="flex flex-col gap-8">
-        <Heading
-          title="Where is your place located?"
-          subTitle="Help guests find you!"
-        />
-        <CountrySelect
-          value={location}
-          onChange={(value) => setCustomValue("location", value)}
-        />
-        <Map center={location?.latlng || [26.8206, 30.8025]} />
-      </div>
-    );
+  </div>
   }
+
+  const LocationContent = () => {
+    return  <div className="flex flex-col gap-8">
+    <Heading
+      title="Where is your place located?"
+      subTitle="Help guests find you!"
+    />
+    <CountrySelect
+      value={location}
+      onChange={(value) => setCustomValue("location", value)}
+    />
+    <Map center={location?.latlng || [26.8206, 30.8025]} />
+  </div>
+  }
+
+  const stepComponents  : StepComponents= {
+    [STEPS.CATEGORY]:  <CategoryContent/>,
+    [STEPS.LOCATION]:  <LocationContent/> ,
+};
+
+  const getStepComponent = (step: STEPS)  => {
+    return stepComponents[step];
+};
+
+  let bodyContent = getStepComponent(step);
 
   return (
     <Modal
