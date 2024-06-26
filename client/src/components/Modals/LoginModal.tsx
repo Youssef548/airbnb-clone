@@ -10,7 +10,6 @@ import useLoginModal from "../../hooks/useLoginModal.js";
 
 import { setAuthToken } from "../../utils/authUtils";
 import { loginRequest } from "../../apis/login.js";
-import { getUserDataRequest } from "../../apis/getUser.js";
 
 import useUserStore from "../../store/useStore";
 import useRegisterModal from "../../hooks/useRegisterModal.js";
@@ -22,7 +21,7 @@ const LoginModal = () => {
 
 
   const [isLoading, setIsLoading] = useState(false);
-
+  const setUser = userStore.setUser;
   const {
     register,
     handleSubmit,
@@ -115,9 +114,7 @@ const LoginModal = () => {
       toast.success("Login succufully");
       loginModal.onClose();
       setAuthToken(res.data.token);
-      getUserDataRequest().then(({data}) => {
-        userStore.setUser({ _id: data.id, email: data.email, username: data.username})
-      });
+      setUser(res.data.currentUser);
     })
     .catch((err) => {
       console.log(err);
