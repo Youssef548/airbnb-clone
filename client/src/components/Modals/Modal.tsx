@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-
 import Button from "../Buttons";
 
 interface ModalProps {
@@ -13,6 +12,7 @@ interface ModalProps {
   disabled?: boolean;
   secondaryAction?: () => void;
   secondaryActionLabel?: string;
+  error?: string; // Add the error prop
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -26,6 +26,7 @@ const Modal: React.FC<ModalProps> = ({
   disabled,
   secondaryAction,
   secondaryActionLabel,
+  error, // Receive the error prop
 }) => {
   const [showModal, setShowModal] = useState(isOpen);
 
@@ -64,6 +65,13 @@ const Modal: React.FC<ModalProps> = ({
     return null;
   }
 
+
+  const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      handleClose();
+    }
+  };
+
   return (
     <>
       <div
@@ -80,6 +88,7 @@ const Modal: React.FC<ModalProps> = ({
           focus:outline-none
           bg-neutral-800/70
         "
+        onClick={handleOutsideClick}
       >
         <div
           className="
@@ -163,8 +172,16 @@ const Modal: React.FC<ModalProps> = ({
                 </button>
                 <div className="text-lg font-semibold">{title}</div>
               </div>
+              {error && (
+                  <div className="bg-red-200 py-4  mt-4 text-center">
+                    {error}
+                  </div>
+                )}
               {/*body*/}
-              <div className="relative p-6 flex-auto">{body}</div>
+              <div className="relative p-6 flex-auto">
+                {body}
+              </div>
+             
               {/*footer*/}
               <div className="flex flex-col gap-2 p-6">
                 <div
@@ -185,7 +202,7 @@ const Modal: React.FC<ModalProps> = ({
                     />
                   )}
                   <Button
-                    disabled={disabled}
+                    disabled={disabled || error ? true : false}
                     label={actionLabel}
                     onClick={handleSubmit}
                   />

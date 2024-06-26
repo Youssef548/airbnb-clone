@@ -22,16 +22,21 @@ const RentModal = () => {
   const rentModal = useRentModal();
 
   const [step, setStep] = useState(STEPS.CATEGORY);
+  const [error, setError] = useState<string | null>(null);
 
   const onBack = () => {
     setStep((value) => value - 1);
+    setError(null); // Clear error when navigating back
   };
+
+
 
   const {
     register,
     handleSubmit,
     setValue,
     watch,
+    reset,
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
@@ -47,8 +52,23 @@ const RentModal = () => {
     },
   });
 
+  
+  const onClose = () => {
+    rentModal.onClose();
+    reset();
+    setStep(STEPS.CATEGORY);
+    setError(null); 
+  };
+
   const category = watch("category");
   const location = watch("location");
+  const guestCount = watch("guestCount");
+  const roomCount = watch("roomCount");
+  const bathroomCount = watch("bathroomCount");
+  const imageSrc = watch("imageSrc");
+  const price = watch("price");
+  const title = watch("title");
+  const description = watch("description");
 
   const setCustomValue = (id: string, value: any) => {
     setValue(id, value, {
@@ -56,10 +76,46 @@ const RentModal = () => {
       shouldDirty: true,
       shouldTouch: true,
     });
+    setError(null);
   };
 
+  // Validation rules for each step
+  const validationRules = {
+    [STEPS.CATEGORY]: () => !!category,
+    [STEPS.LOCATION]: () => !!location,
+    [STEPS.INFO]: () => guestCount > 0 && roomCount > 0 && bathroomCount > 0,
+    [STEPS.IMAGES]: () => !!imageSrc,
+    [STEPS.DESCRIPTION]: () => title.length > 0 && description.length > 0,
+    [STEPS.PRICE]: () => price > 0,
+  };
+  
+  const validateStep = () => {
+    const validate = validationRules[step];
+    return validate ? validate() : true;
+  };
+
+  const stepErrorMessages = {
+    [STEPS.CATEGORY]: "Please select a category.",
+    [STEPS.LOCATION]: "Please choose a location.",
+    [STEPS.INFO]: "Please ensure all info fields are filled correctly.",
+    [STEPS.IMAGES]: "Please upload an image.",
+    [STEPS.DESCRIPTION]: "Please provide a title and description.",
+    [STEPS.PRICE]: "Please set a price.",
+  };
+  
+  // Function to get the error message for a given step
+  const getStepErrorMessage = (step: STEPS) => {
+    return stepErrorMessages[step] || "Please complete all required fields.";
+  };
+
+
   const onNext = () => {
+    if (!validateStep()) {
+      setError(getStepErrorMessage(step));
+      return;
+    }
     setStep((value) => value + 1);
+    setError(null); // Clear error when navigating to the next step
   };
 
   const actionLabel = useMemo(() => {
@@ -81,7 +137,7 @@ const RentModal = () => {
   let bodyContent = (
     <div className="flex flex-col gap-8">
       <Heading
-        title="Which of theses best describes your place?"
+        title="Which of these best describes your place?"
         subTitle="Pick a category"
       />
       <div
@@ -95,7 +151,7 @@ const RentModal = () => {
                 onClick={(category) => {
                   setCustomValue("category", category);
                 }}
-                selected={category == item.label}
+                selected={category === item.label}
                 label={item.label}
                 icon={item.icon}
               />
@@ -124,14 +180,16 @@ const RentModal = () => {
   return (
     <Modal
       isOpen={rentModal.isOpen}
-      onClose={rentModal.onClose}
+      onClose={onClose}
       onSubmit={onNext}
       actionLabel={actionLabel}
       secondaryActionLabel={secondaryActionLabel}
       secondaryAction={step === STEPS.CATEGORY ? undefined : onBack}
       title="Airbnb your home!"
       body={bodyContent}
-    />
+      {...(error ? { error: error } : {})}
+      >
+    </Modal>
   );
 };
 
