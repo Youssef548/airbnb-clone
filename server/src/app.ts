@@ -6,7 +6,8 @@ dotenv.config();
 
 import connectDB from "./config/database";
 import authRoutes from "./routes/authRoutes";
-import errorHandler from "./middleware/error.middleware";
+import listingRoutes from "./routes/listing.routes"
+import errorHandler from "./middleware/error.middleware"; 
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use(express.json());
 
 // Routes setup
 app.use("/api/auth/", authRoutes);
+app.use("/api/listings/", listingRoutes);
 
 app.use(errorHandler);
 

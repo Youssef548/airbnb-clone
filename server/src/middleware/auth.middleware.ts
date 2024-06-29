@@ -32,6 +32,7 @@ export const isAuth = (req: Request, res: Response, next: NextFunction) => {
     next();
   } catch (error) {
     // Optionally, differentiate error messages based on the error type
+    console.error(error);
     return next(errorHandler(401, "Invalid authentication token."));
   }
 };
