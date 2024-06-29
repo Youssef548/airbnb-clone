@@ -1,15 +1,17 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import useRentModal from "../../hooks/useRentModal";
 import Modal from "./Modal";
 import Heading from "../Heading";
 import Map from "../Map";
-
 import { categories } from "../layouts/Navbar/Categories";
 import CategoryInput from "../Inputs/CategoryInput";
 import CountrySelect from "../Inputs/CountrySelect";
 import Counter from "../Inputs/Counter";
 import ImageUpload from "../Inputs/ImageUpload";
+import Input from "../Inputs/Input";
+import { axiosInstance } from "../../providers/AxiosInstance";
+import toast from "react-hot-toast";
 
 enum STEPS {
   CATEGORY = 0,
@@ -20,20 +22,18 @@ enum STEPS {
   PRICE = 5,
 }
 
-interface StepComponents {
-  [key: string]: JSX.Element;
-}
-
 const RentModal = () => {
   const rentModal = useRentModal();
 
+
   const [step, setStep] = useState(STEPS.CATEGORY);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const onBack = () => {
+  const onBack = useCallback(() => {
     setStep((value) => value - 1);
     setError(null); // Clear error when navigating back
-  };
+  }, []);
 
   const {
     register,
@@ -56,12 +56,12 @@ const RentModal = () => {
     },
   });
 
-  const onClose = () => {
+  const onClose = useCallback(() => {
     rentModal.onClose();
     reset();
     setStep(STEPS.CATEGORY);
     setError(null);
-  };
+  }, [rentModal, reset]);
 
   const category = watch("category");
   const location = watch("location");
@@ -73,57 +73,106 @@ const RentModal = () => {
   const title = watch("title");
   const description = watch("description");
 
-  const setCustomValue = (id: string, value: any) => {
-    setValue(id, value, {
-      shouldValidate: true,
-      shouldDirty: true,
-      shouldTouch: true,
-    });
-    setError(null);
-  };
+  const setCustomValue = useCallback(
+    (id: string, value: any) => {
+      setValue(id, value, {
+        shouldValidate: true,
+        shouldDirty: true,
+        shouldTouch: true,
+      });
+      setError(null);
+    },
+    [setValue]
+  );
 
-  // Validation rules for each step
-  const validationRules = {
-    [STEPS.CATEGORY]: () => !!category,
-    [STEPS.LOCATION]: () => !!location,
-    [STEPS.INFO]: () => guestCount > 0 && roomCount > 0 && bathroomCount > 0,
-    [STEPS.IMAGES]: () => !!imageSrc,
-    [STEPS.DESCRIPTION]: () => title.length > 0 && description.length > 0,
-    [STEPS.PRICE]: () => price > 0,
-  };
+  const validationRules = useMemo(
+    () => ({
+      [STEPS.CATEGORY]: () => !!category,
+      [STEPS.LOCATION]: () => !!location,
+      [STEPS.INFO]: () => guestCount > 0 && roomCount > 0 && bathroomCount > 0,
+      [STEPS.IMAGES]: () => !!imageSrc,
+      [STEPS.DESCRIPTION]: () => title.length > 0 && description.length > 0,
+      [STEPS.PRICE]: () => price > 0,
+    }),
+    [
+      category,
+      location,
+      guestCount,
+      roomCount,
+      bathroomCount,
+      imageSrc,
+      title,
+      description,
+      price,
+    ]
+  );
 
-  const validateStep = () => {
+  const validateStep = useCallback(() => {
     const validate = validationRules[step];
     return validate ? validate() : true;
-  };
+  }, [step, validationRules]);
 
-  const stepErrorMessages = {
-    [STEPS.CATEGORY]: "Please select a category.",
-    [STEPS.LOCATION]: "Please choose a location.",
-    [STEPS.INFO]: "Please ensure all info fields are filled correctly.",
-    [STEPS.IMAGES]: "Please upload an image.",
-    [STEPS.DESCRIPTION]: "Please provide a title and description.",
-    [STEPS.PRICE]: "Please set a price.",
-  };
+  const stepErrorMessages = useMemo(
+    () => ({
+      [STEPS.CATEGORY]: "Please select a category.",
+      [STEPS.LOCATION]: "Please choose a location.",
+      [STEPS.INFO]: "Please ensure all info fields are filled correctly.",
+      [STEPS.IMAGES]: "Please upload an image.",
+      [STEPS.DESCRIPTION]: "Please provide a title and description.",
+      [STEPS.PRICE]: "Please set a price.",
+    }),
+    []
+  );
 
-  const getStepErrorMessage = (step: STEPS) => {
-    return stepErrorMessages[step] || "Please complete all required fields.";
-  };
+  const getStepErrorMessage = useCallback(
+    (step: STEPS) => {
+      return stepErrorMessages[step] || "Please complete all required fields.";
+    },
+    [stepErrorMessages]
+  );
 
-  const onNext = () => {
-    if (!validateStep()) {
-      setError(getStepErrorMessage(step));
-      return;
-    }
-    setStep((value) => value + 1);
-    setError(null); // Clear error when navigating to the next step
-  };
+  const handleSubmitForm = useCallback(
+    async (data: FieldValues) => {
+      setIsLoading(true);
+
+      try {
+        const res = await axiosInstance.post("/listings", data);
+        if (res.status === 200) {
+          toast.success("Listing created successfully!");
+          onClose();
+        }
+      } catch (error) {
+        toast.error("Failed to create listing. Please try again.");
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [onClose]
+  );
+
+  const onNext = useCallback(
+    async (data: FieldValues) => {
+      if (!validateStep()) {
+        setError(getStepErrorMessage(step));
+        return;
+      }
+
+      if (step === STEPS.PRICE) {
+        // If we are at the last step, submit the form
+        await handleSubmitForm(data);
+      } else {
+        setStep((value) => value + 1);
+        setError(null); // Clear error when navigating to the next step
+      }
+    },
+    [validateStep, getStepErrorMessage, step, handleSubmitForm]
+  );
 
   const actionLabel = useMemo(() => {
     if (step === STEPS.PRICE) {
       return "Create";
     }
-
     return "Next";
   }, [step]);
 
@@ -131,42 +180,35 @@ const RentModal = () => {
     if (step === STEPS.CATEGORY) {
       return undefined;
     }
-
     return "Back";
   }, [step]);
 
-  const CategoryContent = () => {
-    return (
+  const CategoryContent = useMemo(
+    () => (
       <div className="flex flex-col gap-8">
         <Heading
           title="Which of these best describes your place?"
           subTitle="Pick a category"
         />
-        <div
-          className="
-  grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto"
-        >
-          {categories.map((item) => {
-            return (
-              <div key={item.label} className="col-span-1">
-                <CategoryInput
-                  onClick={(category) => {
-                    setCustomValue("category", category);
-                  }}
-                  selected={category === item.label}
-                  label={item.label}
-                  icon={item.icon}
-                />
-              </div>
-            );
-          })}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
+          {categories.map((item) => (
+            <div key={item.label} className="col-span-1">
+              <CategoryInput
+                onClick={(category) => setCustomValue("category", category)}
+                selected={category === item.label}
+                label={item.label}
+                icon={item.icon}
+              />
+            </div>
+          ))}
         </div>
       </div>
-    );
-  };
+    ),
+    [categories, category, setCustomValue]
+  );
 
-  const LocationContent = () => {
-    return (
+  const LocationContent = useMemo(
+    () => (
       <div className="flex flex-col gap-8">
         <Heading
           title="Where is your place located?"
@@ -178,11 +220,12 @@ const RentModal = () => {
         />
         <Map center={location?.latlng || [26.8206, 30.8025]} />
       </div>
-    );
-  };
+    ),
+    [location, setCustomValue]
+  );
 
-  const InfoContent = () => {
-    return (
+  const InfoContent = useMemo(
+    () => (
       <div className="flex flex-col gap-8">
         <Heading
           title="Share some basics about your place"
@@ -209,42 +252,109 @@ const RentModal = () => {
           onChange={(value) => setCustomValue("bathroomCount", value)}
         />
       </div>
-    );
-  };
+    ),
+    [guestCount, roomCount, bathroomCount, setCustomValue]
+  );
 
-  const ImageContent = () => {
-    return (
+  const ImageContent = useMemo(
+    () => (
       <div className="flex flex-col gap-8">
         <Heading
           title="Add a photo of your place"
           subTitle="Show guests what your place looks like"
         />
-
         <ImageUpload
           value={imageSrc}
           onChange={(value: string) => setCustomValue("imageSrc", value)}
         />
       </div>
-    );
-  };
-  const stepComponents: StepComponents = {
-    [STEPS.CATEGORY]: <CategoryContent />,
-    [STEPS.LOCATION]: <LocationContent />,
-    [STEPS.INFO]: <InfoContent />,
-    [STEPS.IMAGES]: <ImageContent />,
-  };
+    ),
+    [imageSrc, setCustomValue]
+  );
 
-  const getStepComponent = (step: STEPS) => {
-    return stepComponents[step];
-  };
+  const DescriptionContent = () => (
+    <div className="flex flex-col gap-8">
+        <Heading
+            title="How you would describe your place?"
+            subTitle="Short and sweet works best!"
+        />
+        <Input
+            id="title"
+            label="Title"
+            disabled={isLoading}
+            register={register}
+            errors={errors}
+            required
+        />
+        <hr />
+        <Input
+            id="description"
+            label="Description"
+            disabled={isLoading}
+            register={register}
+            errors={errors}
+            required
+        />
+    </div>
+);
 
-  let bodyContent = getStepComponent(step);
+
+  const PriceContent = useMemo(
+    () => (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="Now, set your price"
+          subTitle="How much do you charge per night?"
+        />
+        <Input
+          id="price"
+          label="Price"
+          formatPrice
+          type="number"
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          required
+        />
+      </div>
+    ),
+    [isLoading, register, errors]
+  );
+
+  const stepComponents = useMemo(
+    () => ({
+      [STEPS.CATEGORY]: CategoryContent,
+      [STEPS.LOCATION]: LocationContent,
+      [STEPS.INFO]: InfoContent,
+      [STEPS.IMAGES]: ImageContent,
+      [STEPS.DESCRIPTION]: DescriptionContent(),
+      [STEPS.PRICE]: PriceContent,
+    }),
+    [
+      CategoryContent,
+      LocationContent,
+      InfoContent,
+      ImageContent,
+      DescriptionContent,
+      PriceContent,
+    ]
+  );
+
+  const getStepComponent = useCallback(
+    (step: STEPS) => {
+      return stepComponents[step];
+    },
+    [stepComponents]
+  );
+  
+
+  const bodyContent = getStepComponent(step);
 
   return (
     <Modal
       isOpen={rentModal.isOpen}
       onClose={onClose}
-      onSubmit={onNext}
+      onSubmit={handleSubmit(onNext)}
       actionLabel={actionLabel}
       secondaryActionLabel={secondaryActionLabel}
       secondaryAction={step === STEPS.CATEGORY ? undefined : onBack}
