@@ -1,31 +1,50 @@
-import Header from "../../components/layouts/Header";
-import Footer from "../../components/layouts/Footer";
-import Sidebar from "../../components/layouts/Sidebar";
-import Navbar from "../../components/layouts/Navbar/Navbar";
-import RegisterModal from "../../components/Modals/RegisterModal";
-import LoginModal from "../../components/Modals/LoginModal";
+import { useEffect, useState } from "react";
+import { getListing } from "../../apis/listing";
+import Container from "../../components/Container";
+import EmptyState from "../../components/EmptyState";
+import ListingCard from "../../components/Listings/ListingCard";
 import useUserStore from "../../store/useStore";
-import axios from "axios";
-import RentModal from "../../components/Modals/RentModal";
-axios.defaults.withCredentials = true;
 
 const Home = () => {
-  const user = useUserStore((state) => state.user);
+  const currentUser = useUserStore((state) => state.user) ?? null;
 
+  const [listings, setListings] = useState<any>([]);
+
+  useEffect(() => {
+    getListing().then((data) => {
+      setListings(data.data);
+    }).catch((error) => {
+      console.error("Error fetching listings", error);
+    });
+  } , [])
+
+  if(listings.length === 0) {
+    return <EmptyState showReset/>
+  }
   return (
-    <div>
-      <LoginModal />
-      <RentModal />
-      <RegisterModal />
-
-      <Navbar user={user} />
-      <Header />
-      <Sidebar />
-      <div>Main Content Goes Here</div>
-      <Footer />
-
-      {user && <div>Welcome, {user.username}!</div>}
-    </div>
+    <Container>
+      <div className="
+      pt-24
+      grid
+      grid-cols-1
+      sm:grid-cols-2
+      md:grid-cols-3
+      lg:grid-cols-4
+      xl:grid-cols-5
+      2xl:grid-cols-6
+      gap-8">
+        {listings.map((listing: any) => {
+          return (
+            <ListingCard 
+              key={listing._id}
+              data={listing}
+              currentUser={currentUser}
+              actionId={listing.actionId}
+            />
+          )
+        })}
+      </div>
+    </Container>
   );
 };
 
