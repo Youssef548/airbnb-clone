@@ -14,7 +14,6 @@ export async function createListing(
 ) {
   const request = req as CustomRequest;
   try {
-    console.log("createListing");
     const {
       title,
       description,
@@ -39,7 +38,22 @@ export async function createListing(
       userId: request.user.id,
     });
     await listing.save();
-    res.status(201).send(listing);
+    res.status(201).json(listing);
+  } catch (error) {
+    console.error(error);
+    return next(errorHandler(401, "something went wrong"));
+  }
+}
+
+
+export async function getListings(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const listings = await Listing.find().sort({ id: -1 }); // Sorting by id in descending order
+    res.status(200).json(listings);
   } catch (error) {
     console.error(error);
     return next(errorHandler(401, "something went wrong"));
