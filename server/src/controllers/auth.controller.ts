@@ -17,16 +17,16 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
       return res.status(401).json({ message: "User not found" });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = bcrypt.compare(password, user.password!);
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid password" });
     }
 
-    if (!process.env.JWT_KEY) {
+    if (!process.env.JWT_SECRET) {
       return res.status(500).json({ error: "Something went wrong" });
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_KEY, {
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1h", // Token expiry time
     });
 
