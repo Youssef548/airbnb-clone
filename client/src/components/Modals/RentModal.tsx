@@ -136,8 +136,8 @@ const RentModal = () => {
       setIsLoading(true);
 
       try {
-        const res = await axiosInstance.post("/listings", data);
-        if (res.status === 200) {
+        const res = await axiosInstance.post("/listings/create", data);
+        if (res.status === 200 || res.status === 201) {
           toast.success("Listing created successfully!");
           onClose();
         }
