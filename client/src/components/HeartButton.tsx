@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react";
 import { UserType } from "../types/user";
-
+import useFavorite from "../hooks/useFavorite";
 interface HeartButtonProps {
   listingId: string;
   currentUser?: UserType | null;
@@ -10,8 +10,13 @@ const HeartButton: React.FC<HeartButtonProps> = ({
   listingId,
   currentUser,
 }) => {
-  const hasFavorite = false;
-  const toggleFavorite = () => {};
+  const { hasFavorited, toggleFavorite } = useFavorite({
+    listingId,
+    currentUser,
+  });
+  
+  console.log(hasFavorited)
+
   return (
     <div
       onClick={toggleFavorite}
@@ -32,7 +37,7 @@ const HeartButton: React.FC<HeartButtonProps> = ({
         fontSize={28}
       />
       <Icon
-        className={hasFavorite ? "text-rose-500" : "text-neutral-500/70"}
+        className={hasFavorited ? "text-rose-500" : "text-neutral-500/70"}
         icon={"ant-design:heart-filled"}
         fontSize={25}
       />
