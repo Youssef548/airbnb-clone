@@ -4,5 +4,6 @@ export type UserType =   {
     email: string;
     name?: string;
     age?: number;
+    favoriteListingsIds?: string[];
   }
   
