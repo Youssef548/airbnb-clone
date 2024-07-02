@@ -7,7 +7,8 @@ dotenv.config();
 import connectDB from "./config/database";
 import authRoutes from "./routes/authRoutes";
 import listingRoutes from "./routes/listing.routes"
-import errorHandler from "./middleware/error.middleware"; 
+import favoriteRoutes from "./routes/favorite.route";
+import errorHandler from "./middleware/error.middleware";
 
 const app = express();
 
@@ -34,9 +35,9 @@ app.use(express.json());
 // Routes setup
 app.use("/api/auth/", authRoutes);
 app.use("/api/listings/", listingRoutes);
+app.use("/api/favorites/", favoriteRoutes);
 
 app.use(errorHandler);
-
 
 connectDB().then(() => {
   app.listen(PORT, () => {
