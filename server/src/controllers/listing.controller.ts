@@ -3,7 +3,7 @@ import { Listing } from "../models/listing.model";
 import { errorHandler } from "../utils/error";
 interface CustomRequest extends Request {
   user: {
-    id: string;
+    userId: string;
   };
 }
 
@@ -35,7 +35,7 @@ export async function createListing(
       guestCount,
       location: location.value,
       price,
-      userId: request.user.id,
+      userId: request.user.userId,
     });
     await listing.save();
     res.status(201).json(listing);
@@ -44,7 +44,6 @@ export async function createListing(
     return next(errorHandler(401, "something went wrong"));
   }
 }
-
 
 export async function getListings(
   req: Request,
