@@ -29,15 +29,15 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
     const token = jwt.sign({ userId: user._id, favoriteListingsIds: user.favoriteListingsIds }, process.env.JWT_SECRET, {
       expiresIn: "1h", // Token expiry time
     });
+    const { _id, ...userData } = user.toObject();
+    const userObject = { ...userData, id: _id.toString() }; // Ensure _id is converted to string if needed
+    delete userObject.password;
 
     return res.status(200).json({
       message: "Login successful",
       token,
       currentUser: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        image: user.image,
+        ...userObject
       },
     });
   } catch (error) {
