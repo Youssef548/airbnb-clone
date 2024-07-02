@@ -26,7 +26,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
       return res.status(500).json({ error: "Something went wrong" });
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ userId: user._id, favoriteListingsIds: user.favoriteListingsIds }, process.env.JWT_SECRET, {
       expiresIn: "1h", // Token expiry time
     });
 

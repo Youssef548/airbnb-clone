@@ -6,6 +6,7 @@ import mongoose from "mongoose";
   emailVerified: {type: Date},
   image: {type: String},
   password: String,
+  favoriteListingsIds: [{ type: mongoose.Schema.Types.ObjectId, ref: "Listing" }],
   listings: [{ type: mongoose.Schema.Types.ObjectId, ref: "Listing" }],
   bookings: [{ type: mongoose.Schema.Types.ObjectId, ref: "Booking" }],
   reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
