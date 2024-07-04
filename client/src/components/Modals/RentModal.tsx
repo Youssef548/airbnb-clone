@@ -48,7 +48,7 @@ const RentModal = () => {
       location: null,
       guestCount: 1,
       roomCount: 1,
-      bathroomCount: 1,
+      bathRoomCount: 1,
       imageSrc: "",
       price: 1,
       title: "",
@@ -67,7 +67,7 @@ const RentModal = () => {
   const location = watch("location");
   const guestCount = watch("guestCount");
   const roomCount = watch("roomCount");
-  const bathroomCount = watch("bathroomCount");
+  const bathRoomCount = watch("bathRoomCount");
   const imageSrc = watch("imageSrc");
   const price = watch("price");
   const title = watch("title");
@@ -89,7 +89,7 @@ const RentModal = () => {
     () => ({
       [STEPS.CATEGORY]: () => !!category,
       [STEPS.LOCATION]: () => !!location,
-      [STEPS.INFO]: () => guestCount > 0 && roomCount > 0 && bathroomCount > 0,
+      [STEPS.INFO]: () => guestCount > 0 && roomCount > 0 && bathRoomCount > 0,
       [STEPS.IMAGES]: () => !!imageSrc,
       [STEPS.DESCRIPTION]: () => title.length > 0 && description.length > 0,
       [STEPS.PRICE]: () => price > 0,
@@ -99,7 +99,7 @@ const RentModal = () => {
       location,
       guestCount,
       roomCount,
-      bathroomCount,
+      bathRoomCount,
       imageSrc,
       title,
       description,
@@ -248,12 +248,12 @@ const RentModal = () => {
         <Counter
           title="Bathrooms"
           subtitle="How many Bathrooms do you have?"
-          value={bathroomCount}
-          onChange={(value) => setCustomValue("bathroomCount", value)}
+          value={bathRoomCount}
+          onChange={(value) => setCustomValue("bathRoomCount", value)}
         />
       </div>
     ),
-    [guestCount, roomCount, bathroomCount, setCustomValue]
+    [guestCount, roomCount, bathRoomCount, setCustomValue]
   );
 
   const ImageContent = useMemo(
