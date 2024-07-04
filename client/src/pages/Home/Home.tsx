@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getListing } from "../../apis/listing";
+import { getListing } from "../../apis/Listing/listing";
 import Container from "../../components/Container";
 import EmptyState from "../../components/EmptyState";
 import ListingCard from "../../components/Listings/ListingCard";
