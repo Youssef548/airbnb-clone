@@ -4,14 +4,19 @@ import ToasterProvider from "./providers/ToasterProvider";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import Layout from "./components/Layout";
+import ListingPage from "./pages/Listings/Listing";
 const routes = [
   {
     path: '/',
     element: <Layout  />,
     children: [
       {
-        index: true, // This denotes the default child route
+        index: true,
         element: <Home />,
+      },
+      {
+        path: "/listing/:listingId",
+        element: <ListingPage />,
       },
       {
         path: "/*",
