@@ -1,3 +1,5 @@
+import { UserType } from "./user";
+
 export type ListingType = {
     _id: string;
     title: string;
@@ -9,7 +11,7 @@ export type ListingType = {
     guestCount: number;
     price: number;
     location: string;
-    userId: string; // Assuming userId is represented as a string in client-side code
-    reviews: string[]; // Array of review IDs represented as strings
+    user: UserType; 
+    reviews: string[]; 
     bookings: string[]; 
 }
