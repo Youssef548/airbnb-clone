@@ -137,7 +137,7 @@ const RegisterModal = () => {
     setIsLoading(true);
 
     axios
-      .post(`${BASEURL}/register`, data)
+      .post(`${BASEURL}/auth/register`, data)
       .then(() => {
         registerModal.onClose();
       })
