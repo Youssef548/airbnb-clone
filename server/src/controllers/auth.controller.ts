@@ -7,7 +7,11 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 
-export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
+export const loginUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     // Get the email and password from the request body
     const { email, password } = req.body;
@@ -26,9 +30,13 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
       return res.status(500).json({ error: "Something went wrong" });
     }
 
-    const token = jwt.sign({ userId: user._id, favoriteListingsIds: user.favoriteListingsIds }, process.env.JWT_SECRET, {
-      expiresIn: "1h", // Token expiry time
-    });
+    const token = jwt.sign(
+      { userId: user._id, favoriteListingsIds: user.favoriteListingsIds },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h", // Token expiry time
+      }
+    );
     const { _id, ...userData } = user.toObject();
     const userObject = { ...userData, id: _id.toString() }; // Ensure _id is converted to string if needed
     delete userObject.password;
@@ -37,7 +45,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
       message: "Login successful",
       token,
       currentUser: {
-        ...userObject
+        ...userObject,
       },
     });
   } catch (error) {
@@ -53,7 +61,7 @@ export const createUser = async (
 ) => {
   try {
     const { email, password, username } = req.body;
-    
+
     const isExist = await User.findOne({ email: email });
 
     if (isExist) {
@@ -66,6 +74,7 @@ export const createUser = async (
       email,
       password: hashedPassword,
       username,
+      image: null,
     });
 
     await user.save();
