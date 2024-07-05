@@ -9,7 +9,7 @@ import ListingInfo from "../../components/Listings/ListingInfo";
 import useLoginModal from "../../hooks/useLoginModal";
 import { useNavigate } from "react-router-dom";
 import { differenceInCalendarDays, eachDayOfInterval } from "date-fns";
-import { createReservation } from "../../apis/Listing/listing";
+import { createReservation } from "../../apis/Reservations/reservation";
 import toast from "react-hot-toast";
 import ListingReservation from "../../components/Listings/ListingReservation";
 import { Range } from "react-date-range";
