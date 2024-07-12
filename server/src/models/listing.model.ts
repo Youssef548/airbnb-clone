@@ -11,15 +11,15 @@ export interface IListing extends Document {
   guestCount?: number;
   price?: number;
   location?: string;
-  user: mongoose.Schema.Types.ObjectId;
-  reviews?: mongoose.Schema.Types.ObjectId[];
-  bookings?: mongoose.Schema.Types.ObjectId[];
+  user: mongoose.Types.ObjectId;
+  reviews?: mongoose.Types.ObjectId[];
+  bookings?: mongoose.Types.ObjectId[];
   createdAt?: Date;
   updatedAt?: Date;
 }
 
 // Define the schema for the listing
-const ListingSchema: Schema<IListing> = new mongoose.Schema(
+const ListingSchema = new mongoose.Schema(
   {
     title: { type: String },
     description: { type: String },
@@ -30,9 +30,9 @@ const ListingSchema: Schema<IListing> = new mongoose.Schema(
     guestCount: { type: Number },
     price: { type: Number },
     location: { type: String },
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
-    bookings: [{ type: mongoose.Schema.Types.ObjectId, ref: "Booking" }],
+    user: { type: mongoose.Types.ObjectId, ref: "User", required: true },
+    reviews: [{ type: mongoose.Types.ObjectId, ref: "Review" }],
+    bookings: [{ type: mongoose.Types.ObjectId, ref: "Booking" }],
   },
   {
     timestamps: true, // This automatically adds createdAt and updatedAt
