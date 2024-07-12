@@ -1,4 +1,4 @@
-import { useCallback,  useState } from "react";
+import { useCallback, useState } from "react";
 import Avatar from "../../Avatar";
 import MenuItem from "./MenuItem";
 import useRegisterModal from "../../../hooks/useRegisterModal";
@@ -7,19 +7,17 @@ import { UserType } from "../../../types/user";
 import { removeAuthToken } from "../../../utils/authUtils";
 import useUserStore from "../../../store/useStore";
 import useRentModal from "../../../hooks/useRentModal";
+import { useNavigate } from "react-router-dom";
 
 interface UserMenuProps {
   user: UserType | null | undefined;
 }
 
-
-
-
 const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
-  
   const userStore = useUserStore(); // Access the store
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
+  const navigate = useNavigate();
 
   const rentModal = useRentModal();
   const [isOpen, setIsOpen] = useState(false);
@@ -28,18 +26,15 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
     setIsOpen((value) => !value);
   }, []);
 
-
   const onRent = useCallback(() => {
-    if(!user) {
+    if (!user) {
       return loginModal.onOpen();
     }
-
 
     // open Rent modal
 
     rentModal.onOpen();
-  } , [user , loginModal])
-
+  }, [user, loginModal]);
 
   return (
     <div className="relative">
@@ -108,7 +103,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
           <div className="flex flex-col cursor-pointer">
             {user ? (
               <>
-                <MenuItem onClick={() => {}} label="My trips" />
+                <MenuItem onClick={() => navigate("/trips")} label="My trips" />
                 <MenuItem onClick={() => {}} label="My favourites" />
                 <MenuItem onClick={() => {}} label="My Reservations" />
                 <MenuItem onClick={rentModal.onOpen} label="Airbnb my home" />
@@ -116,7 +111,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
                 <MenuItem
                   onClick={() => {
                     removeAuthToken();
-                    userStore.setUser(null)
+                    userStore.setUser(null);
                   }}
                   label="Logout"
                 />
