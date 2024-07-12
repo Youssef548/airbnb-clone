@@ -9,6 +9,12 @@ interface CustomRequest extends Request {
   };
 }
 
+interface WhereObject {
+  listingId?: string;
+  guest?: string;
+  authorId?: string;
+}
+
 export async function createBooking(
   req: Request,
   res: Response,
@@ -17,6 +23,9 @@ export async function createBooking(
   try {
     const cusReq = req as CustomRequest;
     const { totalPrice, startDate, endDate, listingId } = req.body;
+
+    const listing = await Listing.findById(listingId);
+    if (!listing) return next(errorHandler(404, "sorry list not found!"));
 
     const existingBooking = await Booking.findOne({
       listingId: listingId,
@@ -41,17 +50,18 @@ export async function createBooking(
       ],
     });
 
-    console.log(existingBooking);
     if (existingBooking) {
       return next(
         errorHandler(400, "Requested dates are not available for booking.")
       );
     }
+    const authorId = listing.user;
     const booking = new Booking({
       totalPrice,
       startDate,
       endDate,
       guest: cusReq.user.userId,
+      authorId,
       listingId,
     });
 
@@ -67,5 +77,47 @@ export async function createBooking(
   } catch (error) {
     console.error(error);
     next(errorHandler(500, "Failed to create booking"));
+  }
+}
+
+export async function getBookings(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { listingId, userId, authorId } = req.params;
+    let whereObject: WhereObject = {};
+
+    if (listingId) whereObject.listingId = listingId;
+    if (userId) whereObject.guest = userId;
+    if (authorId) whereObject.authorId = authorId;
+
+    const booksReservation = await Booking.find({ ...whereObject })
+      .populate("listingId")
+      .sort({ createdAt: -1 })
+      .exec();
+
+    console.log(booksReservation[0]);
+    const booksSaveReservations = booksReservation.map((reservation) => ({
+      ...reservation.toObject(),
+      createdAt: reservation.createdAt.toISOString(),
+      updatedAt: reservation.updatedAt.toISOString(),
+      endDate: reservation.endDate?.toDateString(),
+      listingId: null,
+      listing: reservation.listingId
+        ? {
+            ...reservation.listingId.toObject(),
+            createdAt: reservation?.listingId
+              .toObject()
+              ?.createdAt?.toISOString(),
+          }
+        : undefined,
+    }));
+
+    return res.status(200).json(booksSaveReservations);
+  } catch (error) {
+    console.error(error);
+    next(errorHandler(500, "Something went wrong!"));
   }
 }
