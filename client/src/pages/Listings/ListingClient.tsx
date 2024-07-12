@@ -1,4 +1,4 @@
-import { ReservationType } from "../../types/Reservation";
+import { ReservationSafeType } from "../../types/Reservation";
 import { ListingType } from "../../types/Listing";
 import { UserType } from "../../types/user";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -21,7 +21,7 @@ const initialDateRange = {
 };
 
 interface ListingClientProps {
-  reservations?: ReservationType[];
+  reservations?: ReservationSafeType[];
   listing: ListingType & {
     user: UserType;
   };
@@ -37,7 +37,6 @@ const ListingClient = ({
   }, [listing.category]);
 
   const loginMOdal = useLoginModal();
-  const navigate = useNavigate();
 
   const disabledDates = useMemo(() => {
     let dates: Date[] = [];
@@ -74,8 +73,6 @@ const ListingClient = ({
       .then(() => {
         toast.success("Listing reserved!");
         setDateRange(initialDateRange);
-        // redirect to /trips
-        navigate(`/listing/${listing._id}`, { replace: true });
       })
       .catch(() => {
         toast.error("Something went wrong");

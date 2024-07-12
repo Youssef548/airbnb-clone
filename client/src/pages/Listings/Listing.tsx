@@ -7,15 +7,20 @@ import EmptyState from "../../components/EmptyState";
 import useUserStore from "../../store/useStore";
 import ListingClient from "./ListingClient";
 import { UserType } from "../../types/user";
-
-
+import { ReservationSafeType } from "../../types/Reservation";
+import { getReservation } from "../../apis/Reservations/reservation";
 
 const ListingPage = () => {
-    const user = useUserStore((state) => state.user);
+  const user = useUserStore((state) => state.user);
 
   const { listingId = "" } = useParams<string>();
 
-  const [listingData, setListingData] = useState<null | ListingType & { user: UserType }>(null);
+  const [listingData, setListingData] = useState<
+    null | (ListingType & { user: UserType })
+  >(null);
+
+  const [reservations, setReservations] = useState<ReservationSafeType[]>();
+
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -31,21 +36,36 @@ const ListingPage = () => {
       .finally(() => setIsLoading(false));
   }, []);
 
+  useEffect(() => {
+    setIsLoading(true);
+    getReservation({ listingId })
+      .then((res) => {
+        if (res.status === 200) {
+          setReservations(res.data);
+        } else if (res.status === 404) {
+          console.log("Reservation not found");
+        }
+      })
+      .finally(() => setIsLoading(false));
+  }, []);
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  if(!listingData) {
-    return <EmptyState showReset/>
+  if (!listingData) {
+    return <EmptyState showReset />;
   }
 
-  return <div>
-    
-    <ListingClient 
+  return (
+    <div>
+      <ListingClient
         listing={listingData}
         currentUser={user}
-    />
-  </div>;
+        reservations={reservations}
+      />
+    </div>
+  );
 };
 
 export default ListingPage;
