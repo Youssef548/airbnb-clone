@@ -19,8 +19,6 @@ function Layout() {
           <Navbar user={user} />
           <Outlet />
         </Suspense>
-
-        {user && <div>Welcome, {user.username}!</div>}
       </div>
     </>
   );
