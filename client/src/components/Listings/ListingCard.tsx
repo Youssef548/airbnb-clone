@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import useCountries from "../../hooks/useCountries";
 import { ListingType } from "../../types/Listing";
-import { ReservationType } from "../../types/Reservation";
+import { ReservationSafeType, ReservationType } from "../../types/Reservation";
 import { UserType } from "../../types/user";
 
 import { useNavigate } from "react-router-dom";
@@ -13,8 +13,8 @@ import Button from "../Buttons";
 
 interface ListingProps {
   data: ListingType;
-  currentUser: UserType | null;
-  reservation?: ReservationType;
+  currentUser: UserType | null | undefined;
+  reservation?: ReservationType | ReservationSafeType;
   onAction?: (id: string) => void;
   actionLabel?: string;
   disabled?: boolean;
@@ -58,8 +58,8 @@ const ListingCard: React.FC<ListingProps> = ({
   const reservationDate = useMemo(() => {
     if (!reservation) return null;
 
-    const checkInDate = new Date(reservation.checkInDate);
-    const checkOutDate = new Date(reservation.checkOutDate);
+    const checkInDate = new Date(reservation.startDate);
+    const checkOutDate = new Date(reservation.endDate);
 
     return `${format(checkInDate, "PP")} ${format(checkOutDate, "PP")}`;
   }, [reservation]);
@@ -96,26 +96,22 @@ const ListingCard: React.FC<ListingProps> = ({
         </div>
 
         <div className="font-semibold text-lg">
-            {location?.region}, {location?.label}
+          {location?.region}, {location?.label}
         </div>
         <div className="font-light text-neutral-500">
-            {reservationDate || data.category}
+          {reservationDate || data.category}
         </div>
         <div className="flex flex-row items-center gap-1">
-            <div className="font-semibold">
-                $ {price}
-            </div>
-            {!reservation && (
-                <div className="font-light">night</div>
-            )}
+          <div className="font-semibold">$ {price}</div>
+          {!reservation && <div className="font-light">night</div>}
         </div>
         {onAction && actionLabel && (
-            <Button 
+          <Button
             disabled={disabled}
             small
             label={actionLabel}
             onClick={handleCancel}
-            />
+          />
         )}
       </div>
     </div>
