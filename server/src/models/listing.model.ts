@@ -36,6 +36,8 @@ const ListingSchema = new mongoose.Schema(
   },
   {
     timestamps: true, // This automatically adds createdAt and updatedAt
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
   }
 );
 
