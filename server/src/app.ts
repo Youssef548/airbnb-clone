@@ -6,20 +6,28 @@ dotenv.config();
 
 import connectDB from "./config/database";
 import authRoutes from "./routes/authRoutes";
-import listingRoutes from "./routes/listing.routes"
+import listingRoutes from "./routes/listing.route";
 import favoriteRoutes from "./routes/favorite.route";
+import bookingRoutes from "./routes/booking.route";
 import errorHandler from "./middleware/error.middleware";
 
 const app = express();
 
 app.use(
   cors({
-    origin: (origin: string | undefined, callback: (arg0: Error | null, arg1: boolean | undefined) => void) => {
+    origin: (
+      origin: string | undefined,
+      callback: (arg0: Error | null, arg1: boolean | undefined) => void
+    ) => {
       // Check if the origin is in the allowedOrigins array
-      if (!origin || (process.env.ALLOWED_ORIGINS && process.env.ALLOWED_ORIGINS.includes(origin))) {
-        callback(null, true); 
+      if (
+        !origin ||
+        (process.env.ALLOWED_ORIGINS &&
+          process.env.ALLOWED_ORIGINS.includes(origin))
+      ) {
+        callback(null, true);
       } else {
-        callback(new Error("Not allowed by CORS"), false); 
+        callback(new Error("Not allowed by CORS"), false);
       }
     },
     credentials: true,
@@ -28,7 +36,6 @@ app.use(
 
 const PORT = process.env.PORT || 3000;
 
-
 // Middleware setup
 app.use(express.json());
 
@@ -36,6 +43,7 @@ app.use(express.json());
 app.use("/api/auth/", authRoutes);
 app.use("/api/listings/", listingRoutes);
 app.use("/api/favorites/", favoriteRoutes);
+app.use("/api/booking/", bookingRoutes);
 
 app.use(errorHandler);
 

@@ -1,0 +1,21 @@
+import mongoose from "mongoose";
+
+export interface IBooking extends Document {
+  startDate?: Date;
+  endDate?: Date;
+  guest?: mongoose.Schema.Types.ObjectId;
+  listing?: mongoose.Schema.Types.ObjectId;
+  totalPrice: Number;
+}
+
+const BookingSchema = new mongoose.Schema({
+  _id: { type: mongoose.Schema.Types.ObjectId },
+  startDate: Date,
+  endDate: Date,
+  guest: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  totalPrice: Number,
+});
+
+const BookingModel = mongoose.model<IBooking>("Booking", BookingSchema);
+
+export { BookingModel as Booking };
