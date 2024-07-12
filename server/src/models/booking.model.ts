@@ -11,7 +11,8 @@ export interface IBooking extends Document {
 const BookingSchema = new mongoose.Schema({
   startDate: Date,
   endDate: Date,
-  guest: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  guest: { type: mongoose.Types.ObjectId, ref: "User" },
+  listingId: { type: mongoose.Types.ObjectId, ref: "Listing" },
   totalPrice: Number,
 });
 
