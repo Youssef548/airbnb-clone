@@ -26,11 +26,16 @@ export async function createBooking(
     });
 
     const savedBooking = await booking.save();
-    const listing = await Listing.findById(listingId);
-    listing?.bookings?.push(savedBooking._id);
-    await booking.save();
+
+    // Use findByIdAndUpdate with $push operator to add the booking's ID to the listing's bookings array
+    await Listing.findByIdAndUpdate(listingId, {
+      $push: { bookings: savedBooking._id },
+    });
+
+    // No need to load and save the listing separately
     res.status(201).json(booking);
   } catch (error) {
+    console.error(error);
     next(errorHandler(500, "Failed to create booking"));
   }
 }
