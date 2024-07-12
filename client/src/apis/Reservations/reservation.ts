@@ -10,3 +10,7 @@ export function getReservation(params: ReservationsGetType) {
     params: { ...params },
   });
 }
+
+export function deleteReservation(id: string) {
+  return axiosInstance.delete(`/booking/cancel/${id}`);
+}

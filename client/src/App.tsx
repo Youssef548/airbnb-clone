@@ -5,10 +5,11 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import Layout from "./components/Layout";
 import ListingPage from "./pages/Listings/Listing";
+import TripsPage from "./pages/Trips/TripsPage";
 const routes = [
   {
-    path: '/',
-    element: <Layout  />,
+    path: "/",
+    element: <Layout />,
     children: [
       {
         index: true,
@@ -19,12 +20,16 @@ const routes = [
         element: <ListingPage />,
       },
       {
+        path: "/trips",
+        element: <TripsPage />,
+      },
+      {
         path: "/*",
         element: <NotFound />,
       },
     ],
-  }
-]
+  },
+];
 
 const App = () => {
   return (
