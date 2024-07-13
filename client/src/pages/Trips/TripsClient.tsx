@@ -19,7 +19,6 @@ const TripsClient: React.FC<TripsClieentProps> = ({
 }) => {
   console.log(reservations);
 
-  const navigate = useNavigate();
   const [deleteId, setDeletingId] = useState<string>("");
 
   const [isLoading, setIsLoading] = useState(true);
@@ -71,19 +70,13 @@ const TripsClient: React.FC<TripsClieentProps> = ({
               data={reservation.listing}
               reservation={reservation}
               actionId={reservation._id}
-              onAction={() => {}}
+              onAction={onCancel}
               disabled={deleteId === reservation._id}
               actionLabel="Cancel reservation"
               currentUser={currentUser}
             />
           );
         })}
-        {/* {reservations.map(
-          (reservation) => {
-            console.log(reservation);
-          }
-       
-        )} */}
       </div>
     </Container>
   );

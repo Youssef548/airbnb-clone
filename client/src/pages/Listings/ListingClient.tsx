@@ -56,6 +56,7 @@ const ListingClient = ({
   const [isLoading, setIsLoading] = useState(false);
   const [totalPrice, setTotalPrice] = useState(listing.price);
   const [dateRange, setDateRange] = useState<Range>(initialDateRange);
+  const navigate = useNavigate();
 
   const onCreateReservation = useCallback(() => {
     if (!currentUser) {
@@ -73,6 +74,7 @@ const ListingClient = ({
       .then(() => {
         toast.success("Listing reserved!");
         setDateRange(initialDateRange);
+        navigate("/trips");
       })
       .catch(() => {
         toast.error("Something went wrong");
