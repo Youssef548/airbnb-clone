@@ -7,6 +7,7 @@ import Layout from "./components/Layout";
 import ListingPage from "./pages/Listings/Listing";
 import TripsPage from "./pages/Trips/TripsPage";
 import ReservationsPage from "./pages/Reservations/Reservations";
+import FavoritesPage from "./pages/Favorites/Favorites";
 const routes = [
   {
     path: "/",
@@ -25,6 +26,7 @@ const routes = [
         element: <TripsPage />,
       },
       { path: "/reservations", element: <ReservationsPage /> },
+      { path: "/favorites", element: <FavoritesPage /> },
       {
         path: "/*",
         element: <NotFound />,
