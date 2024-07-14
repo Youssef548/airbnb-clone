@@ -104,7 +104,10 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
             {user ? (
               <>
                 <MenuItem onClick={() => navigate("/trips")} label="My trips" />
-                <MenuItem onClick={() => {}} label="My favourites" />
+                <MenuItem
+                  onClick={() => navigate("/favorites")}
+                  label="My favourites"
+                />
                 <MenuItem
                   onClick={() => navigate("/reservations")}
                   label="My Reservations"
