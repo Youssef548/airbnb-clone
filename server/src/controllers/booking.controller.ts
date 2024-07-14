@@ -98,7 +98,6 @@ export async function getBookings(
       .sort({ createdAt: -1 })
       .exec();
 
-    console.log(booksReservation[0]);
     const booksSaveReservations = booksReservation.map((reservation) => ({
       ...reservation.toObject(),
       createdAt: reservation.createdAt.toISOString(),
