@@ -114,3 +114,30 @@ export async function deleteFavorite(
     next(errorHandler(500, "Internal server error"));
   }
 }
+
+export async function getFavoriteListings(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const request = req as CustomRequest;
+    const user = await User.findOne({ _id: request.user.userId });
+    if (!user) return next(errorHandler(500, "something went wrong"));
+    const favoriteListingIds = user.favoriteListingsIds;
+    console.log(favoriteListingIds);
+    const favorites = await Listing.find({
+      _id: { $in: [...(favoriteListingIds || [])] },
+    });
+
+    const safeFavorites = favorites.map((favorite) => ({
+      ...favorite.toObject(),
+      createdAt: favorite.createdAt?.toDateString(),
+    }));
+
+    res.status(200).json(safeFavorites);
+  } catch (err) {
+    console.error(err);
+    next(errorHandler(500, "Internal server error"));
+  }
+}
