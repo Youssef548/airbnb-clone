@@ -46,7 +46,11 @@ const TripsPage = () => {
 
   return (
     <div>
-      <TripsClient reservations={reservations} currentUser={user} />
+      <TripsClient
+        reservations={reservations}
+        currentUser={user}
+        setReservations={setReservations}
+      />
     </div>
   );
 };

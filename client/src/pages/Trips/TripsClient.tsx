@@ -3,22 +3,25 @@ import Container from "../../components/Container";
 import Heading from "../../components/Heading";
 import { ReservationSafeType } from "../../types/Reservation";
 import { UserType } from "../../types/user";
-import { useCallback, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import toast from "react-hot-toast";
-import { deleteReservation } from "../../apis/Reservations/reservation";
+import {
+  deleteReservation,
+  getReservation,
+} from "../../apis/Reservations/reservation";
 import ListingCard from "../../components/Listings/ListingCard";
 
 interface TripsClieentProps {
   reservations: ReservationSafeType[];
+  setReservations: Dispatch<SetStateAction<ReservationSafeType[]>>;
   currentUser?: UserType | null | undefined;
 }
 
 const TripsClient: React.FC<TripsClieentProps> = ({
   reservations = [],
   currentUser,
+  setReservations,
 }) => {
-  console.log(reservations);
-
   const [deleteId, setDeletingId] = useState<string>("");
 
   const [isLoading, setIsLoading] = useState(true);
@@ -31,6 +34,13 @@ const TripsClient: React.FC<TripsClieentProps> = ({
         setIsLoading(true);
         if (res.status === 204) {
           toast.success("Reservation canceled");
+          getReservation({ userId: currentUser?._id }).then((res) => {
+            if (res.status == 200) {
+              setReservations(res.data);
+            } else {
+              console.log("SOMETHING WENT WRONG");
+            }
+          });
         } else {
           toast.error(res?.data?.error);
         }
