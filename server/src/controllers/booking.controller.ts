@@ -121,3 +121,33 @@ export async function getBookings(
     next(errorHandler(500, "Something went wrong!"));
   }
 }
+
+export async function cancelBooking(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const cusReq = req as CustomRequest;
+    const { bookingId } = req.params;
+
+    if (!bookingId)
+      return next(errorHandler(400, "reservation id not provided"));
+    const booking = await Booking.deleteMany({
+      _id: bookingId,
+      $or: [
+        { guest: cusReq.user.userId },
+        { listing: { user: cusReq.user.userId } },
+      ],
+    });
+
+    if (!booking.deletedCount) {
+      return next(errorHandler(404, "Booking not found"));
+    }
+
+    res.status(204).json("reservation successfully canceled");
+  } catch (err) {
+    console.error(err);
+    next(errorHandler(500, "something went wrong!"));
+  }
+}

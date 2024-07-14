@@ -6,3 +6,7 @@ export const createBookSchema = z.object({
   endDate: z.string(),
   listingId: z.string(),
 });
+
+export const cancelBookSchema = z.object({
+  bookingId: z.string(),
+});
