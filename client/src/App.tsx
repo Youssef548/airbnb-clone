@@ -8,6 +8,7 @@ import ListingPage from "./pages/Listings/Listing";
 import TripsPage from "./pages/Trips/TripsPage";
 import ReservationsPage from "./pages/Reservations/Reservations";
 import FavoritesPage from "./pages/Favorites/Favorites";
+import PropertiesPage from "./pages/Properties/PropertiesPage";
 const routes = [
   {
     path: "/",
@@ -25,6 +26,7 @@ const routes = [
         path: "/trips",
         element: <TripsPage />,
       },
+      { path: "/properties", element: <PropertiesPage /> },
       { path: "/reservations", element: <ReservationsPage /> },
       { path: "/favorites", element: <FavoritesPage /> },
       {

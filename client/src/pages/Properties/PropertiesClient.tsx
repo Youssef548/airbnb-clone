@@ -1,0 +1,90 @@
+import Container from "../../components/Container";
+import Heading from "../../components/Heading";
+import { ReservationSafeType } from "../../types/Reservation";
+import { UserType } from "../../types/user";
+import { Dispatch, SetStateAction, useCallback, useState } from "react";
+import toast from "react-hot-toast";
+import { getReservation } from "../../apis/Reservations/reservation";
+import ListingCard from "../../components/Listings/ListingCard";
+import { safeListingType } from "../../types/Listing";
+import { deleteListing, getListing } from "../../apis/Listing/listing";
+
+interface TripsClieentProps {
+  listings: safeListingType[];
+  setListings: Dispatch<SetStateAction<safeListingType[]>>;
+  currentUser?: UserType | null | undefined;
+}
+
+const PropertiesClient: React.FC<TripsClieentProps> = ({
+  listings = [],
+  currentUser,
+  setListings,
+}) => {
+  const [deleteId, setDeletingId] = useState<string>("");
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  const onCancel = useCallback((id: string) => {
+    setDeletingId(id);
+
+    deleteListing(id)
+      .then((res) => {
+        setIsLoading(true);
+        if (res.status === 204) {
+          toast.success("Listing deleted");
+          getListing({ userId: currentUser?._id }).then((res) => {
+            if (res.status == 200) {
+              setListings(res.data);
+              toast.success("property succuessfully deleted");
+            } else {
+              toast.error(res?.data?.error);
+            }
+          });
+        } else {
+          toast.error(res?.data?.error);
+        }
+      })
+      .catch((err) => {
+        toast.error(err?.response?.data?.error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+        setDeletingId("");
+      });
+  }, []);
+
+  return (
+    <Container>
+      <Heading title="Properties" subTitle="List of your properties" />
+      <div
+        className="
+      mt-10
+      grid
+      grid-cols-1
+      sm:grid-cols-2
+      md:grid-cols-3
+      lg:grid-cols-4
+      xl:grid-cols-5
+      2xl:grid-cols-6
+      gap-8
+      "
+      >
+        {listings.map((listing) => {
+          return (
+            <ListingCard
+              key={listing._id}
+              data={listing}
+              actionId={listing._id}
+              onAction={onCancel}
+              disabled={deleteId === listing._id}
+              actionLabel="Delete Property"
+              currentUser={currentUser}
+            />
+          );
+        })}
+      </div>
+    </Container>
+  );
+};
+
+export default PropertiesClient;

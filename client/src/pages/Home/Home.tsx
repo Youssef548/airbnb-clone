@@ -11,7 +11,7 @@ const Home = () => {
   const [listings, setListings] = useState<any>([]);
 
   useEffect(() => {
-    getListing()
+    getListing({})
       .then((data) => {
         setListings(data.data);
       })
