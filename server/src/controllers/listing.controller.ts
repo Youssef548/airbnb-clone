@@ -52,6 +52,12 @@ export async function getListings(
   next: NextFunction
 ) {
   try {
+    const { userId } = req.params;
+
+    if (userId) {
+      const listings = await Listing.find({ user: userId }).sort({ id: -1 });
+      return res.status(200).json(listings);
+    }
     const listings = await Listing.find().sort({ id: -1 }); // Sorting by id in descending order
     res.status(200).json(listings);
   } catch (error) {
@@ -90,4 +96,26 @@ export async function getListingById(
       },
     });
   } catch (err) {}
+}
+
+export async function deleteListing(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { listingId } = req.params;
+    const request = req as CustomRequest;
+    if (!listingId) {
+      return next(errorHandler(400, "Missing listing id"));
+    }
+    await Listing.deleteMany({
+      _id: listingId,
+      user: request.user.userId,
+    });
+    res.status(204).json();
+  } catch (err) {
+    console.error(err);
+    return next(errorHandler(500, "something went wrong"));
+  }
 }
