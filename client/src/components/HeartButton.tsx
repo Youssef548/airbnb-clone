@@ -14,8 +14,6 @@ const HeartButton: React.FC<HeartButtonProps> = ({
     listingId,
     currentUser,
   });
-  
-  console.log(hasFavorited)
 
   return (
     <div
