@@ -112,6 +112,10 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
                   onClick={() => navigate("/reservations")}
                   label="My Reservations"
                 />
+                <MenuItem
+                  onClick={() => navigate("/properties")}
+                  label="My Properties"
+                />
                 <MenuItem onClick={rentModal.onOpen} label="Airbnb my home" />
                 <hr />
                 <MenuItem
