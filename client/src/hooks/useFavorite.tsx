@@ -2,9 +2,9 @@ import { useNavigate } from "react-router-dom";
 import { UserType } from "../types/user";
 import useLoginModal from "./useLoginModal";
 import { useCallback, useMemo } from "react";
-import { axiosInstance } from "../providers/AxiosInstance";
 import toast from "react-hot-toast";
 import useUserStore from "../store/useStore";
+import { addFavorite, deleteFavorite } from "../apis/Favorites/favorite";
 
 interface IUseFavroite {
   listingId: string;
@@ -37,9 +37,9 @@ const useFavorite = ({ listingId, currentUser }: IUseFavroite) => {
         let request;
 
         if (hasFavorited) {
-          request = () => axiosInstance.delete(`/favorites/${listingId}`);
+          request = () => deleteFavorite(listingId);
         } else {
-          request = () => axiosInstance.post(`/favorites/${listingId}`);
+          request = () => addFavorite(listingId);
         }
 
         const response = await request();
