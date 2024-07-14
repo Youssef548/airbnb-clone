@@ -1,4 +1,3 @@
-
 interface containerProps {
   children: React.ReactNode;
 }
@@ -13,6 +12,7 @@ const Container: React.FC<containerProps> = ({ children }) => {
   md:px-10
   sm:px-2
   px-4
+  py-4
   "
     >
       {children}

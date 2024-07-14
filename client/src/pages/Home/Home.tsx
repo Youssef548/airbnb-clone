@@ -11,20 +11,23 @@ const Home = () => {
   const [listings, setListings] = useState<any>([]);
 
   useEffect(() => {
-    getListing().then((data) => {
-      setListings(data.data);
-    }).catch((error) => {
-      console.error("Error fetching listings", error);
-    });
-  } , [])
+    getListing()
+      .then((data) => {
+        setListings(data.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching listings", error);
+      });
+  }, []);
 
-  if(listings.length === 0) {
-    return <EmptyState showReset/>
+  if (listings.length === 0) {
+    return <EmptyState showReset />;
   }
   return (
     <Container>
-      <div className="
-      pt-24
+      <div
+        className="
+      mt-10
       grid
       grid-cols-1
       sm:grid-cols-2
@@ -32,16 +35,17 @@ const Home = () => {
       lg:grid-cols-4
       xl:grid-cols-5
       2xl:grid-cols-6
-      gap-8">
+      gap-8"
+      >
         {listings.map((listing: any) => {
           return (
-            <ListingCard 
+            <ListingCard
               key={listing._id}
               data={listing}
               currentUser={currentUser}
               actionId={listing.actionId}
             />
-          )
+          );
         })}
       </div>
     </Container>
