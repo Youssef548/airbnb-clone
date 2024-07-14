@@ -6,3 +6,7 @@ export function addFavorite(listingId: string) {
 export function deleteFavorite(listingId: string) {
   return axiosInstance.delete(`/favorites/${listingId}`);
 }
+
+export function getFavoriteListings() {
+  return axiosInstance.get("/favorites");
+}
