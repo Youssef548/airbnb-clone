@@ -6,6 +6,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Layout from "./components/Layout";
 import ListingPage from "./pages/Listings/Listing";
 import TripsPage from "./pages/Trips/TripsPage";
+import ReservationsPage from "./pages/Reservations/Reservations";
 const routes = [
   {
     path: "/",
@@ -23,6 +24,7 @@ const routes = [
         path: "/trips",
         element: <TripsPage />,
       },
+      { path: "/reservations", element: <ReservationsPage /> },
       {
         path: "/*",
         element: <NotFound />,
