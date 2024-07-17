@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
 import EmptyState from "../../components/EmptyState";
 import useUserStore from "../../store/useStore";
-import { safeListingType } from "../../types/Listing";
 import { getFavoriteListings } from "../../apis/Favorites/favorite";
 import toast from "react-hot-toast";
 import FavoritesClient from "./FavoritesClient";
+import ListingStore from "../../store/listingsStore";
 
 const FavoritesPage = () => {
   const user = useUserStore((state) => state.user);
-
-  const [listings, setListings] = useState<safeListingType[]>([]);
+  const { listings, setListings } = ListingStore();
   const [isLoading, setIsLoading] = useState<boolean>();
   useEffect(() => {
     setIsLoading(true);

@@ -4,11 +4,11 @@ import Container from "../../components/Container";
 import EmptyState from "../../components/EmptyState";
 import ListingCard from "../../components/Listings/ListingCard";
 import useUserStore from "../../store/useStore";
+import ListingStore from "../../store/listingsStore";
 
 const Home = () => {
   const currentUser = useUserStore((state) => state.user) ?? null;
-
-  const [listings, setListings] = useState<any>([]);
+  const { listings, setListings } = ListingStore();
 
   useEffect(() => {
     getListing({})

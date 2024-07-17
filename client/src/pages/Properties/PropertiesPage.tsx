@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import EmptyState from "../../components/EmptyState";
 import useUserStore from "../../store/useStore";
-import { safeListingType } from "../../types/Listing";
 import { getListing } from "../../apis/Listing/listing";
 import PropertiesClient from "./PropertiesClient";
+import ListingStore from "../../store/listingsStore";
 
 const PropertiesPage = () => {
   const user = useUserStore((state) => state.user);
+  const { listings, setListings } = ListingStore();
 
-  const [listings, setListings] = useState<safeListingType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
