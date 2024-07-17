@@ -1,7 +1,10 @@
+import useSearchModal from "../../../hooks/useSearchModal";
 
 const Search = () => {
+  const searchModal = useSearchModal();
   return (
     <div
+      onClick={searchModal.onOpen}
       className="
   w-full
   border-[1px]
