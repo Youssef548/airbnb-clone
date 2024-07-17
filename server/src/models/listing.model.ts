@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
+import { IBooking } from "./booking.model";
 
 // Define the interface for the listing
 export interface IListing extends Document {
@@ -13,7 +14,7 @@ export interface IListing extends Document {
   location?: string;
   user: mongoose.Types.ObjectId;
   reviews?: mongoose.Types.ObjectId[];
-  bookings?: mongoose.Types.ObjectId[];
+  bookings?: IBooking[];
   createdAt?: Date;
   updatedAt?: Date;
 }

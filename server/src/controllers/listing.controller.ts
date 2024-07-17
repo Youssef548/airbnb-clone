@@ -45,20 +45,78 @@ export async function createListing(
     return next(errorHandler(401, "something went wrong"));
   }
 }
-
 export async function getListings(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  try {
-    const { userId } = req.params;
+  const queryParams = req.query; // Assuming query parameters are passed via request.query
 
-    if (userId) {
-      const listings = await Listing.find({ user: userId }).sort({ id: -1 });
-      return res.status(200).json(listings);
+  let where: any = {};
+
+  if (queryParams.userId) {
+    where.user = queryParams.userId;
+  }
+  if (queryParams.category) {
+    where.category = queryParams.category;
+  }
+  if (queryParams.guestCount) {
+    where.guestCount = { $gte: queryParams.guestCount };
+  }
+  if (queryParams.roomCount) {
+    where.roomCount = { $gte: queryParams.roomCount };
+  }
+  if (queryParams.bathRoomCount) {
+    where.bathRoomCount = { $gte: queryParams.bathRoomCount };
+  }
+  if (queryParams.locationValue) {
+    where.location = queryParams.locationValue;
+  }
+
+  // Add date filtering to exclude listings with conflicting bookings
+
+  try {
+    const listings = await Listing.find(where)
+      .populate({ path: "bookings", match: {} }) // Populate bookings without initial filters
+      .sort({ id: -1 })
+      .exec();
+
+    if (queryParams?.startDate && queryParams?.endDate) {
+      const queryStartDate = new Date(queryParams.startDate.toString());
+      const queryEndDate = new Date(queryParams.endDate.toString());
+
+      const filteredListings = listings.filter((listing) => {
+        return (
+          !listing.bookings ||
+          listing.bookings.every((booking) => {
+            if (booking?.startDate && booking?.endDate) {
+              // Create Date objects and reset time to 00:00:00 for comparison
+              const bookingStartDate = new Date(booking.startDate);
+              bookingStartDate.setHours(0, 0, 0, 0);
+              const bookingEndDate = new Date(booking.endDate);
+              bookingEndDate.setHours(0, 0, 0, 0);
+
+              // Assuming queryStartDate and queryEndDate are already Date objects
+              // Reset their time to 00:00:00 for comparison
+              const startOfQueryStartDate = new Date(queryStartDate);
+              startOfQueryStartDate.setHours(0, 0, 0, 0);
+              const startOfQueryEndDate = new Date(queryEndDate);
+              startOfQueryEndDate.setHours(0, 0, 0, 0);
+
+              // Check if booking is entirely outside the specified date range
+              const outsideRange =
+                bookingEndDate < startOfQueryStartDate ||
+                bookingStartDate > startOfQueryEndDate;
+
+              return outsideRange;
+            }
+            return true; // If no startDate or endDate, consider it as passing the filter
+          })
+        );
+      });
+
+      return res.status(200).json(filteredListings);
     }
-    const listings = await Listing.find().sort({ id: -1 }); // Sorting by id in descending order
     res.status(200).json(listings);
   } catch (error) {
     console.error(error);
