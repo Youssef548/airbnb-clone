@@ -6,6 +6,7 @@ import RegisterModal from "./Modals/RegisterModal";
 import LoginModal from "./Modals/LoginModal";
 import useUserStore from "../store/useStore";
 import RentModal from "./Modals/RentModal";
+import SearchModal from "./Modals/SearchModal";
 function Layout() {
   const user = useUserStore((state) => state.user);
 
@@ -13,6 +14,7 @@ function Layout() {
     <>
       <div>
         <Suspense fallback={<div>Loading...</div>}>
+          <SearchModal />
           <LoginModal />
           <RentModal />
           <RegisterModal />
