@@ -4,6 +4,7 @@ import useUserStore from "../../store/useStore";
 import { getReservation } from "../../apis/Reservations/reservation";
 import ReservationsClient from "./ReservationsClient";
 import { ReservationSafeType } from "../../types/Reservation";
+import Loading from "../../components/Loading";
 
 const ReservationsPage = () => {
   const user = useUserStore((state) => state.user);
@@ -37,7 +38,7 @@ const ReservationsPage = () => {
   }
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   if (!user) {

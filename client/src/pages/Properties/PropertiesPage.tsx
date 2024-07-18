@@ -4,6 +4,7 @@ import useUserStore from "../../store/useStore";
 import { getListing } from "../../apis/Listing/listing";
 import PropertiesClient from "./PropertiesClient";
 import ListingStore from "../../store/listingsStore";
+import Loading from "../../components/Loading";
 
 const PropertiesPage = () => {
   const user = useUserStore((state) => state.user);
@@ -41,7 +42,7 @@ const PropertiesPage = () => {
   }
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   return (

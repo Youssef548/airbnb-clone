@@ -9,6 +9,7 @@ import ListingClient from "./ListingClient";
 import { UserType } from "../../types/user";
 import { ReservationSafeType } from "../../types/Reservation";
 import { getReservation } from "../../apis/Reservations/reservation";
+import Loading from "../../components/Loading";
 
 const ListingPage = () => {
   const user = useUserStore((state) => state.user);
@@ -50,7 +51,7 @@ const ListingPage = () => {
   }, []);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   if (!listingData) {

@@ -5,6 +5,7 @@ import { getFavoriteListings } from "../../apis/Favorites/favorite";
 import toast from "react-hot-toast";
 import FavoritesClient from "./FavoritesClient";
 import ListingStore from "../../store/listingsStore";
+import Loading from "../../components/Loading";
 
 const FavoritesPage = () => {
   const user = useUserStore((state) => state.user);
@@ -24,7 +25,7 @@ const FavoritesPage = () => {
   }, []);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   if (listings?.length === 0) {

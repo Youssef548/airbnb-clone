@@ -4,6 +4,7 @@ import EmptyState from "../../components/EmptyState";
 import useUserStore from "../../store/useStore";
 import { ReservationSafeType } from "../../types/Reservation";
 import TripsClient from "./TripsClient";
+import Loading from "../../components/Loading";
 
 const TripsPage = () => {
   const user = useUserStore((state) => state.user);
@@ -41,7 +42,7 @@ const TripsPage = () => {
   }
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   return (
