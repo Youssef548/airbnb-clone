@@ -1,6 +1,5 @@
 import useCountries from "../../hooks/useCountries";
 import { UserType } from "../../types/user";
-import Image from "../../utils/Image";
 import Heading from "../Heading";
 import HeartButton from "../HeartButton";
 
