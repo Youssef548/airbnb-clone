@@ -20,7 +20,9 @@ function Layout() {
           <RentModal />
           <RegisterModal />
           <Navbar user={user} />
-          <Outlet />
+          <Suspense fallback={<Loading />}>
+            <Outlet />
+          </Suspense>
         </Suspense>
       </div>
     </>

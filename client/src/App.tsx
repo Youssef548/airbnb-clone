@@ -1,8 +1,7 @@
-import { lazy, Suspense } from "react";
+import { lazy } from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import ToasterProvider from "./providers/ToasterProvider";
 import Layout from "./components/Layout";
-import Loading from "./components/Loading";
 
 // Use React.lazy for dynamic imports
 const Home = lazy(() => import("./pages/Home/Home"));
@@ -22,59 +21,31 @@ const routes = [
     children: [
       {
         index: true,
-        element: (
-          <Suspense fallback={<Loading />}>
-            <Home />
-          </Suspense>
-        ),
+        element: <Home />,
       },
       {
         path: "/listing/:listingId",
-        element: (
-          <Suspense fallback={<Loading />}>
-            <ListingPage />
-          </Suspense>
-        ),
+        element: <ListingPage />,
       },
       {
         path: "/trips",
-        element: (
-          <Suspense fallback={<Loading />}>
-            <TripsPage />
-          </Suspense>
-        ),
+        element: <TripsPage />,
       },
       {
         path: "/properties",
-        element: (
-          <Suspense fallback={<Loading />}>
-            <PropertiesPage />
-          </Suspense>
-        ),
+        element: <PropertiesPage />,
       },
       {
         path: "/reservations",
-        element: (
-          <Suspense fallback={<Loading />}>
-            <ReservationsPage />
-          </Suspense>
-        ),
+        element: <ReservationsPage />,
       },
       {
         path: "/favorites",
-        element: (
-          <Suspense fallback={<Loading />}>
-            <FavoritesPage />
-          </Suspense>
-        ),
+        element: <FavoritesPage />,
       },
       {
         path: "/*",
-        element: (
-          <Suspense fallback={<Loading />}>
-            <NotFound />
-          </Suspense>
-        ),
+        element: <NotFound />,
       },
     ],
   },
