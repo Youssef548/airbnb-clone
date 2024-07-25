@@ -2,6 +2,7 @@ import { lazy } from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import ToasterProvider from "./providers/ToasterProvider";
 import Layout from "./components/Layout";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // Use React.lazy for dynamic imports
 const Home = lazy(() => import("./pages/Home/Home"));
@@ -24,28 +25,33 @@ const routes = [
         element: <Home />,
       },
       {
-        path: "/listing/:listingId",
+        path: "listing/:listingId",
         element: <ListingPage />,
-      },
-      {
-        path: "/trips",
-        element: <TripsPage />,
-      },
-      {
-        path: "/properties",
-        element: <PropertiesPage />,
-      },
-      {
-        path: "/reservations",
-        element: <ReservationsPage />,
-      },
-      {
-        path: "/favorites",
-        element: <FavoritesPage />,
       },
       {
         path: "/*",
         element: <NotFound />,
+      },
+      {
+        element: <ProtectedRoute />, // Protected routes are nested here
+        children: [
+          {
+            path: "/trips",
+            element: <TripsPage />,
+          },
+          {
+            path: "/properties",
+            element: <PropertiesPage />,
+          },
+          {
+            path: "/reservations",
+            element: <ReservationsPage />,
+          },
+          {
+            path: "/favorites",
+            element: <FavoritesPage />,
+          },
+        ],
       },
     ],
   },
