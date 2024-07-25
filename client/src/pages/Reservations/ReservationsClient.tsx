@@ -3,7 +3,6 @@ import { ReservationSafeType } from "../../types/Reservation";
 import { UserType } from "../../types/user";
 import Container from "../../components/Container";
 import Heading from "../../components/Heading";
-import { useNavigate } from "react-router-dom";
 import {
   deleteReservation,
   getReservation,

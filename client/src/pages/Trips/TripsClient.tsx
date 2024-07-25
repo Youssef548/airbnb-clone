@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import Container from "../../components/Container";
 import Heading from "../../components/Heading";
 import { ReservationSafeType } from "../../types/Reservation";
@@ -24,7 +23,7 @@ const TripsClient: React.FC<TripsClieentProps> = ({
 }) => {
   const [deleteId, setDeletingId] = useState<string>("");
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
 
   const onCancel = useCallback((id: string) => {
     setDeletingId(id);

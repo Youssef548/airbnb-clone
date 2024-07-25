@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { getListing } from "../../apis/Listing/listing";
 import Container from "../../components/Container";
 import EmptyState from "../../components/EmptyState";

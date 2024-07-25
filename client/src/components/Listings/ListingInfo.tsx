@@ -1,5 +1,4 @@
 import { UserType } from "../../types/user";
-import { Icon } from "@iconify/react";
 import type { IconifyIcon } from "@iconify/types";
 import useCountries from "../../hooks/useCountries";
 import Avatar from "../Avatar";
@@ -68,11 +67,16 @@ const ListingInfo = ({
         </div>
       </div>
       <hr />
+      <div className="text-lg font-light text-neutral-500">{description}</div>
+      <div className="text-lg font-semibold text-neutral-800">
+        ${price} per night
+      </div>
+      <hr />
       {category && (
         <ListingCategory icon={category.icon} label={category.label} />
       )}
       <hr />
-      <Map center={coordinates}/>
+      <Map center={coordinates} />
     </div>
   );
 };

@@ -1,10 +1,8 @@
 import Container from "../../components/Container";
 import Heading from "../../components/Heading";
-import { ReservationSafeType } from "../../types/Reservation";
 import { UserType } from "../../types/user";
 import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import toast from "react-hot-toast";
-import { getReservation } from "../../apis/Reservations/reservation";
 import ListingCard from "../../components/Listings/ListingCard";
 import { safeListingType } from "../../types/Listing";
 import { deleteListing, getListing } from "../../apis/Listing/listing";
@@ -22,7 +20,7 @@ const PropertiesClient: React.FC<TripsClieentProps> = ({
 }) => {
   const [deleteId, setDeletingId] = useState<string>("");
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
 
   const onCancel = useCallback((id: string) => {
     setDeletingId(id);
