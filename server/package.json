@@ -15,8 +15,10 @@
     "zod": "^3.23.8"
   },
   "scripts": {
-    "dev": "tsx watch ./src/app.ts",
-    "build": "rimraf dist && tsc"
+    "start": "ts-node src/app.ts",
+    "dev": "tsx  --watch ./src/app.ts",
+    "build": "echo hello world",
+    "vercel-build": "echo hello world"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

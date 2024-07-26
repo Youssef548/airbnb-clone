@@ -40,6 +40,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 // Routes setup
+app.get("/", (req, res) => res.send("Express on Vercel"));
 app.use("/api/auth/", authRoutes);
 app.use("/api/listings/", listingRoutes);
 app.use("/api/favorites/", favoriteRoutes);
@@ -52,3 +53,5 @@ connectDB().then(() => {
     console.log(`Server running on port ${PORT}`);
   });
 });
+
+export default app;
