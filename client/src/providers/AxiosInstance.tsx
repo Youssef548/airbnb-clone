@@ -3,7 +3,7 @@ import { handleUnauthorized } from "../utils/handleUnAuthorized";
 
 // Create an Axios instance
 export const axiosInstance: AxiosInstance = axios.create({
-  baseURL: "http://localhost:3000/api/",
+  baseURL: import.meta.env.VITE_BACKEND_URL,
   timeout: 5000,
 });
 
