@@ -28,3 +28,4 @@ dist-ssr
 server/src/models/index.js
 server/src/models/index.text
 todos.tex
+text.todo
