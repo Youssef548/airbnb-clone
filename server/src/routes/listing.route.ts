@@ -11,7 +11,7 @@ const router = Router();
 
 router.post("/create", isAuth, createListing);
 router.get("/all", getListings);
-router.get("/get/:listingId", isAuth, getListingById);
+router.get("/get/:listingId", getListingById);
 router.delete("/delete/:listingId", isAuth, deleteListing);
 
 export default router;
