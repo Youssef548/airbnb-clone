@@ -11,13 +11,13 @@
     "mongoose": "^8.4.0",
     "rimraf": "^6.0.1",
     "tsx": "^4.15.6",
-    "vitest": "^1.6.0",
     "zod": "^3.23.8"
   },
   "scripts": {
     "start": "ts-node src/app.ts",
     "dev": "tsx  --watch ./src/app.ts",
     "build": "echo hello world",
+    "test": "vitest",
     "vercel-build": "echo hello world"
   },
   "devDependencies": {
@@ -27,6 +27,9 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/mongoose": "^5.11.97",
     "@types/node": "^20.12.13",
-    "typescript": "^5.4.5"
+    "supertest": "^7.0.0",
+    "typescript": "^5.4.5",
+    "vitest": "^3.0.5",
+    "vitest-mock-express": "^2.2.0"
   }
 }
