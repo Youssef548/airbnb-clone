@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: secret
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  app:
+    build: .
+    depends_on:
+      - mongodb
+    environment:
+      - DATABASE_URL=mongodb://admin:secret@mongodb:27017/mydatabase?authSource=admin
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/server
+    command: npm run dev
+
+volumes:
+  mongo-data:
