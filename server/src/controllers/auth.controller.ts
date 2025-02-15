@@ -23,8 +23,8 @@ export const loginUser = async (req: Request, res: Response) => {
 export const createUser = async (req: Request, res: Response) => {
   try {
     const { email, password, username } = req.body;
-    await createUserService(email, password, username);
-    return res.status(201).json({ message: "User created" });
+    const user = await createUserService(email, password, username);
+    return res.status(201).json({ message: "User created", currentUser: user });
   } catch (error: any) {
     return res.status(400).json({ error: error.message });
   }
