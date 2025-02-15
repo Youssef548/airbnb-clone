@@ -6,12 +6,12 @@ import { User } from "../models/User.model";
 export const loginUserService = async (email: string, password: string) => {
   const user = await User.findOne({ email });
   if (!user) {
-    throw new Error("User not found");
+    throw new Error("Invalid credentials");
   }
 
   const isPasswordValid = await bcrypt.compare(password, user.password!);
   if (!isPasswordValid) {
-    throw new Error("Invalid password");
+    throw new Error("Invalid credentials");
   }
 
   if (!process.env.JWT_SECRET) {
