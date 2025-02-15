@@ -33,11 +33,18 @@ export async function getBookings(
   next: NextFunction
 ) {
   try {
-    const filters = {
-      listingId: req.params.listingId,
-      guest: req.params.userId,
-      authorId: req.params.authorId,
-    };
+    const filters: Record<string, any> = {};
+
+    if (req.query.listingId) {
+      filters.listingId = req.query.listingId;
+    }
+    if (req.query.userId) {
+      filters.guest = req.query.userId;
+    }
+    if (req.query.authorId) {
+      filters.authorId = req.query.authorId;
+    }
+
     const bookings = await getBookingsService(filters);
     res.status(200).json(bookings);
   } catch (error) {
