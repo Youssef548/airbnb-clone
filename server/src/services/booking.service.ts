@@ -76,14 +76,23 @@ export const cancelBookingService = async (
 ) => {
   if (!bookingId) throw errorHandler(400, "Reservation ID not provided");
 
-  const booking = await Booking.deleteMany({
-    _id: bookingId,
-    $or: [{ guest: userId }, { listing: { user: userId } }],
-  });
+  // Retrieve the booking and populate listing details to check listing owner
+  const booking = await Booking.findById(bookingId).populate("listingId");
 
-  if (!booking.deletedCount) {
-    throw errorHandler(404, "Booking not found");
+  if (!booking) {
+    throw errorHandler(400, "Booking not found");
   }
+
+  const isGuest = booking.guest.toString() === userId;
+  const isListingOwner =
+    booking.listingId && booking.listingId.user.toString() === userId;
+
+  if (!isGuest && !isListingOwner) {
+    throw errorHandler(403, "Unauthorized to cancel this booking");
+  }
+
+  // Authorized: proceed with cancellation (deletion)
+  await booking.deleteOne();
 
   return "Reservation successfully canceled";
 };
