@@ -15,7 +15,7 @@
   },
   "scripts": {
     "start": "ts-node src/app.ts",
-    "dev": "tsx  --watch ./src/app.ts",
+    "dev": "tsx  --watch ./src/server.ts",
     "build": "echo hello world",
     "test": "vitest",
     "vercel-build": "echo hello world"
