@@ -5,13 +5,11 @@ export const createBookSchema = z.object({
     required_error: "Total price is required",
     invalid_type_error: "Total price must be a number",
   }),
-  startDate: z.date({
-    required_error: "Start date is required",
-    invalid_type_error: "Start date must be a date",
+  startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, {
+    message: "Start date must be in the format YYYY-MM-DD",
   }),
-  endDate: z.date({
-    required_error: "End date is required",
-    invalid_type_error: "End date must be a date",
+  endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, {
+    message: "End date must be in the format YYYY-MM-DD",
   }),
   listingId: z.string({
     required_error: "Listing ID is required",
