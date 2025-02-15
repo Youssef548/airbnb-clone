@@ -18,6 +18,7 @@ services:
       - mongodb
     environment:
       - DATABASE_URL=mongodb://admin:secret@mongodb:27017/mydatabase?authSource=admin
+      - TEST_DATABASE_URL=mongodb://admin:secret@mongodb:27017/testdatabase?authSource=admin
     ports:
       - "3000:3000"
     volumes:
