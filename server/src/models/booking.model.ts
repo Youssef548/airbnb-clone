@@ -5,7 +5,7 @@ import { IListing } from "./listing.model";
 export interface IBooking extends Document {
   startDate?: Date;
   endDate?: Date;
-  guest?: mongoose.Schema.Types.ObjectId;
+  guest: mongoose.Schema.Types.ObjectId;
   listing?: IListing;
   listingId?: IListing;
   totalPrice: Number;
