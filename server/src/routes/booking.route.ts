@@ -10,8 +10,8 @@ import {
 
 const router = Router();
 
-router.post("/create", isAuth, validateSchema(createBookSchema), createBooking);
-router.get("/bookings", isAuth, getBookings);
-router.delete("/cancel/:bookingId", isAuth, cancelBooking);
+router.post("/", isAuth, validateSchema(createBookSchema), createBooking);
+router.get("/", isAuth, getBookings);
+router.delete("/:bookingId", isAuth, cancelBooking);
 
 export default router;
