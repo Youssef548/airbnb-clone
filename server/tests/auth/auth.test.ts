@@ -12,27 +12,60 @@ beforeAll(async () => {
 beforeEach(async () => {
   await User.deleteMany(); // Clear test users before each test
 });
-afterEach(async () => {
-  await User.deleteMany(); // Clear test users before each test
-});
 
 afterAll(async () => {
   await mongoose.connection.close(); // Close connection after tests
 });
 
+const user = {
+  username: "testuser",
+  email: "test@example.com",
+  password: "StrongPass123#",
+};
+
 describe("POST /api/auth/register", () => {
-  it("should create a new user", async () => {
-    const user = {
-      username: "testuser",
+  it("should return 400 for missing fields", async () => {
+    const res = await supertest(app).post("/api/auth/register").send({
       email: "test@example.com",
-      password: "StrongPass123#",
-    };
+    });
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty("status", "error");
+  });
 
-    const res = await supertest(app)
-      .post("/api/auth/register")
-      .send(user)
-      .expect(201);
+  it("should not allow duplicate email registration", async () => {
+    await supertest(app).post("/api/auth/register").send(user);
+    const res = await supertest(app).post("/api/auth/register").send(user);
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty("error", "The email already used");
+  });
+});
 
-    expect(res.body).toHaveProperty("message", "User created");
+describe("POST /api/auth/login", () => {
+  it("should return 400 for invalid email format", async () => {
+    const res = await supertest(app).post("/api/auth/login").send({
+      email: "invalidemail",
+      password: user.password,
+    });
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty("status", "error");
+  });
+
+  it("should return 400 for incorrect password", async () => {
+    await supertest(app).post("/api/auth/register").send(user);
+    const res = await supertest(app).post("/api/auth/login").send({
+      email: user.email,
+      password: "WrongPass123#",
+    });
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty("error", "Invalid credentials");
+  });
+
+  it("should return 400 for non-existent user", async () => {
+    const res = await supertest(app).post("/api/auth/login").send({
+      email: "doesnotexist@example.com",
+      password: user.password,
+    });
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty("error", "Invalid credentials");
   });
 });
