@@ -1,15 +1,14 @@
 // app.js
-import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import express from "express";
 dotenv.config();
 
-import connectDB from "./config/database";
-import authRoutes from "./routes/authRoutes";
-import listingRoutes from "./routes/listing.route";
-import favoriteRoutes from "./routes/favorite.route";
-import bookingRoutes from "./routes/booking.route";
 import errorHandler from "./middleware/error.middleware";
+import authRoutes from "./routes/authRoutes";
+import bookingRoutes from "./routes/booking.route";
+import favoriteRoutes from "./routes/favorite.route";
+import listingRoutes from "./routes/listing.route";
 
 const app = express();
 
@@ -47,11 +46,5 @@ app.use("/api/favorites/", favoriteRoutes);
 app.use("/api/booking/", bookingRoutes);
 
 app.use(errorHandler);
-
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
-});
 
 export default app;
