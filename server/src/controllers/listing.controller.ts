@@ -61,7 +61,7 @@ export async function deleteListing(
     const { listingId } = req.params;
     const cusReq = req as CustomRequest;
     await deleteListingService(cusReq.user.userId, listingId);
-    res.status(204).json();
+    res.status(204).json("Listing deleted successfully");
   } catch (error) {
     next(error);
   }
