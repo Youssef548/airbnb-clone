@@ -6,12 +6,14 @@ import {
   getListings,
 } from "../controllers/listing.controller";
 import { isAuth } from "../middleware/auth.middleware";
+import validateSchema from "../middleware/validationFactory.middleware";
+import { createListingSchema } from "../schemas/listings.schema";
 
 const router = Router();
 
-router.post("/create", isAuth, createListing);
-router.get("/all", getListings);
-router.get("/get/:listingId", getListingById);
-router.delete("/delete/:listingId", isAuth, deleteListing);
+router.post("/", isAuth, validateSchema(createListingSchema), createListing);
+router.get("/", getListings);
+router.get("/:listingId", getListingById);
+router.delete("/:listingId", isAuth, deleteListing);
 
 export default router;
