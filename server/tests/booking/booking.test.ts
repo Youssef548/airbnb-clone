@@ -28,9 +28,16 @@ const user = {
 };
 
 const listing = {
-  title: "Test Listing",
+  title: "hello world",
+  description: "this a just test",
+  imageSrc:
+    "https://res.cloudinary.com/dkyhsld8s/image/upload/v1739723844/IMG_0540_gnaqvk.jpg",
+  price: 500,
+  category: "stars",
   location: "Cairo",
-  price: 50,
+  roomCount: 1,
+  guestCount: 1,
+  bathRoomCount: 1,
 };
 
 describe("Bookings API", () => {
@@ -66,8 +73,8 @@ describe("Bookings API", () => {
       .set("Authorization", `Bearer ${token}`)
       .send({
         listingId,
-        startDate: "2025-03-01",
-        endDate: "2025-03-05",
+        startDate: "2025-04-01",
+        endDate: "2025-04-05",
         totalPrice: 500,
       });
 
