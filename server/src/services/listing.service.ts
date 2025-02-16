@@ -26,7 +26,7 @@ export const createListingService = async (
     roomCount,
     bathRoomCount,
     guestCount,
-    location: location.value,
+    location,
     price,
     user: userId,
   });
@@ -102,5 +102,12 @@ export const deleteListingService = async (
 ) => {
   if (!listingId) throw errorHandler(400, "Missing listing id");
 
-  await Listing.deleteMany({ _id: listingId, user: userId });
+  const listing = await Listing.findById(listingId);
+
+  if (!listing) throw errorHandler(400, "Listing not found");
+
+  if (listing.user.toString() !== userId)
+    throw errorHandler(403, "You are not authorized to delete this listing");
+
+  await listing.deleteOne();
 };
