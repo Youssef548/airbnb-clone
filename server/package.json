@@ -17,7 +17,7 @@
     "start": "ts-node src/app.ts",
     "dev": "tsx  --watch ./src/server.ts",
     "build": "echo hello world",
-    "test": "tsx tests/globalSetup.ts && vitest listing.test.ts && tsx tests/globalTeardown.ts",
+    "test": "tsx tests/globalSetup.ts && vitest; tsx tests/globalTeardown.ts",
     "vercel-build": "echo hello world"
   },
   "devDependencies": {

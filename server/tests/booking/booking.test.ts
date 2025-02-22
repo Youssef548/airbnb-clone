@@ -1,30 +1,13 @@
-import { describe, it, beforeAll, beforeEach, afterAll, expect } from "vitest";
-import supertest from "supertest";
 import mongoose from "mongoose";
+import supertest from "supertest";
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 import app from "../../src/app";
 import connectDB from "../../src/config/database";
-import { Booking } from "../../src/models/booking.model";
-import { User } from "../../src/models/User.model";
-import { Listing } from "../../src/models/listing.model";
-
-beforeAll(async () => {
-  await connectDB(process.env.TEST_DATABASE_URL);
-});
-
-beforeEach(async () => {
-  await Booking.deleteMany();
-  await User.deleteMany();
-  await Listing.deleteMany();
-});
-
-afterAll(async () => {
-  await mongoose.connection.close();
-});
 
 const user = {
-  username: "testuser",
-  email: "test@example.com",
-  password: "StrongPass123#",
+  username: "youssef",
+  email: "testtest@example.com",
+  password: "Strong3Pass123#",
 };
 
 const listing = {
@@ -39,7 +22,6 @@ const listing = {
   guestCount: 1,
   bathRoomCount: 1,
 };
-
 describe("Bookings API", () => {
   let token: string;
   let userId: string;
@@ -47,10 +29,6 @@ describe("Bookings API", () => {
   let bookingId: string;
 
   beforeEach(async () => {
-    // Register user
-    const userRes = await supertest(app).post("/api/auth/register").send(user);
-    userId = userRes.body.currentUser._id;
-
     // Login user
     const loginRes = await supertest(app)
       .post("/api/auth/login")
@@ -58,11 +36,19 @@ describe("Bookings API", () => {
 
     token = loginRes.body.token;
 
-    // Create listing
+    expect(loginRes.status).toBe(200);
+    expect(loginRes.body.token).toBeDefined();
+
+    userId = loginRes.body.currentUser.id;
+
     const listingRes = await supertest(app)
       .post("/api/listings")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${loginRes.body.token}`)
       .send(listing);
+
+    expect(listingRes.status).toBe(201);
+    expect(listingRes.body).toHaveProperty("_id");
+    expect(listingRes.body.title).toBe(listing.title);
 
     listingId = listingRes.body._id;
   });
@@ -149,6 +135,8 @@ describe("Bookings API", () => {
     const loginRes = await supertest(app)
       .post("/api/auth/login")
       .send({ email: "user2@example.com", password: "Password123!" });
+    expect(loginRes.status).toBe(200);
+    expect(loginRes.body.token).toBeDefined();
     const anotherToken = loginRes.body.token;
 
     // Try to cancel the booking with the second user's token

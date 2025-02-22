@@ -1,28 +1,11 @@
-import { describe, it, beforeAll, beforeEach, afterAll, expect } from "vitest";
 import supertest from "supertest";
-import mongoose from "mongoose";
+import { beforeEach, describe, expect, it } from "vitest";
 import app from "../../src/app";
-import connectDB from "../../src/config/database";
-import { Listing } from "../../src/models/listing.model";
-import { User } from "../../src/models/User.model";
-
-beforeAll(async () => {
-  await connectDB(process.env.TEST_DATABASE_URL);
-});
-
-beforeEach(async () => {
-  await Listing.deleteMany();
-  await User.deleteMany();
-});
-
-afterAll(async () => {
-  await mongoose.connection.close();
-});
 
 const user = {
-  username: "testuser",
-  email: "test@example.com",
-  password: "StrongPass123#",
+  username: "youssef",
+  email: "testtest@example.com",
+  password: "Strong3Pass123#",
 };
 
 const listingData = {
@@ -39,18 +22,14 @@ const listingData = {
 
 describe("Listings API", () => {
   let token: string;
-  let userId: string;
   let listingId: string;
 
   beforeEach(async () => {
-    // Register user
-    const userRes = await supertest(app).post("/api/auth/register").send(user);
-    userId = userRes.body.currentUser._id;
-
     // Login user
     const loginRes = await supertest(app)
       .post("/api/auth/login")
       .send({ email: user.email, password: user.password });
+
     token = loginRes.body.token;
   });
 
@@ -119,7 +98,7 @@ describe("Listings API", () => {
     // Register and log in a second user
     const anotherUser = {
       username: "user2",
-      email: "user2@example.com",
+      email: "user3@example.com",
       password: "StrongPass123#",
     };
     await supertest(app).post("/api/auth/register").send(anotherUser);
