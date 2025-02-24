@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import connectDB from "../src/config/database";
-import { User } from "../src/models/User.model";
-import { createUserService } from "../src/services/auth.service";
+import { clearDatabase } from "./db-helpers/clearDatabase";
+import { seedDatabase } from "../src/seeders";
 
 const user = {
   username: "youssef",
@@ -12,12 +12,11 @@ const user = {
 async function main() {
   await connectDB(process.env.TEST_DATABASE_URL as string);
 
-  // TODO: clearDatabase function
-  await User.deleteMany();
+  await clearDatabase();
 
-  await createUserService(user.email, user.password, user.username);
+  await seedDatabase();
 
   await mongoose.connection.close();
 }
 
-main();
+main().catch((err) => console.error(err));
