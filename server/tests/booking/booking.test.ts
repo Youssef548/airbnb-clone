@@ -1,8 +1,7 @@
 import mongoose from "mongoose";
 import supertest from "supertest";
-import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import app from "../../src/app";
-import connectDB from "../../src/config/database";
 
 const user = {
   username: "youssef",
