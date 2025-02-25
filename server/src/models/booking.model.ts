@@ -1,13 +1,12 @@
-import { timeStamp } from "console";
 import mongoose from "mongoose";
 import { IListing } from "./listing.model";
 
 export interface IBooking extends Document {
-  startDate?: Date;
-  endDate?: Date;
+  startDate: Date;
+  endDate: Date;
   guest: mongoose.Schema.Types.ObjectId;
-  listing?: IListing;
-  listingId?: IListing;
+  listing: IListing;
+  listingId: IListing;
   totalPrice: Number;
   createdAt: Date;
   updatedAt: Date;
@@ -15,12 +14,16 @@ export interface IBooking extends Document {
 
 const BookingSchema = new mongoose.Schema(
   {
-    startDate: Date,
-    endDate: Date,
-    guest: { type: mongoose.Types.ObjectId, ref: "User" },
-    listingId: { type: mongoose.Types.ObjectId, ref: "Listing" },
-    authorId: { type: mongoose.Types.ObjectId, ref: "User" },
-    totalPrice: Number,
+    startDate: { type: Date, required: true },
+    endDate: { type: Date, required: true },
+    guest: { type: mongoose.Types.ObjectId, required: true, ref: "User" },
+    listingId: {
+      type: mongoose.Types.ObjectId,
+      required: true,
+      ref: "Listing",
+    },
+    authorId: { type: mongoose.Types.ObjectId, required: true, ref: "User" },
+    totalPrice: { type: Number, required: true },
   },
   {
     timestamps: {
