@@ -6,7 +6,7 @@ const UserSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true },
     emailVerified: { type: Date },
     image: { type: String },
-    password: String,
+    password: { type: String, required: true },
     favoriteListingsIds: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Listing" },
     ],

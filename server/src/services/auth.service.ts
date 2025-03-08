@@ -1,9 +1,24 @@
-// services/authService.ts
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { User } from "../models/User.model";
+import { LoginResponse, SanitizedUser } from "../interfaces/authInterfaces";
+import dotenv from "dotenv";
 
-export const loginUserService = async (email: string, password: string) => {
+dotenv.config();
+
+// Ensure JWT_SECRET is loaded at startup
+if (!process.env.JWT_SECRET) {
+  throw new Error(
+    "JWT_SECRET is not defined. Please set it in your .env file."
+  );
+}
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+export const loginUserService = async (
+  email: string,
+  password: string
+): Promise<LoginResponse> => {
   const user = await User.findOne({ email });
   if (!user) {
     throw new Error("Invalid credentials");
@@ -14,28 +29,28 @@ export const loginUserService = async (email: string, password: string) => {
     throw new Error("Invalid credentials");
   }
 
-  if (!process.env.JWT_SECRET) {
-    throw new Error("JWT_SECRET is not defined");
-  }
-
   const token = jwt.sign(
     { userId: user._id, favoriteListingsIds: user.favoriteListingsIds },
-    process.env.JWT_SECRET,
+    JWT_SECRET,
     { expiresIn: "1h" }
   );
 
-  const { _id, ...userData } = user.toObject();
-  const userObject = { ...userData, id: _id.toString() };
-  delete userObject.password;
+  const sanitizedUser: SanitizedUser = {
+    id: user._id.toString(),
+    email: user.email,
+    username: user.username,
+    image: user.image || null,
+    favoriteListingsIds: user.favoriteListingsIds,
+  };
 
-  return { token, user: userObject };
+  return { token, user: sanitizedUser };
 };
 
 export const createUserService = async (
   email: string,
   password: string,
   username: string
-) => {
+): Promise<SanitizedUser> => {
   const isExist = await User.findOne({ email });
   if (isExist) {
     throw new Error("The email already used");
@@ -51,5 +66,13 @@ export const createUserService = async (
   });
 
   await user.save();
-  return user;
+
+  const sanitizedUser: SanitizedUser = {
+    id: user._id.toString(),
+    email: user.email,
+    username: user.username,
+    image: user.image || null,
+  };
+
+  return sanitizedUser;
 };
