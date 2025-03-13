@@ -1,4 +1,22 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
+
+
+export interface IUser extends Document {
+  username: string;
+  email: string;
+  emailVerified?: Date;
+  image?: string;
+  password: string;
+  favoriteListingsIds: Types.ObjectId[];
+  listings?: Types.ObjectId[];
+  bookings?: Types.ObjectId[];
+  reviews?: Types.ObjectId[];
+  createdAt: Date;
+  updatedAt: Date;
+  googleId?: string;
+  githubId?: string;
+  facebookId?: string;
+}
 
 const UserSchema = new mongoose.Schema(
   {
@@ -27,6 +45,6 @@ const UserSchema = new mongoose.Schema(
   }
 );
 
-const UserModel = mongoose.model("User", UserSchema);
+const UserModel = mongoose.model<IUser>("User", UserSchema);
 
 export { UserModel as User };
