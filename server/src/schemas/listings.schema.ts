@@ -1,5 +1,28 @@
 import { z } from "zod";
 
+const locationSchema = z.object({
+  flag: z.string({
+    required_error: "Flag is required",
+    invalid_type_error: "Flag must be a string",
+  }),
+  label: z.string({
+    required_error: "Label is required",
+    invalid_type_error: "Label must be a string",
+  }),
+  latlng: z
+    .array(z.number({ invalid_type_error: "Each coordinate must be a number" }))
+    .nonempty("Latitude and longitude are required"),
+  region: z.string({
+    required_error: "Region is required",
+    invalid_type_error: "Region must be a string",
+  }),
+  value: z.string({
+    required_error: "Value is required",
+    invalid_type_error: "Value must be a string",
+  }),
+});
+
+
 export const createListingSchema = z.object({
   title: z.string({
     required_error: "Title is required",
@@ -35,8 +58,5 @@ export const createListingSchema = z.object({
     invalid_type_error: "bathroom count must be a number",
   }),
 
-  location: z.string({
-    required_error: "Location is required",
-    invalid_type_error: "Location must be a string",
-  }),
+  location: locationSchema,
 });
