@@ -1,9 +1,19 @@
 import { axiosInstance } from "../../providers/AxiosInstance";
+import { ReservationPostPayload } from "./reservations.interfaces";
 import { ReservationPostType, ReservationsGetType } from "./reservations.types";
 
 export function createReservation(data: ReservationPostType) {
-  return axiosInstance.post(`/booking/create`, data);
+  const { startDate, endDate, ...rest } = data;
+
+  const requestData: ReservationPostPayload = {
+    ...rest,
+    startDate: data.startDate.toISOString().split("T")[0],
+    endDate: data.endDate.toISOString().split("T")[0],
+  };
+
+  return axiosInstance.post<ReservationPostPayload>("/booking", requestData);
 }
+
 
 export function getReservation(params: ReservationsGetType) {
   return axiosInstance.get(`/booking`, {
@@ -12,5 +22,5 @@ export function getReservation(params: ReservationsGetType) {
 }
 
 export function deleteReservation(id: string) {
-  return axiosInstance.delete(`/booking/cancel/${id}`);
+  return axiosInstance.delete(`/booking/${id}`);
 }
