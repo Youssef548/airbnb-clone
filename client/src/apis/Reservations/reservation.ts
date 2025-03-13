@@ -6,7 +6,7 @@ export function createReservation(data: ReservationPostType) {
 }
 
 export function getReservation(params: ReservationsGetType) {
-  return axiosInstance.get(`/booking/bookings`, {
+  return axiosInstance.get(`/booking`, {
     params: { ...params },
   });
 }
