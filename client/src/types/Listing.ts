@@ -1,3 +1,4 @@
+import { CountrySelectValue } from "../components/Inputs/CountrySelect";
 import { UserType } from "./user";
 
 export type ListingType = {
@@ -10,7 +11,7 @@ export type ListingType = {
   bathRoomCount: number;
   guestCount: number;
   price: number;
-  location: string;
+  location: CountrySelectValue;
   user: UserType;
   reviews: string[];
   bookings: string[];
