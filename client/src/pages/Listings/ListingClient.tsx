@@ -120,7 +120,7 @@ const ListingClient = ({
             roomCount={listing.roomCount}
             guestCount={listing.guestCount}
             bathRoomCount={listing.bathRoomCount}
-            locationValue={listing.location}
+            locationValue={listing.location.label}
           />
           <div
             className="

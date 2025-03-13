@@ -2,10 +2,11 @@ import useCountries from "../../hooks/useCountries";
 import { UserType } from "../../types/user";
 import Heading from "../Heading";
 import HeartButton from "../HeartButton";
+import { CountrySelectValue } from "../Inputs/CountrySelect";
 
 interface ListingHeaderProps {
   title: string;
-  locationValue: string;
+  locationValue: CountrySelectValue;
   imageSrc: string;
   id: string;
   currentUser: UserType | null | undefined;
@@ -20,7 +21,7 @@ const ListingHead = ({
 }: ListingHeaderProps) => {
   const { getByValue } = useCountries();
 
-  const location = getByValue(locationValue);
+  const location = getByValue(locationValue.value);
 
   return (
     <>
