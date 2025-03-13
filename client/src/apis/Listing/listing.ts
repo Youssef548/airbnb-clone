@@ -1,5 +1,10 @@
 import { axiosInstance } from "../../providers/AxiosInstance";
-import { IListingParams } from "./listing.types";
+import { IListingParams, ListingRequestBody } from "./listing.types";
+
+export function createListing(data: ListingRequestBody) { 
+  return axiosInstance.post(`/listings`, data);
+}
+
 export function getListing(searchParams: IListingParams) {
   return axiosInstance.get(`/listings`, {
     params: { ...searchParams },
