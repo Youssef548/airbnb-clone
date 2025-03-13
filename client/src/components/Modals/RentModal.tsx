@@ -1,39 +1,33 @@
-import { useMemo, useState, useCallback } from "react";
-import { FieldValues, useForm } from "react-hook-form";
+import { useState, useCallback } from "react";
+import { useForm, FieldValues } from "react-hook-form";
 import useRentModal from "../../hooks/useRentModal";
 import Modal from "./Modal";
 import Heading from "../Heading";
 import Map from "../Map";
 import { categories } from "../layouts/Navbar/Categories";
 import CategoryInput from "../Inputs/CategoryInput";
-import CountrySelect from "../Inputs/CountrySelect";
+import CountrySelect, { CountrySelectValue } from "../Inputs/CountrySelect";
 import Counter from "../Inputs/Counter";
 import ImageUpload from "../Inputs/ImageUpload";
 import Input from "../Inputs/Input";
-import { axiosInstance } from "../../providers/AxiosInstance";
 import toast from "react-hot-toast";
+import { ListingRequestBody } from "../../apis/Listing/listing.types";
+import { createListing } from "../../apis/Listing/listing";
 
 enum STEPS {
-  CATEGORY = 0,
-  LOCATION = 1,
-  INFO = 2,
-  IMAGES = 3,
-  DESCRIPTION = 4,
-  PRICE = 5,
+  CATEGORY,
+  LOCATION,
+  INFO,
+  IMAGES,
+  DESCRIPTION,
+  PRICE,
 }
 
 const RentModal = () => {
   const rentModal = useRentModal();
-
-
-  const [step, setStep] = useState(STEPS.CATEGORY);
+  const [step, setStep] = useState<STEPS>(STEPS.CATEGORY);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-
-  const onBack = useCallback(() => {
-    setStep((value) => value - 1);
-    setError(null); // Clear error when navigating back
-  }, []);
 
   const {
     register,
@@ -42,20 +36,124 @@ const RentModal = () => {
     watch,
     reset,
     formState: { errors },
-  } = useForm<FieldValues>({
+  } = useForm<Partial<ListingRequestBody>>({
     defaultValues: {
-      category: "",
-      location: null,
-      guestCount: 1,
-      roomCount: 1,
-      bathRoomCount: 1,
-      imageSrc: "",
-      price: 1,
       title: "",
       description: "",
+      imageSrc: "",
+      category: "",
+      roomCount: 0,
+      bathRoomCount: 0,
+      guestCount: 0,
+      price: 0,
+      location: {} as CountrySelectValue,
+      reviews: [],
+      bookings: [],
     },
   });
 
+  // Retrieve form values using watch
+  const category = watch("category") || "";
+  const location = watch("location") as CountrySelectValue;
+  const guestCount = watch("guestCount") || 1;
+  const roomCount = watch("roomCount") || 1;
+  const bathRoomCount = watch("bathRoomCount") || 1;
+  const imageSrc = watch("imageSrc") || "";
+  const price = watch("price") || 1;
+  const title = watch("title") || "";
+  const description = watch("description") || "";
+
+  // Helper to update a value and clear error
+  const setCustomValue = (id: keyof ListingRequestBody, value: any) => {
+    setValue(id, value, {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true,
+    });
+    setError(null);
+  };
+
+  // Step validation using a switch statement
+  const validateStep = () => {
+    switch (step) {
+      case STEPS.CATEGORY:
+        return Boolean(category);
+      case STEPS.LOCATION:
+        return Boolean(location);
+      case STEPS.INFO:
+        return guestCount > 0 && roomCount > 0 && bathRoomCount > 0;
+      case STEPS.IMAGES:
+        return Boolean(imageSrc);
+      case STEPS.DESCRIPTION:
+        return title.trim() !== "" && description.trim() !== "";
+      case STEPS.PRICE:
+        return price > 0;
+      default:
+        return true;
+    }
+  };
+
+  // Error messages for each step
+  const stepErrorMessages: { [key in STEPS]: string } = {
+    [STEPS.CATEGORY]: "Please select a category.",
+    [STEPS.LOCATION]: "Please choose a location.",
+    [STEPS.INFO]: "Please ensure all info fields are filled correctly.",
+    [STEPS.IMAGES]: "Please upload an image.",
+    [STEPS.DESCRIPTION]: "Please provide a title and description.",
+    [STEPS.PRICE]: "Please set a price.",
+  };
+
+  // Handle form submission for the final step
+  const handleSubmitForm = async (data: FieldValues) => {
+    setIsLoading(true);
+
+    const listingData: ListingRequestBody = {
+      category: data.category,
+      location: data.location,
+      guestCount: data.guestCount,
+      roomCount: data.roomCount,
+      bathRoomCount: data.bathRoomCount,
+      imageSrc: data.imageSrc,
+      price: data.price,
+      title: data.title,
+      description: data.description,
+    };
+
+    try {
+      const res = await createListing(listingData);
+      if (res.status === 200 || res.status === 201) {
+        toast.success("Listing created successfully!");
+        onClose();
+      }
+    } catch (err) {
+      toast.error("Failed to create listing. Please try again.");
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Navigate to next step or submit form if on final step
+  const onNext = async (data: FieldValues) => {
+    if (!validateStep()) {
+      setError(stepErrorMessages[step]);
+      return;
+    }
+    if (step === STEPS.PRICE) {
+      await handleSubmitForm(data);
+    } else {
+      setStep((prev) => prev + 1);
+      setError(null);
+    }
+  };
+
+  // Navigate back a step
+  const onBack = () => {
+    setStep((prev) => prev - 1);
+    setError(null);
+  };
+
+  // Reset form and state on modal close
   const onClose = useCallback(() => {
     rentModal.onClose();
     reset();
@@ -63,306 +161,154 @@ const RentModal = () => {
     setError(null);
   }, [rentModal, reset]);
 
-  const category = watch("category");
-  const location = watch("location");
-  const guestCount = watch("guestCount");
-  const roomCount = watch("roomCount");
-  const bathRoomCount = watch("bathRoomCount");
-  const imageSrc = watch("imageSrc");
-  const price = watch("price");
-  const title = watch("title");
-  const description = watch("description");
+  const actionLabel = step === STEPS.PRICE ? "Create" : "Next";
+  const secondaryActionLabel = step === STEPS.CATEGORY ? undefined : "Back";
 
-  const setCustomValue = useCallback(
-    (id: string, value: any) => {
-      setValue(id, value, {
-        shouldValidate: true,
-        shouldDirty: true,
-        shouldTouch: true,
-      });
-      setError(null);
-    },
-    [setValue]
-  );
-
-  const validationRules = useMemo(
-    () => ({
-      [STEPS.CATEGORY]: () => !!category,
-      [STEPS.LOCATION]: () => !!location,
-      [STEPS.INFO]: () => guestCount > 0 && roomCount > 0 && bathRoomCount > 0,
-      [STEPS.IMAGES]: () => !!imageSrc,
-      [STEPS.DESCRIPTION]: () => title.length > 0 && description.length > 0,
-      [STEPS.PRICE]: () => price > 0,
-    }),
-    [
-      category,
-      location,
-      guestCount,
-      roomCount,
-      bathRoomCount,
-      imageSrc,
-      title,
-      description,
-      price,
-    ]
-  );
-
-  const validateStep = useCallback(() => {
-    const validate = validationRules[step];
-    return validate ? validate() : true;
-  }, [step, validationRules]);
-
-  const stepErrorMessages = useMemo(
-    () => ({
-      [STEPS.CATEGORY]: "Please select a category.",
-      [STEPS.LOCATION]: "Please choose a location.",
-      [STEPS.INFO]: "Please ensure all info fields are filled correctly.",
-      [STEPS.IMAGES]: "Please upload an image.",
-      [STEPS.DESCRIPTION]: "Please provide a title and description.",
-      [STEPS.PRICE]: "Please set a price.",
-    }),
-    []
-  );
-
-  const getStepErrorMessage = useCallback(
-    (step: STEPS) => {
-      return stepErrorMessages[step] || "Please complete all required fields.";
-    },
-    [stepErrorMessages]
-  );
-
-  const handleSubmitForm = useCallback(
-    async (data: FieldValues) => {
-      setIsLoading(true);
-
-      try {
-        const res = await axiosInstance.post("/listings/create", data);
-        if (res.status === 200 || res.status === 201) {
-          toast.success("Listing created successfully!");
-          onClose();
-        }
-      } catch (error) {
-        toast.error("Failed to create listing. Please try again.");
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [onClose]
-  );
-
-  const onNext = useCallback(
-    async (data: FieldValues) => {
-      if (!validateStep()) {
-        setError(getStepErrorMessage(step));
-        return;
-      }
-
-      if (step === STEPS.PRICE) {
-        // If we are at the last step, submit the form
-        await handleSubmitForm(data);
-      } else {
-        setStep((value) => value + 1);
-        setError(null); // Clear error when navigating to the next step
-      }
-    },
-    [validateStep, getStepErrorMessage, step, handleSubmitForm]
-  );
-
-  const actionLabel = useMemo(() => {
-    if (step === STEPS.PRICE) {
-      return "Create";
-    }
-    return "Next";
-  }, [step]);
-
-  const secondaryActionLabel = useMemo(() => {
-    if (step === STEPS.CATEGORY) {
-      return undefined;
-    }
-    return "Back";
-  }, [step]);
-
-  const CategoryContent = useMemo(
-    () => (
-      <div className="flex flex-col gap-8">
-        <Heading
-          title="Which of these best describes your place?"
-          subTitle="Pick a category"
-        />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
-          {categories.map((item) => (
-            <div key={item.label} className="col-span-1">
-              <CategoryInput
-                onClick={(category) => setCustomValue("category", category)}
-                selected={category === item.label}
-                label={item.label}
-                icon={item.icon}
-              />
+  // Render step-specific content
+  const renderStepContent = () => {
+    switch (step) {
+      case STEPS.CATEGORY:
+        return (
+          <div className="flex flex-col gap-8">
+            <Heading
+              title="Which of these best describes your place?"
+              subTitle="Pick a category"
+            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
+              {categories.map((item) => (
+                <div key={item.label}>
+                  <CategoryInput
+                    onClick={() => setCustomValue("category", item.label)}
+                    selected={category === item.label}
+                    label={item.label}
+                    icon={item.icon}
+                  />
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
-    ),
-    [categories, category, setCustomValue]
-  );
+          </div>
+        );
+      case STEPS.LOCATION:
+        return (
+          <div className="flex flex-col gap-8">
+            <Heading
+              title="Where is your place located?"
+              subTitle="Help guests find you!"
+            />
+            <CountrySelect
+              value={location}
+              onChange={(value) => setCustomValue("location", value)}
+            />
+            <Map center={location?.latlng || [26.8206, 30.8025]} />
+          </div>
+        );
+      case STEPS.INFO:
+        return (
+          <div className="flex flex-col gap-8">
+            <Heading
+              title="Share some basics about your place"
+              subTitle="What amenities do you have?"
+            />
+            <Counter
+              title="Guests"
+              subtitle="How many guests do you allow?"
+              value={guestCount}
+              onChange={(value) => setCustomValue("guestCount", value)}
+            />
+            <hr />
+            <Counter
+              title="Rooms"
+              subtitle="How many Rooms do you have?"
+              value={roomCount}
+              onChange={(value) => setCustomValue("roomCount", value)}
+            />
+            <hr />
+            <Counter
+              title="Bathrooms"
+              subtitle="How many Bathrooms do you have?"
+              value={bathRoomCount}
+              onChange={(value) => setCustomValue("bathRoomCount", value)}
+            />
+          </div>
+        );
+      case STEPS.IMAGES:
+        return (
+          <div className="flex flex-col gap-8">
+            <Heading
+              title="Add a photo of your place"
+              subTitle="Show guests what your place looks like"
+            />
+            <ImageUpload
+              value={imageSrc}
+              onChange={(value: string) => setCustomValue("imageSrc", value)}
+            />
+          </div>
+        );
+      case STEPS.DESCRIPTION:
+        return (
+          <div className="flex flex-col gap-8">
+            <Heading
+              title="How would you describe your place?"
+              subTitle="Short and sweet works best!"
+            />
+            <Input
+              id="title"
+              label="Title"
+              disabled={isLoading}
+              register={register}
+              errors={errors}
+              required
+            />
+            <hr />
+            <Input
+              id="description"
+              label="Description"
+              disabled={isLoading}
+              register={register}
+              errors={errors}
+              required
+            />
+          </div>
+        );
+      case STEPS.PRICE:
+        return (
+          <div className="flex flex-col gap-8">
+            <Heading
+              title="Now, set your price"
+              subTitle="How much do you charge per night?"
+            />
+            <Input
+              id="price"
+              label="Price"
+              formatPrice
+              type="number"
+              disabled={isLoading}
+              register={register}
+              errors={errors}
+              required
+            />
+          </div>
+        );
+      default:
+        return <></>;
+    }
+  };
 
-  const LocationContent = useMemo(
-    () => (
-      <div className="flex flex-col gap-8">
-        <Heading
-          title="Where is your place located?"
-          subTitle="Help guests find you!"
-        />
-        <CountrySelect
-          value={location}
-          onChange={(value) => setCustomValue("location", value)}
-        />
-        <Map center={location?.latlng || [26.8206, 30.8025]} />
-      </div>
-    ),
-    [location, setCustomValue]
-  );
+    return (
+      <Modal
+        isOpen={rentModal.isOpen}
+        onClose={onClose}
+        onSubmit={handleSubmit(onNext)}
+        actionLabel={actionLabel}
+        secondaryActionLabel={secondaryActionLabel}
+        secondaryAction={step === STEPS.CATEGORY ? undefined : onBack}
+        title="Airbnb your home!"
+        body={renderStepContent()}
+        {...(error ? { error } : {})}
+      />
+    );
 
-  const InfoContent = useMemo(
-    () => (
-      <div className="flex flex-col gap-8">
-        <Heading
-          title="Share some basics about your place"
-          subTitle="What amenities do you have?"
-        />
-        <Counter
-          title="Guests"
-          subtitle="How many guests do you allow?"
-          value={guestCount}
-          onChange={(value) => setCustomValue("guestCount", value)}
-        />
-        <hr />
-        <Counter
-          title="Rooms"
-          subtitle="How many Rooms do you have?"
-          value={roomCount}
-          onChange={(value) => setCustomValue("roomCount", value)}
-        />
-        <hr />
-        <Counter
-          title="Bathrooms"
-          subtitle="How many Bathrooms do you have?"
-          value={bathRoomCount}
-          onChange={(value) => setCustomValue("bathRoomCount", value)}
-        />
-      </div>
-    ),
-    [guestCount, roomCount, bathRoomCount, setCustomValue]
-  );
-
-  const ImageContent = useMemo(
-    () => (
-      <div className="flex flex-col gap-8">
-        <Heading
-          title="Add a photo of your place"
-          subTitle="Show guests what your place looks like"
-        />
-        <ImageUpload
-          value={imageSrc}
-          onChange={(value: string) => setCustomValue("imageSrc", value)}
-        />
-      </div>
-    ),
-    [imageSrc, setCustomValue]
-  );
-
-  const DescriptionContent = () => (
-    <div className="flex flex-col gap-8">
-        <Heading
-            title="How you would describe your place?"
-            subTitle="Short and sweet works best!"
-        />
-        <Input
-            id="title"
-            label="Title"
-            disabled={isLoading}
-            register={register}
-            errors={errors}
-            required
-        />
-        <hr />
-        <Input
-            id="description"
-            label="Description"
-            disabled={isLoading}
-            register={register}
-            errors={errors}
-            required
-        />
-    </div>
-);
-
-
-  const PriceContent = useMemo(
-    () => (
-      <div className="flex flex-col gap-8">
-        <Heading
-          title="Now, set your price"
-          subTitle="How much do you charge per night?"
-        />
-        <Input
-          id="price"
-          label="Price"
-          formatPrice
-          type="number"
-          disabled={isLoading}
-          register={register}
-          errors={errors}
-          required
-        />
-      </div>
-    ),
-    [isLoading, register, errors]
-  );
-
-  const stepComponents = useMemo(
-    () => ({
-      [STEPS.CATEGORY]: CategoryContent,
-      [STEPS.LOCATION]: LocationContent,
-      [STEPS.INFO]: InfoContent,
-      [STEPS.IMAGES]: ImageContent,
-      [STEPS.DESCRIPTION]: DescriptionContent(),
-      [STEPS.PRICE]: PriceContent,
-    }),
-    [
-      CategoryContent,
-      LocationContent,
-      InfoContent,
-      ImageContent,
-      DescriptionContent,
-      PriceContent,
-    ]
-  );
-
-  const getStepComponent = useCallback(
-    (step: STEPS) => {
-      return stepComponents[step];
-    },
-    [stepComponents]
-  );
   
-
-  const bodyContent = getStepComponent(step);
-
-  return (
-    <Modal
-      isOpen={rentModal.isOpen}
-      onClose={onClose}
-      onSubmit={handleSubmit(onNext)}
-      actionLabel={actionLabel}
-      secondaryActionLabel={secondaryActionLabel}
-      secondaryAction={step === STEPS.CATEGORY ? undefined : onBack}
-      title="Airbnb your home!"
-      body={bodyContent}
-      {...(error ? { error: error } : {})}
-    ></Modal>
-  );
 };
 
 export default RentModal;
