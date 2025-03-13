@@ -1,11 +1,11 @@
-import {  useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import axios from "axios";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 
 import useRegisterModal from "../../hooks/useRegisterModal";
 
 import { BASEURL } from "../../apis/baseurl";
-import {registerWithGoogle , registerWithGithub} from "../../apis/oauth";
+import { registerWithGoogle, registerWithGithub } from "../../apis/oauth";
 
 import Modal from "./Modal";
 import Heading from "../Heading";
@@ -13,6 +13,9 @@ import Input from "../Inputs/Input";
 import toast from "react-hot-toast";
 import Button from "../Buttons";
 import useLoginModal from "../../hooks/useLoginModal";
+import { axiosInstance } from "../../providers/AxiosInstance";
+import { registerRequest } from "../../apis/auth/auth";
+import { RequestBodyType } from "../../apis/auth/auth.types";
 
 const RegisterModal = () => {
   const registerModal = useRegisterModal();
@@ -20,22 +23,22 @@ const RegisterModal = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-    const handleGoogleRegister = async () => {
-      try {
-        const response = await registerWithGoogle();
-        console.log(response); // Handle the response as needed
-      } catch (error) {
-        console.error('Error registering with Google:', error);
-      }
+  const handleGoogleRegister = async () => {
+    try {
+      const response = await registerWithGoogle();
+      console.log(response); // Handle the response as needed
+    } catch (error) {
+      console.error('Error registering with Google:', error);
     }
-    const handleGithubRegister = async () => {
-      try {
-        const response = await registerWithGithub();
-        console.log(response); // Handle the response as needed
-      } catch (error) {
-        console.error('Error registering with Google:', error);
-      }
+  }
+  const handleGithubRegister = async () => {
+    try {
+      const response = await registerWithGithub();
+      console.log(response); // Handle the response as needed
+    } catch (error) {
+      console.error('Error registering with Google:', error);
     }
+  }
 
 
   const {
@@ -52,11 +55,11 @@ const RegisterModal = () => {
   });
 
 
-  
+
   const toggle = useCallback(() => {
     registerModal.onClose();
     loginModal.onOpen();
-  
+
   }, [loginModal, registerModal])
 
   const bodyContent = (
@@ -136,18 +139,23 @@ const RegisterModal = () => {
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
 
-    axios
-      .post(`${BASEURL}/auth/register`, data)
+    const requestData: RequestBodyType = {
+      username: data.username,
+      email: data.email,
+      password: data.password,
+    };
+
+    registerRequest(requestData)
       .then(() => {
         registerModal.onClose();
       })
       .catch((err) => {
-        if(err.response.data.message && err.response.status !== 500) {
-           toast.error(err.response.data.message);
+        if (err.response.data.message && err.response.status !== 500) {
+          toast.error(err.response.data.message);
         } else {
           toast.error(`something went wrong`);
         }
-        
+
       })
       .finally(() => {
         setIsLoading(false);
