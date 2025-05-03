@@ -9,16 +9,21 @@ const user = {
 };
 
 const listing = {
-  title: "hello world",
-  description: "this a just test",
-  imageSrc:
-    "https://res.cloudinary.com/dkyhsld8s/image/upload/v1739723844/IMG_0540_gnaqvk.jpg",
-  price: 500,
-  category: "stars",
-  location: "Cairo",
-  roomCount: 1,
-  guestCount: 1,
-  bathRoomCount: 1,
+  title: "Test Listing",
+  description: "A wonderful place",
+  imageSrc: "image.jpg",
+  category: "apartment",
+  roomCount: 3,
+  bathRoomCount: 2,
+  guestCount: 4,
+  price: 50,
+  location: {
+    flag: "EG",
+    label: "Cairo",
+    latlng: [30.0444, 31.2357],
+    region: "Egypt",
+    value: "Cairo",
+  },
 };
 
 describe("Favorites API", () => {

@@ -16,8 +16,14 @@ const listingData = {
   roomCount: 3,
   bathRoomCount: 2,
   guestCount: 4,
-  location: "Cairo",
   price: 50,
+  location: {
+    flag: "EG",
+    label: "Cairo",
+    latlng: [30.0444, 31.2357],
+    region: "Egypt",
+    value: "Cairo",
+  },
 };
 
 describe("Listings API", () => {
