@@ -1,10 +1,11 @@
 import useUserStore from "../store/useStore";
+import useLoginModal from "../hooks/useLoginModal";
 
 export const handleUnauthorized = () => {
   const { clearUser } = useUserStore.getState();
+  localStorage.removeItem("token");
   clearUser();
 
-  localStorage.removeItem("token");
-
-  window.location.href = "/";
+  useLoginModal.getState().onOpen();
+  // window.location.href = "/";
 };
