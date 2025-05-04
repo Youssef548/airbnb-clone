@@ -1,8 +1,5 @@
 import mongoose from "mongoose";
 import connectDB from "../src/config/database";
-import { User } from "../src/models/User.model";
-import { Booking } from "../src/models/booking.model";
-import { Listing } from "../src/models/listing.model";
 import { clearDatabase } from "./db-helpers/clearDatabase";
 
 async function main() {
