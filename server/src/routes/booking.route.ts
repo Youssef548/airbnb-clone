@@ -5,13 +5,16 @@ import { cancelBookSchema, createBookSchema } from "../schemas/booking.schema";
 import {
   cancelBooking,
   createBooking,
-  getBookings,
+  getMyBookings,
 } from "../controllers/booking.controller";
 
 const router = Router();
 
 router.post("/", isAuth, validateSchema(createBookSchema), createBooking);
-router.get("/", isAuth, getBookings);
+router.get("/", isAuth, getMyBookings)
+
+//TODO: add admin middleware (I didn't create admin role yet)
+// router.get("/", isAdmin, isAuth, getBookings);
 router.delete("/:bookingId", isAuth, cancelBooking);
 
 export default router;

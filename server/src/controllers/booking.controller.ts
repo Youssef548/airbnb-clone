@@ -4,6 +4,7 @@ import {
   createBookingService,
   getBookingsService,
   cancelBookingService,
+  getMyBookingsService,
 } from "../services/booking.service";
 
 interface CustomRequest extends Request {
@@ -27,6 +28,7 @@ export async function createBooking(
   }
 }
 
+// this should be for admins only in future not for guests or host
 export async function getBookings(
   req: Request,
   res: Response,
@@ -46,6 +48,20 @@ export async function getBookings(
     }
 
     const bookings = await getBookingsService(filters);
+    res.status(200).json(bookings);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getMyBookings(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const cusReq = req as CustomRequest;
+    const bookings = await getMyBookingsService(cusReq.user.userId);
     res.status(200).json(bookings);
   } catch (error) {
     next(error);

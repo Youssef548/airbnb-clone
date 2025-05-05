@@ -63,10 +63,31 @@ export const getBookingsService = async (filters: Record<string, any>) => {
     listingId: null,
     listing: reservation.listingId
       ? {
-          ...reservation.listingId.toObject(),
-          createdAt: reservation.listingId?.createdAt?.toISOString(),
-        }
-      : undefined,
+        ...reservation.listingId.toObject(),
+        createdAt: reservation.listingId?.createdAt?.toISOString(),
+      }
+      : null,
+  }));
+};
+
+export const getMyBookingsService = async (userId: string) => {
+  const bookings = await Booking.find({ guest: userId })
+    .populate("listingId")
+    .sort({ createdAt: -1 })
+    .exec();
+
+  return bookings.map((reservation) => ({
+    ...reservation.toObject(),
+    createdAt: reservation.createdAt.toISOString(),
+    updatedAt: reservation.updatedAt.toISOString(),
+    endDate: reservation.endDate?.toDateString(),
+    listingId: null,
+    listing: reservation.listingId
+      ? {
+        ...reservation.listingId.toObject(),
+        createdAt: reservation.listingId?.createdAt?.toISOString(),
+      }
+      : null,
   }));
 };
 
