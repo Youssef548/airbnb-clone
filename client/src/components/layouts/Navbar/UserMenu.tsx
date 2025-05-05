@@ -108,15 +108,21 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
                   onClick={() => navigate("/favorites")}
                   label="My favourites"
                 />
-                <MenuItem
-                  onClick={() => navigate("/reservations")}
-                  label="My Reservations"
-                />
-                <MenuItem
-                  onClick={() => navigate("/properties")}
-                  label="My Properties"
-                />
-                <MenuItem onClick={rentModal.onOpen} label="Airbnb my home" />
+                {user?.role == "host" && (
+                  <MenuItem
+                    onClick={() => navigate("/reservations")}
+                    label="My Reservations"
+                  />
+                )}
+                {user?.role === "host" && (
+                  <MenuItem
+                    onClick={() => navigate("/properties")}
+                    label="My Properties"
+                  />
+                )}
+                {user?.role === "host" && (
+                  <MenuItem onClick={rentModal.onOpen} label="Airbnb my home" />
+                )}
                 <hr />
                 <MenuItem
                   onClick={() => {
