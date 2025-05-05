@@ -41,6 +41,7 @@ export const loginUserService = async (
     username: user.username,
     image: user.image || null,
     favoriteListingsIds: user.favoriteListingsIds,
+    role: user.role,
   };
 
   return { token, user: sanitizedUser };
@@ -63,6 +64,7 @@ export const createUserService = async (
     password: hashedPassword,
     username,
     image: null,
+    role: "guest",
   });
 
   await user.save();
@@ -72,6 +74,7 @@ export const createUserService = async (
     email: user.email,
     username: user.username,
     image: user.image || null,
+    role: user.role,
   };
 
   return sanitizedUser;
