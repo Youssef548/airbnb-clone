@@ -7,6 +7,7 @@ export interface IUser extends Document {
   emailVerified?: Date;
   image?: string;
   password: string;
+  role: string;
   favoriteListingsIds: Types.ObjectId[];
   listings?: Types.ObjectId[];
   bookings?: Types.ObjectId[];
@@ -23,6 +24,11 @@ const UserSchema = new mongoose.Schema(
     username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     emailVerified: { type: Date },
+    role: {
+      type: String,
+      enum: ['guest', 'host'],
+      default: 'guest'
+    },
     image: { type: String },
     password: { type: String, required: true },
     favoriteListingsIds: [
