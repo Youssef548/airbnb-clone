@@ -22,4 +22,5 @@ export interface SanitizedUser {
   username: string;
   image?: string | null;
   favoriteListingsIds?: mongoose.Types.ObjectId[];
+  role: string;
 }
