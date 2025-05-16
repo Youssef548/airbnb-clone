@@ -50,7 +50,8 @@ export const loginUserService = async (
 export const createUserService = async (
   email: string,
   password: string,
-  username: string
+  username: string,
+  role: string = "guest"
 ): Promise<SanitizedUser> => {
   const isExist = await User.findOne({ email });
   if (isExist) {
@@ -64,7 +65,7 @@ export const createUserService = async (
     password: hashedPassword,
     username,
     image: null,
-    role: "guest",
+    role,
   });
 
   await user.save();
