@@ -30,7 +30,6 @@ const Image: React.FC<ImageProps> = ({
       />
     );
   } catch (error) {
-    console.log("Not using Next.js");
     return (
       <img
         src={typeof src === "string" ? src : src.src}

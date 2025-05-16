@@ -34,8 +34,6 @@ const SearchModal = () => {
     key: "selection",
   });
 
-  console.log(searchParams);
-
   const onBack = useCallback(() => {
     setStep((value) => value - 1);
   }, []);
