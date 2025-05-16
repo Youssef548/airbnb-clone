@@ -8,3 +8,11 @@ export const loginRequest = (data: LoginBodyType) => {
 export const registerRequest = (data: RequestBodyType) => {
     return axiosInstance.post(`/auth/register`, data);
 }
+
+export const checkAuth = (authToken: string) => {
+    return axiosInstance.get(`/auth/me`, {
+        headers: {
+            Authorization: `Bearer ${authToken}`
+        }
+    });
+}

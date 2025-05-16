@@ -1,5 +1,10 @@
 import mongoose from "mongoose";
 
+
+export interface User {
+  user: SanitizedUser;
+}
+
 export interface LoginRequestBody {
   email: string;
   password: string;

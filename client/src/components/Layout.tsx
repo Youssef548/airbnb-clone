@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 
 import Navbar from "./layouts/Navbar/Navbar";
@@ -10,6 +10,11 @@ import SearchModal from "./Modals/SearchModal";
 import Loading from "./Loading";
 function Layout() {
   const user = useUserStore((state) => state.user);
+  const fetchUser = useUserStore((state) => state.fetchUser);
+
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
 
   return (
     <>
