@@ -5,7 +5,10 @@ import { loginUserService, createUserService } from "../services/auth.service";
 import {
   LoginRequestBody,
   CreateUserRequestBody,
+  User as UserInterface,
 } from "../interfaces/authInterfaces";
+import { User as UserModel } from "../models/User.model";
+// Express Request type is extended globally in types/express/index.d.ts
 
 dotenv.config();
 
@@ -43,3 +46,26 @@ export const createUser = async (
     return res.status(400).json({ error: error.message });
   }
 };
+
+
+export const getMe = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(401).json({ error: "User not authenticated" });
+    }
+    
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    
+    return res.status(200).json({ user });
+
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return res.status(500).json({ error: error.message });
+    }
+    return res.status(500).json({ error: "An unknown error occurred" });
+  }
+}

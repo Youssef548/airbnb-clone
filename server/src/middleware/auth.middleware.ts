@@ -2,8 +2,11 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { errorHandler } from "../utils/error";
 
+// Import our custom JWT payload type
+import { UserJwtPayload } from '../types/express';
+
 interface AuthenticatedRequest extends Request {
-  user: jwt.JwtPayload | string; // Assuming JWT payload is an object or a string
+  user: UserJwtPayload;
 }
 
 export const isAuth = (req: Request, res: Response, next: NextFunction) => {
@@ -28,10 +31,9 @@ export const isAuth = (req: Request, res: Response, next: NextFunction) => {
 
   try {
     const decoded = jwt.verify(token, jwtSecret);
-    request.user = decoded;
+    request.user = decoded as UserJwtPayload;
     next();
   } catch (error) {
-    // Optionally, differentiate error messages based on the error type
     console.error(error);
     return next(errorHandler(401, "Invalid authentication token."));
   }
