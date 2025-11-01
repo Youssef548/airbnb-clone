@@ -3,13 +3,24 @@ import svg from "../assets/placeholder.jpg";
 
 interface ImageProps {
   src?: string; // Optional prop for an image source, default to placeholder.jpg if not provided.
+  size?: "sm" | "md" | "lg" | "xl";
 }
-const Avatar = ({ src }: ImageProps) => {
+
+const sizeMap = {
+  sm: { width: "30", height: "30" },
+  md: { width: "50", height: "50" },
+  lg: { width: "80", height: "80" },
+  xl: { width: "120", height: "120" },
+};
+
+const Avatar = ({ src, size = "sm" }: ImageProps) => {
+  const dimensions = sizeMap[size];
+
   return (
     <Image
       className="rounded-full"
-      width="30"
-      height="30"
+      width={dimensions.width}
+      height={dimensions.height}
       alt="Avatar"
       src={src || svg}
     />
