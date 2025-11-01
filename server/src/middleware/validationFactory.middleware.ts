@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { ZodObject, ZodError } from "zod";
 import { errorHandler } from "../utils/error";
+import logger from "../utils/logger";
 
 const validateSchema = (schema: ZodObject<any, any>) => {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -13,8 +14,8 @@ const validateSchema = (schema: ZodObject<any, any>) => {
         errorMessage = err.errors[0].message; // Use Zod error message
         return next(errorHandler(400, errorMessage));
       } else {
-        console.error("Validation Middleware Error:", err);
-        return next(errorHandler(500, errorMessage)); 
+        logger.error(`Validation Middleware Error: ${err}`);
+        return next(errorHandler(500, errorMessage));
       }
     }
   };
