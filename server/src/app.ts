@@ -5,6 +5,7 @@ import express from "express";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import mongoSanitize from "express-mongo-sanitize";
+import morgan from "morgan";
 dotenv.config();
 
 import errorHandler from "./middleware/error.middleware";
@@ -12,6 +13,9 @@ import authRoutes from "./routes/authRoutes";
 import bookingRoutes from "./routes/booking.route";
 import favoriteRoutes from "./routes/favorite.route";
 import listingRoutes from "./routes/listing.route";
+import logger, { stream } from "./utils/logger";
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./config/swagger";
 
 const app = express();
 
@@ -79,6 +83,18 @@ const authLimiter = rateLimit({
 // Apply general rate limiting to all requests
 app.use(limiter);
 
+// Logging: HTTP request logging (only in development and production, not in tests)
+if (process.env.NODE_ENV !== "test") {
+  app.use(
+    morgan(
+      process.env.NODE_ENV === "production"
+        ? "combined" // Apache-style combined format for production
+        : "dev", // Colored, concise output for development
+      { stream }
+    )
+  );
+}
+
 // Middleware setup
 // Security: Request size limits to prevent DoS attacks
 app.use(express.json({ limit: "10mb" }));
@@ -89,6 +105,54 @@ app.use(mongoSanitize());
 
 // Routes setup
 app.get("/", (req, res) => res.send("Express on Vercel"));
+
+/**
+ * @swagger
+ * /health:
+ *   get:
+ *     summary: Health check endpoint
+ *     tags: [Health]
+ *     description: Returns the health status of the API
+ *     responses:
+ *       200:
+ *         description: API is healthy
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: OK
+ *                 timestamp:
+ *                   type: string
+ *                   format: date-time
+ *                 uptime:
+ *                   type: number
+ *                   example: 123.45
+ *                 environment:
+ *                   type: string
+ *                   example: development
+ *                 database:
+ *                   type: string
+ *                   example: connected
+ */
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "OK",
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || "development",
+    database: "connected", // Could add actual DB health check here
+  });
+});
+
+// Swagger API documentation (only in development and production, not in tests)
+if (process.env.NODE_ENV !== "test") {
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  logger.info("Swagger documentation available at /api-docs");
+}
+
 app.use("/api/auth/", authLimiter, authRoutes);
 app.use("/api/listings/", listingRoutes);
 app.use("/api/favorites/", favoriteRoutes);
