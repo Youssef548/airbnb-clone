@@ -6,6 +6,7 @@ export default defineConfig({
     environment: "node",
     setupFiles: "./tests/setup.ts",
     isolate: true,
+    fileParallelism: false, // Run test files sequentially to avoid database conflicts
     sequence: {
       shuffle: false,
       concurrent: false,
