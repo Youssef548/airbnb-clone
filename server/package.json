@@ -17,6 +17,11 @@
     "dev": "tsx  --watch ./src/server.ts",
     "build": "echo hello world",
     "test": "tsx tests/globalSetup.ts && vitest; tsx tests/globalTeardown.ts",
+    "test:unit": "vitest tests/unit",
+    "test:integration": "vitest tests/auth tests/listing tests/booking tests/favorite",
+    "test:coverage": "vitest --coverage",
+    "test:watch": "vitest --watch",
+    "test:ui": "vitest --ui",
     "vercel-build": "echo hello world"
   },
   "devDependencies": {
@@ -26,6 +31,7 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/mongoose": "^5.11.97",
     "@types/node": "^20.12.13",
+    "@vitest/coverage-v8": "^4.0.6",
     "supertest": "^7.0.0",
     "typescript": "^5.4.5",
     "vitest": "^3.0.5",

@@ -280,7 +280,25 @@ All routes use Zod schemas (in `server/src/schemas/`) with `validateSchema()` mi
 - Tests in `server/tests/`
 - Setup file: `server/tests/setup.ts`
 - Global setup/teardown for test database
-- Run with `pnpm run test` in server directory
+- **Comprehensive testing plan**: See `TESTING_PLAN.md` for detailed coverage strategy
+
+**Test Commands** (in server directory):
+
+```bash
+pnpm run test              # Run all tests
+pnpm run test:unit         # Run unit tests only
+pnpm run test:integration  # Run integration tests only
+pnpm run test:coverage     # Run with coverage report
+pnpm run test:watch        # Watch mode
+pnpm run test:ui           # Open Vitest UI
+```
+
+**Coverage Goals**:
+
+- Target: 85%+ overall coverage
+- Critical paths (booking conflicts, date filtering, auth): 100%
+- Service layer: 90%+
+- Integration tests: 85%+
 
 ### API Response Format
 
