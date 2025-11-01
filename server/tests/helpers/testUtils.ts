@@ -277,7 +277,8 @@ export const expectDateConflict = (
  * Deletes all test users created during tests
  */
 export const cleanupTestUsers = async () => {
-  await User.deleteMany({ email: /^test_/ });
+  // Delete ALL users in test database
+  await User.deleteMany({});
 };
 
 /**
