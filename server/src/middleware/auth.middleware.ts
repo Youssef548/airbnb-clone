@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { errorHandler } from "../utils/error";
+import logger from "../utils/logger";
 
 // Import our custom JWT payload type
 import { UserJwtPayload } from '../types/express';
@@ -25,7 +26,7 @@ export const isAuth = (req: Request, res: Response, next: NextFunction) => {
 
   if (!jwtSecret) {
     // Handle missing JWT_SECRET environment variable
-    console.error("JWT_SECRET is not defined.");
+    logger.error("JWT_SECRET is not defined in environment variables.");
     return next(errorHandler(500, "Internal server error."));
   }
 
@@ -34,7 +35,7 @@ export const isAuth = (req: Request, res: Response, next: NextFunction) => {
     request.user = decoded as UserJwtPayload;
     next();
   } catch (error) {
-    console.error(error);
+    logger.error(`JWT verification failed: ${error}`);
     return next(errorHandler(401, "Invalid authentication token."));
   }
 };
