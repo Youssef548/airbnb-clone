@@ -10,6 +10,43 @@ Full-stack Airbnb clone with TypeScript throughout. Monorepo structure with sepa
 
 **Package Manager:** This project uses **pnpm** instead of npm.
 
+### Quick Start (Both Servers)
+
+**Option 1: Using the start script (Unix/Mac/Git Bash on Windows)**
+
+```bash
+chmod +x dev.sh
+./dev.sh
+```
+
+**Option 2: Manual start (separate terminals)**
+
+Terminal 1 - Start MongoDB:
+
+```bash
+cd server
+docker-compose up mongodb
+```
+
+Terminal 2 - Start server:
+
+```bash
+cd server
+pnpm run dev
+```
+
+Terminal 3 - Start client:
+
+```bash
+cd client
+pnpm run dev
+```
+
+Both servers will start:
+
+- **Server**: http://localhost:3000
+- **Client**: http://localhost:5173
+
 ### Client (React + Vite)
 
 ```bash
