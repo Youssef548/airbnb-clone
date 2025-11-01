@@ -5,8 +5,8 @@ FROM node:18
 WORKDIR /app
 
 # Copy package.json and install dependencies
-COPY package.json package-lock.json ./
-RUN npm install
+COPY package.json ./
+RUN npm install --legacy-peer-deps
 
 # Copy the rest of the application
 COPY . .
@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 3000
 
 # Start the application
-CMD ["npm", "dev"]
+CMD ["npm", "run", "dev"]
