@@ -6,20 +6,21 @@ This document summarizes the comprehensive testing implementation completed for 
 
 **Status**: ✅ Priority 1 & 2 tests complete
 **Last Updated**: 2025-11-01
-**Test Count**: 73 unit tests
+**Test Count**: 98 unit tests
 **Pass Rate**: 100%
 
 ## Test Results
 
 ```
-Test Files: 3 passed (3)
-Tests: 73 passed (73)
-Duration: ~16 seconds
+Test Files: 4 passed (4)
+Tests: 98 passed (98)
+Duration: ~21 seconds
 
 Service Coverage:
 ├─ Booking Service: 21 tests ✅ (~95% coverage)
 ├─ Listing Service: 30 tests ✅ (~90% coverage)
-└─ Auth Service: 22 tests ✅ (~95% coverage)
+├─ Auth Service: 22 tests ✅ (~95% coverage)
+└─ Favorite Service: 25 tests ✅ (~95% coverage)
 ```
 
 ## Implementation Breakdown
@@ -140,6 +141,44 @@ Service Coverage:
 - ✅ Different passwords → different hashes
 - ✅ Same password → different hashes (salt)
 - ✅ Both salted hashes verify correctly
+
+### 4. Favorite Service Tests (25 tests)
+
+**File**: `server/tests/unit/services/favorite.service.test.ts`
+
+#### Add Favorite (9 tests)
+
+- ✅ Add single listing to favorites
+- ✅ Add multiple listings to favorites
+- ✅ Maintain existing favorites when adding new
+- ✅ Handle users with no existing favorites
+- ✅ Reject empty listing ID
+- ✅ Reject non-existent listing
+- ✅ Reject non-existent user
+- ✅ Reject duplicate favorites
+- ✅ Use Set to prevent duplicate IDs
+
+#### Delete Favorite (8 tests)
+
+- ✅ Remove listing from favorites
+- ✅ Handle removing last favorite
+- ✅ Maintain other favorites when removing one
+- ✅ Reject empty listing ID
+- ✅ Reject non-existent listing
+- ✅ Reject non-existent user
+- ✅ Reject when listing not in favorites
+- ✅ Reject removing from empty favorites
+
+#### Get Favorites (8 tests)
+
+- ✅ Retrieve all favorite listings
+- ✅ Return empty array for no favorites
+- ✅ Return full listing details
+- ✅ Format createdAt as date string
+- ✅ Handle multiple favorites correctly
+- ✅ Only return listings that still exist
+- ✅ Throw error for non-existent user
+- ✅ User isolation (only return user's own favorites)
 
 ## Test Infrastructure
 

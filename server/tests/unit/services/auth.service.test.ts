@@ -258,15 +258,16 @@ describe("Auth Service - Unit Tests", () => {
       it("should not reveal whether email or password is wrong", async () => {
         await createUserService("user@example.com", "password123", "testuser");
 
+        // Both should throw the same error message
         // Wrong email
-        const error1 = loginUserService("wrong@example.com", "password123");
+        await expect(
+          loginUserService("wrong@example.com", "password123")
+        ).rejects.toThrow("Invalid credentials");
 
         // Wrong password
-        const error2 = loginUserService("user@example.com", "wrongpassword");
-
-        // Both should throw the same error message
-        await expect(error1).rejects.toThrow("Invalid credentials");
-        await expect(error2).rejects.toThrow("Invalid credentials");
+        await expect(
+          loginUserService("user@example.com", "wrongpassword")
+        ).rejects.toThrow("Invalid credentials");
       });
 
       it("should be case-sensitive for email", async () => {
