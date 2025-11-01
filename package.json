@@ -16,8 +16,7 @@
       "prettier --write"
     ],
     "client/**/*.{js,jsx,ts,tsx}": [
-      "prettier --write",
-      "cd client && pnpm run lint --fix"
+      "prettier --write"
     ],
     "server/**/*.{js,ts}": [
       "prettier --write"
