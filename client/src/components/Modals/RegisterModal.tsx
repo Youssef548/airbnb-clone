@@ -1,10 +1,8 @@
 import { useCallback, useState } from "react";
-import axios from "axios";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 
 import useRegisterModal from "../../hooks/useRegisterModal";
 
-import { BASEURL } from "../../apis/baseurl";
 import { registerWithGoogle, registerWithGithub } from "../../apis/oauth";
 
 import Modal from "./Modal";
@@ -13,7 +11,6 @@ import Input from "../Inputs/Input";
 import toast from "react-hot-toast";
 import Button from "../Buttons";
 import useLoginModal from "../../hooks/useLoginModal";
-import { axiosInstance } from "../../providers/AxiosInstance";
 import { registerRequest } from "../../apis/auth/auth";
 import { RequestBodyType } from "../../apis/auth/auth.types";
 
