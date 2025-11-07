@@ -9,8 +9,12 @@ import authRoutes from "./routes/authRoutes";
 import bookingRoutes from "./routes/booking.route";
 import favoriteRoutes from "./routes/favorite.route";
 import listingRoutes from "./routes/listing.route";
+import passport from "./config/passport";
 
 const app = express();
+
+// Initialize Passport
+app.use(passport.initialize());
 
 app.use(
   cors({

@@ -2,11 +2,12 @@ import mongoose, { Model, Types } from "mongoose";
 
 
 export interface IUser extends Document {
+  _id: Types.ObjectId;
   username: string;
   email: string;
   emailVerified?: Date;
   image?: string;
-  password: string;
+  password?: string; // Optional for OAuth users
   role: string;
   favoriteListingsIds: Types.ObjectId[];
   listings?: Types.ObjectId[];
@@ -30,7 +31,7 @@ const UserSchema = new mongoose.Schema(
       default: 'guest'
     },
     image: { type: String },
-    password: { type: String, required: true },
+    password: { type: String, required: false }, // Optional for OAuth users
     favoriteListingsIds: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Listing" },
     ],

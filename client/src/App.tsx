@@ -14,6 +14,8 @@ const ReservationsPage = lazy(
 );
 const FavoritesPage = lazy(() => import("./pages/Favorites/Favorites"));
 const PropertiesPage = lazy(() => import("./pages/Properties/PropertiesPage"));
+const OAuthCallback = lazy(() => import("./pages/Auth/OAuthCallback"));
+const OAuthError = lazy(() => import("./pages/Auth/OAuthError"));
 
 const routes = [
   {
@@ -27,6 +29,14 @@ const routes = [
       {
         path: "listing/:listingId",
         element: <ListingPage />,
+      },
+      {
+        path: "/auth/callback",
+        element: <OAuthCallback />,
+      },
+      {
+        path: "/auth/error",
+        element: <OAuthError />,
       },
       {
         path: "/*",

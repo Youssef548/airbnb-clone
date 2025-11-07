@@ -1,9 +1,9 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 
 import useRegisterModal from "../../hooks/useRegisterModal";
 
-import { registerWithGoogle, registerWithGithub } from "../../apis/oauth";
+import { registerWithGoogle, registerWithGithub, checkOAuthAvailability } from "../../apis/oauth";
 
 import Modal from "./Modal";
 import Heading from "../Heading";
@@ -24,22 +24,23 @@ const RegisterModal = () => {
   const setUser = userStore.setUser;
 
   const [isLoading, setIsLoading] = useState(false);
+  const [oauthAvailable, setOauthAvailable] = useState({ google: false, github: false });
 
-  const handleGoogleRegister = async () => {
-    try {
-      const response = await registerWithGoogle();
-      console.log(response); // Handle the response as needed
-    } catch (error) {
-      console.error('Error registering with Google:', error);
-    }
+  // Check OAuth availability on component mount
+  useEffect(() => {
+    const checkAvailability = async () => {
+      const availability = await checkOAuthAvailability();
+      setOauthAvailable(availability);
+    };
+    checkAvailability();
+  }, []);
+
+  const handleGoogleRegister = () => {
+    registerWithGoogle();
   }
-  const handleGithubRegister = async () => {
-    try {
-      const response = await registerWithGithub();
-      console.log(response); // Handle the response as needed
-    } catch (error) {
-      console.error('Error registering with Google:', error);
-    }
+
+  const handleGithubRegister = () => {
+    registerWithGithub();
   }
 
 
@@ -122,21 +123,27 @@ const RegisterModal = () => {
 
   const footerContent = (
     <div className="flex flex-col gap-4 mt-3">
-      <hr />
-      <Button
-        outline
-        label="Continue with Google"
-        icon="logos:google"
-        iconSize="24px"
-        onClick={handleGoogleRegister}
-      />
-      <Button
-        outline
-        label="Continue with Github"
-        icon="mdi:github"
-        iconSize="24px"
-        onClick={handleGithubRegister}
-      />
+      {(oauthAvailable.google || oauthAvailable.github) && <hr />}
+
+      {oauthAvailable.google && (
+        <Button
+          outline
+          label="Continue with Google"
+          icon="logos:google"
+          iconSize="24px"
+          onClick={handleGoogleRegister}
+        />
+      )}
+
+      {oauthAvailable.github && (
+        <Button
+          outline
+          label="Continue with Github"
+          icon="mdi:github"
+          iconSize="24px"
+          onClick={handleGithubRegister}
+        />
+      )}
 
       <div
         className="
