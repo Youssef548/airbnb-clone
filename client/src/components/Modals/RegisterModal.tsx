@@ -13,10 +13,15 @@ import Button from "../Buttons";
 import useLoginModal from "../../hooks/useLoginModal";
 import { registerRequest } from "../../apis/auth/auth";
 import { RequestBodyType } from "../../apis/auth/auth.types";
+import { loginRequest } from "../../apis/login";
+import { setAuthToken } from "../../utils/authUtils";
+import useUserStore from "../../store/useStore";
 
 const RegisterModal = () => {
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
+  const userStore = useUserStore();
+  const setUser = userStore.setUser;
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -69,6 +74,13 @@ const RegisterModal = () => {
         register={register}
         errors={errors}
         required
+        validation={{
+          required: "Email is required",
+          pattern: {
+            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+            message: "Invalid email address"
+          }
+        }}
       />
       <Input
         id="username"
@@ -77,6 +89,17 @@ const RegisterModal = () => {
         register={register}
         errors={errors}
         required
+        validation={{
+          required: "Name is required",
+          minLength: {
+            value: 3,
+            message: "Name must be at least 3 characters"
+          },
+          maxLength: {
+            value: 20,
+            message: "Name must be less than 20 characters"
+          }
+        }}
       />
       <Input
         id="password"
@@ -86,6 +109,13 @@ const RegisterModal = () => {
         errors={errors}
         type="password"
         required
+        validation={{
+          required: "Password is required",
+          minLength: {
+            value: 5,
+            message: "Password must be at least 5 characters"
+          }
+        }}
       />
     </div>
   );
@@ -96,7 +126,7 @@ const RegisterModal = () => {
       <Button
         outline
         label="Continue with Google"
-        icon="logos:facebook"
+        icon="logos:google"
         iconSize="24px"
         onClick={handleGoogleRegister}
       />
@@ -133,7 +163,7 @@ const RegisterModal = () => {
     </div>
   );
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setIsLoading(true);
 
     const requestData: RequestBodyType = {
@@ -142,21 +172,48 @@ const RegisterModal = () => {
       password: data.password,
     };
 
-    registerRequest(requestData)
-      .then(() => {
-        registerModal.onClose();
-      })
-      .catch((err) => {
-        if (err.response.data.message && err.response.status !== 500) {
-          toast.error(err.response.data.message);
-        } else {
-          toast.error(`something went wrong`);
-        }
+    try {
+      // Register the user
+      await registerRequest(requestData);
+      toast.success("Registration successful! Logging you in...");
 
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      // Auto-login after successful registration
+      const loginData = {
+        email: data.email,
+        password: data.password,
+      };
+
+      const loginResponse = await loginRequest(loginData);
+
+      // Set token and user data
+      setAuthToken(loginResponse.data.token);
+      setUser(loginResponse.data.currentUser);
+
+      toast.success("Welcome to Airbnb!");
+      registerModal.onClose();
+    } catch (err: any) {
+      // Safe error handling with type guards
+      if (err.response) {
+        // Server responded with an error
+        const errorMessage = err.response.data?.message || err.response.data?.error;
+
+        if (errorMessage && err.response.status !== 500) {
+          toast.error(errorMessage);
+        } else if (err.response.status === 500) {
+          toast.error("Server error. Please try again later.");
+        } else {
+          toast.error("An error occurred. Please try again.");
+        }
+      } else if (err.request) {
+        // Request was made but no response received (network error)
+        toast.error("Network error. Please check your connection.");
+      } else {
+        // Something else happened
+        toast.error("An unexpected error occurred.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
   return (
     <Modal

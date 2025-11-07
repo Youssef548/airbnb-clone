@@ -28,7 +28,6 @@ const LoginModal = () => {
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
-   
       email: "",
       password: "",
     },
@@ -50,6 +49,13 @@ const LoginModal = () => {
         register={register}
         errors={errors}
         required
+        validation={{
+          required: "Email is required",
+          pattern: {
+            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+            message: "Invalid email address"
+          }
+        }}
       />
       <Input
         id="password"
@@ -59,6 +65,13 @@ const LoginModal = () => {
         errors={errors}
         type="password"
         required
+        validation={{
+          required: "Password is required",
+          minLength: {
+            value: 5,
+            message: "Password must be at least 5 characters"
+          }
+        }}
       />
     </div>
   );
@@ -69,7 +82,7 @@ const LoginModal = () => {
       <Button
         outline
         label="Continue with Google"
-        icon="logos:facebook"
+        icon="logos:google"
         iconSize="24px"
         onClick={() => {}}
       />
@@ -90,16 +103,16 @@ const LoginModal = () => {
         "
       >
         <p>
-          First time usign Airbnb?
+          First time using Airbnb?
           <span
             onClick={toggle}
             className="
               text-neutral-800
-              cursor-pointer 
+              cursor-pointer
               hover:underline
             "
           >
-            Create an account
+            {" "}Create an account
           </span>
         </p>
       </div>
@@ -109,27 +122,37 @@ const LoginModal = () => {
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setIsLoading(true);
 
+    loginRequest(data)
+      .then((res) => {
+        toast.success("Logged in successfully");
+        loginModal.onClose();
+        setAuthToken(res.data.token);
+        setUser(res.data.currentUser);
+      })
+      .catch((err) => {
+        // Safe error handling with type guards
+        if (err.response) {
+          // Server responded with an error
+          const errorMessage = err.response.data?.message || err.response.data?.error;
 
-     loginRequest(data).then((res) => {
-      toast.success("Login succufully");
-      loginModal.onClose();
-      setAuthToken(res.data.token);
-      setUser(res.data.currentUser);
-    })
-    .catch((err) => {
-      console.log(err);
-      if (err.response.data.message && err.response.status !== 500) {
-        toast.error(err.response.data.message);
-      } else {
-        toast.error(`something went wrong`);
-      }
-    })
-    .finally(() => {
-      setIsLoading(false);
-    });;
-
-    
-     
+          if (errorMessage && err.response.status !== 500) {
+            toast.error(errorMessage);
+          } else if (err.response.status === 500) {
+            toast.error("Server error. Please try again later.");
+          } else {
+            toast.error("An error occurred. Please try again.");
+          }
+        } else if (err.request) {
+          // Request was made but no response received (network error)
+          toast.error("Network error. Please check your connection.");
+        } else {
+          // Something else happened
+          toast.error("An unexpected error occurred.");
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
   return (
     <Modal
