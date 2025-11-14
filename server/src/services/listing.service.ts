@@ -38,6 +38,11 @@ export const createListingService = async (
 export const getListingsService = async (queryParams: any) => {
   let where: any = {};
 
+  // Parse pagination parameters
+  const page = parseInt(queryParams.page) || 1;
+  const limit = parseInt(queryParams.limit) || 12;
+  const skip = (page - 1) * limit;
+
   if (queryParams.userId) where.user = queryParams.userId;
   if (queryParams.category) where.category = queryParams.category;
   if (queryParams.guestCount)
@@ -52,6 +57,7 @@ export const getListingsService = async (queryParams: any) => {
     .sort({ id: -1 })
     .exec();
 
+  // Apply date filtering if provided
   if (queryParams?.startDate && queryParams?.endDate) {
     const queryStartDate = new Date(queryParams.startDate.toString());
     const queryEndDate = new Date(queryParams.endDate.toString());
@@ -74,7 +80,24 @@ export const getListingsService = async (queryParams: any) => {
     });
   }
 
-  return listings;
+  // Calculate total count after filtering
+  const totalCount = listings.length;
+  const totalPages = Math.ceil(totalCount / limit);
+
+  // Apply pagination
+  const paginatedListings = listings.slice(skip, skip + limit);
+
+  return {
+    listings: paginatedListings,
+    pagination: {
+      currentPage: page,
+      totalPages,
+      totalCount,
+      limit,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1,
+    },
+  };
 };
 
 export const getListingByIdService = async (listingId: string) => {

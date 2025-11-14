@@ -14,7 +14,26 @@ const validateSchema = (schema: ZodObject<any, any>) => {
         return next(errorHandler(400, errorMessage));
       } else {
         console.error("Validation Middleware Error:", err);
-        return next(errorHandler(500, errorMessage)); 
+        return next(errorHandler(500, errorMessage));
+      }
+    }
+  };
+};
+
+export const validateQuery = (schema: ZodObject<any, any>) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const validated = schema.parse(req.query);
+      req.query = validated as any;
+      next();
+    } catch (err) {
+      let errorMessage = "Query Validation Error";
+      if (err instanceof ZodError) {
+        errorMessage = err.errors[0].message;
+        return next(errorHandler(400, errorMessage));
+      } else {
+        console.error("Query Validation Middleware Error:", err);
+        return next(errorHandler(500, errorMessage));
       }
     }
   };

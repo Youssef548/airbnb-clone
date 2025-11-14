@@ -19,7 +19,7 @@ const PropertiesPage = () => {
       getListing({ userId: user._id })
         .then((res) => {
           if (res.status == 200) {
-            setListings(res.data);
+            setListings(res.data.listings);
           } else {
             console.log("SOMETHING WENT WRONG");
           }

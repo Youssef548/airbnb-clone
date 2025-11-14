@@ -8,6 +8,22 @@ export interface IListingParams {
   startDate?: string;
   endDate?: string;
   locationValue?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface PaginationData {
+  currentPage: number;
+  totalPages: number;
+  totalCount: number;
+  limit: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+export interface ListingsResponse {
+  listings: unknown[];
+  pagination: PaginationData;
 }
 
 
@@ -23,4 +39,4 @@ export interface ListingRequestBody  {
   location: CountrySelectValue;
   reviews?: string[]; // array of ObjectId strings (optional)
   bookings?: string[]; // array of ObjectId strings (optional)
-};
+}

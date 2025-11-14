@@ -2,8 +2,6 @@ import React, { useCallback } from "react";
 import { Icon, IconifyIcon } from "@iconify/react";
 import { useSearchParams } from "react-router-dom";
 import queryString from "qs";
-import { getListing } from "../apis/Listing/listing";
-import ListingStore from "../store/listingsStore";
 
 interface CategoryBoxProps {
   label: string;
@@ -18,35 +16,25 @@ const CategoryBox: React.FC<CategoryBoxProps> = ({
   icon,
   selected = false, // Default value for selected
 }) => {
-  const { setListings } = ListingStore();
-  let [params, setSearchParams] = useSearchParams();
-
-  let qs = queryString as any;
+  const [params, setSearchParams] = useSearchParams();
 
   const handleClick = useCallback(() => {
-    let currentQuery: Record<string, string | string[]> = {};
-
-    if (params) {
-      currentQuery = qs.parse(params.toString()) as any;
-    }
+    const currentQuery: Record<string, string | string[]> = params
+      ? (queryString.parse(params.toString()) as Record<string, string | string[]>)
+      : {};
 
     const updatedQuery: Record<string, string | string[]> = {
       ...currentQuery,
       category: label,
+      page: "1", // Reset to page 1 when filtering
     };
 
-    if (params?.get("category") == label) {
+    if (params?.get("category") === label) {
       delete updatedQuery.category;
     }
 
     setSearchParams(updatedQuery);
-
-    getListing({ ...updatedQuery }).then((res) => {
-      if (res.status === 200) {
-        setListings(res.data);
-      }
-    });
-  }, [params, label]);
+  }, [params, label, setSearchParams]);
 
   return (
     <div

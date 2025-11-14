@@ -11,17 +11,16 @@ import { formatISO } from "date-fns";
 import Heading from "../Heading";
 import Calendar from "../Inputs/Calendar";
 import Counter from "../Inputs/Counter";
-import { getListing } from "../../apis/Listing/listing";
-import ListingStore from "../../store/listingsStore";
+
 enum STEPS {
   LOCATION = 0,
   DATE = 1,
   INFO = 2,
 }
+
 const SearchModal = () => {
-  let [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const searchModal = useSearchModal();
-  const { setListings } = ListingStore();
 
   const [location, setLocation] = useState<CountrySelectValue>();
   const [step, setStep] = useState(STEPS.LOCATION);
@@ -53,12 +52,13 @@ const SearchModal = () => {
       currentQuery = qs.parse(searchParams.toString());
     }
 
-    const updatedQuery: any = {
+    const updatedQuery: Record<string, string> = {
       ...currentQuery,
-      locationValue: location?.value,
-      guestCount,
-      roomCount,
-      bathRoomCount,
+      locationValue: location?.value || "",
+      guestCount: guestCount.toString(),
+      roomCount: roomCount.toString(),
+      bathRoomCount: bathRoomCount.toString(),
+      page: "1", // Reset to page 1 when searching
     };
 
     if (dateRange.startDate) {
@@ -72,9 +72,6 @@ const SearchModal = () => {
     setStep(STEPS.LOCATION);
     searchModal.onClose();
     setSearchParams(updatedQuery);
-    getListing({ ...updatedQuery }).then((res) => {
-      if (res.status === 200) setListings(res.data);
-    });
   }, [
     step,
     searchParams,
@@ -85,6 +82,7 @@ const SearchModal = () => {
     bathRoomCount,
     dateRange,
     onNext,
+    setSearchParams,
   ]);
 
   const actionLabel = useMemo(() => {
@@ -102,7 +100,7 @@ const SearchModal = () => {
     }
 
     return "Back";
-  }, []);
+  }, [step]);
 
   const DateContent = useMemo(
     () => (

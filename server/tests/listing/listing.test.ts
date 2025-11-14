@@ -51,7 +51,7 @@ describe("Listings API", () => {
     listingId = res.body._id;
   });
 
-  it("should get all listings", async () => {
+  it("should get all listings with pagination", async () => {
     // Create a listing first
     await supertest(app)
       .post("/api/listings")
@@ -60,8 +60,43 @@ describe("Listings API", () => {
 
     const res = await supertest(app).get("/api/listings");
     expect(res.status).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
-    expect(res.body.length).toBeGreaterThan(0);
+    expect(res.body).toHaveProperty("listings");
+    expect(res.body).toHaveProperty("pagination");
+    expect(Array.isArray(res.body.listings)).toBe(true);
+    expect(res.body.listings.length).toBeGreaterThan(0);
+    expect(res.body.pagination).toHaveProperty("currentPage");
+    expect(res.body.pagination).toHaveProperty("totalPages");
+    expect(res.body.pagination).toHaveProperty("totalCount");
+    expect(res.body.pagination).toHaveProperty("limit");
+    expect(res.body.pagination).toHaveProperty("hasNextPage");
+    expect(res.body.pagination).toHaveProperty("hasPreviousPage");
+  });
+
+  it("should support pagination query parameters", async () => {
+    const res = await supertest(app).get("/api/listings?page=1&limit=5");
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty("listings");
+    expect(res.body).toHaveProperty("pagination");
+    expect(res.body.pagination.currentPage).toBe(1);
+    expect(res.body.pagination.limit).toBe(5);
+    expect(res.body.listings.length).toBeLessThanOrEqual(5);
+  });
+
+  it("should support pagination with category filter", async () => {
+    const res = await supertest(app).get("/api/listings?category=apartment&page=1&limit=5");
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty("listings");
+    expect(res.body).toHaveProperty("pagination");
+
+    // All returned listings should have the 'apartment' category
+    res.body.listings.forEach((listing: any) => {
+      expect(listing.category).toBe("apartment");
+    });
+
+    // Pagination metadata should reflect filtered count, not total count
+    expect(res.body.pagination.currentPage).toBe(1);
+    expect(res.body.pagination.limit).toBe(5);
+    expect(res.body.listings.length).toBeLessThanOrEqual(5);
   });
 
   it("should get a listing by id", async () => {

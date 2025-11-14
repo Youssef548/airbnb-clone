@@ -60,3 +60,35 @@ export const createListingSchema = z.object({
 
   location: locationSchema,
 });
+
+export const getListingsQuerySchema = z.object({
+  page: z
+    .string()
+    .optional()
+    .transform((val) => (val ? parseInt(val, 10) : 1))
+    .refine((val) => val > 0, { message: "Page must be greater than 0" }),
+  limit: z
+    .string()
+    .optional()
+    .transform((val) => (val ? parseInt(val, 10) : 12))
+    .refine((val) => val > 0 && val <= 100, {
+      message: "Limit must be between 1 and 100",
+    }),
+  userId: z.string().optional(),
+  category: z.string().optional(),
+  guestCount: z
+    .string()
+    .optional()
+    .transform((val) => (val ? parseInt(val, 10) : undefined)),
+  roomCount: z
+    .string()
+    .optional()
+    .transform((val) => (val ? parseInt(val, 10) : undefined)),
+  bathRoomCount: z
+    .string()
+    .optional()
+    .transform((val) => (val ? parseInt(val, 10) : undefined)),
+  locationValue: z.string().optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
+});
