@@ -23,7 +23,8 @@
     "dev": "tsx  --watch ./src/server.ts",
     "build": "echo hello world",
     "test": "tsx tests/globalSetup.ts && vitest; tsx tests/globalTeardown.ts",
-    "vercel-build": "echo hello world"
+    "vercel-build": "echo hello world",
+    "seed": "tsx src/scripts/seed.ts"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

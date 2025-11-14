@@ -1,9 +1,9 @@
 import { seedUsers } from "./userSeeder";
+import { seedListings } from "./listingSeeder";
 
 const seeders: Array<() => Promise<void>> = [
   seedUsers,
-  // TODO: Add the rest of the seeders here on future.
-  // seedListings,
+  seedListings,
 ];
 
 export async function seedDatabase() {
