@@ -2,7 +2,7 @@ import { ReservationSafeType } from "../../types/Reservation";
 import { ListingType } from "../../types/Listing";
 import { UserType } from "../../types/user";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { categories } from "../../components/layouts/Navbar/Categories";
+import { categories } from "../../constants/categories";
 import Container from "../../components/Container";
 import ListingHead from "../../components/Listings/ListingHead";
 import ListingInfo from "../../components/Listings/ListingInfo";
@@ -41,7 +41,7 @@ const ListingClient = ({
   const disabledDates = useMemo(() => {
     let dates: Date[] = [];
 
-    reservations.forEach((reservation: any) => {
+    reservations.forEach((reservation: ReservationSafeType) => {
       const range = eachDayOfInterval({
         start: new Date(reservation.startDate),
         end: new Date(reservation.endDate),
@@ -80,18 +80,16 @@ const ListingClient = ({
         toast.error("Something went wrong");
       })
       .finally(() => setIsLoading(false));
-  }, [totalPrice, dateRange, listing?._id, currentUser, useNavigate]);
+  }, [totalPrice, dateRange, listing._id, currentUser, loginMOdal, navigate]);
 
   useEffect(() => {
     if (dateRange.startDate && dateRange.endDate) {
-      console.log(dateRange);
       const dayCount = differenceInCalendarDays(
         dateRange.endDate,
         dateRange.startDate
       );
 
       if (dayCount && listing.price) {
-        console.log(dayCount);
         setTotalPrice(dayCount * listing.price);
       } else {
         setTotalPrice(listing.price);
@@ -120,7 +118,7 @@ const ListingClient = ({
             roomCount={listing.roomCount}
             guestCount={listing.guestCount}
             bathRoomCount={listing.bathRoomCount}
-            locationValue={listing.location.label}
+            coordinates={listing.location.latlng}
           />
           <div
             className="

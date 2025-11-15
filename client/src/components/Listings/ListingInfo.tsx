@@ -1,6 +1,5 @@
 import { UserType } from "../../types/user";
 import type { IconifyIcon } from "@iconify/types";
-import useCountries from "../../hooks/useCountries";
 import Avatar from "../Avatar";
 import ListingCategory from "./ListingCategory";
 import Map from "../Map";
@@ -17,8 +16,8 @@ interface ListingInfoProps {
         label: string;
       }
     | undefined;
-  locationValue: string;
   price: number;
+  coordinates?: [number, number];
 }
 
 const ListingInfo = ({
@@ -29,11 +28,8 @@ const ListingInfo = ({
   roomCount,
   bathRoomCount,
   category,
-  locationValue,
+  coordinates,
 }: ListingInfoProps) => {
-  const { getByValue } = useCountries();
-
-  const coordinates = getByValue(locationValue)?.latlng;
 
   return (
     <div className="col-span-4 flex flex-col gap-8">
