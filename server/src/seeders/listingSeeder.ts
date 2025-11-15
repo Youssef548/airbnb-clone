@@ -22,26 +22,6 @@ export async function seedListings() {
   const mockListings = [
     // Homes Category
     {
-      title: "Luxury Beachfront Villa in Bali",
-      description:
-        "Wake up to stunning ocean views in this beautiful beachfront villa. Perfect for families and groups looking for a peaceful retreat.",
-      imageSrc:
-        "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=800&auto=format&fit=crop",
-      category: "Homes",
-      roomCount: 4,
-      bathRoomCount: 3,
-      guestCount: 8,
-      price: 250,
-      location: {
-        flag: "🇮🇩",
-        label: "Bali, Indonesia",
-        latlng: [-8.3405, 115.092],
-        region: "Asia",
-        value: "ID",
-      },
-      user: hostUser._id,
-    },
-    {
       title: "Modern Apartment in Tokyo",
       description:
         "Experience the vibrant city life in this sleek modern apartment located in the heart of Tokyo. Walking distance to subway stations.",
