@@ -12,10 +12,8 @@
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\""
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "prettier --write"
-    ],
-    "client/**/*.{js,jsx,ts,tsx}": [
+    "client/**/*.{ts,tsx}": [
+      "bash -c 'cd client && npx eslint --max-warnings 0 \"$@\"' --",
       "prettier --write"
     ],
     "server/**/*.{js,ts}": [
