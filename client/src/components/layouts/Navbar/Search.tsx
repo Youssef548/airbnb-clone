@@ -6,7 +6,7 @@ import { differenceInDays } from "date-fns";
 
 const Search = () => {
   const searchModal = useSearchModal();
-  let [params] = useSearchParams();
+  const [params] = useSearchParams();
   const { getByValue } = useCountries();
 
   const locationValue = params?.get("locationValue");

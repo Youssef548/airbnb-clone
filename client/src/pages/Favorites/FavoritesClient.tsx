@@ -24,7 +24,7 @@ const FavoritesClient: React.FC<FavoritesClientProps> = ({
         setListings(res.data);
       }
     });
-  }, [currentUser?.favoriteListingsIds]);
+  }, [currentUser, setListings]);
   return (
     <Container>
       <Heading title="Favorites" subTitle="List of places you have favorited" />

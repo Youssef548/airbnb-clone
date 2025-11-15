@@ -42,8 +42,7 @@ const useUserStore = create<UserStore>((set) => ({
         localStorage.removeItem('currentUser');
         set({ user: null });
       }
-    } catch (e) {
-      console.log(e);
+    } catch {
       localStorage.removeItem('currentUser');
       set({ user: null });
     }

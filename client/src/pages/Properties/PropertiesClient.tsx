@@ -49,7 +49,7 @@ const PropertiesClient: React.FC<TripsClieentProps> = ({
         setIsLoading(false);
         setDeletingId("");
       });
-  }, []);
+  }, [currentUser?._id, setListings]);
 
   return (
     <Container>

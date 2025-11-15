@@ -20,13 +20,11 @@ const ReservationsPage = () => {
         .then((res) => {
           if (res.status == 200) {
             setReservations(res.data);
-          } else {
-            console.log("SOMETHING WENT WRONG");
           }
         })
         .finally(() => setIsLoading(false));
     }
-  }, []);
+  }, [user]);
 
   if (reservations?.length === 0) {
     return (

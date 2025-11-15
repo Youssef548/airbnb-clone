@@ -36,8 +36,6 @@ const TripsClient: React.FC<TripsClieentProps> = ({
           getReservation({ userId: currentUser?._id }).then((res) => {
             if (res.status == 200) {
               setReservations(res.data);
-            } else {
-              console.log("SOMETHING WENT WRONG");
             }
           });
         } else {
@@ -51,7 +49,7 @@ const TripsClient: React.FC<TripsClieentProps> = ({
         setIsLoading(false);
         setDeletingId("");
       });
-  }, []);
+  }, [currentUser?._id, setReservations]);
 
   return (
     <Container>

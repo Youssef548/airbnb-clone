@@ -30,12 +30,10 @@ const ListingPage = () => {
       .then((res) => {
         if (res.status === 200) {
           setListingData(res.data);
-        } else if (res.status === 404) {
-          console.log("Listing not found");
         }
       })
       .finally(() => setIsLoading(false));
-  }, []);
+  }, [listingId]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -43,12 +41,10 @@ const ListingPage = () => {
       .then((res) => {
         if (res.status === 200) {
           setReservations(res.data);
-        } else if (res.status === 404) {
-          console.log("Reservation not found");
         }
       })
       .finally(() => setIsLoading(false));
-  }, []);
+  }, [listingId]);
 
   if (isLoading) {
     return <Loading />;

@@ -33,8 +33,6 @@ const ReservationsClient: React.FC<ReservationsProps> = ({
           getReservation({ userId: currentUser?._id }).then((res) => {
             if (res.status == 200) {
               setReservations(res.data);
-            } else {
-              console.log("SOMETHING WENT WRONG");
             }
           });
         } else {
@@ -43,7 +41,7 @@ const ReservationsClient: React.FC<ReservationsProps> = ({
       })
       .catch(() => toast.error("something went wrong."))
       .finally(() => setDeletedId(""));
-  }, []);
+  }, [currentUser?._id, setReservations]);
 
   return (
     <Container>

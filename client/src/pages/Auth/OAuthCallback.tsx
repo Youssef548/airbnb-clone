@@ -34,8 +34,7 @@ const OAuthCallback = () => {
 
         // Redirect to home page
         navigate("/", { replace: true });
-      } catch (error) {
-        console.error("Error parsing OAuth callback data:", error);
+      } catch {
         toast.error("Authentication failed. Please try again.");
         navigate("/", { replace: true });
       }

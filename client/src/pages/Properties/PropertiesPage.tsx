@@ -20,13 +20,11 @@ const PropertiesPage = () => {
         .then((res) => {
           if (res.status == 200) {
             setListings(res.data.listings);
-          } else {
-            console.log("SOMETHING WENT WRONG");
           }
         })
         .finally(() => setIsLoading(false));
     }
-  }, []);
+  }, [user, setListings]);
 
   if (!user) {
     return <EmptyState title="Unauthorized" subtitle="Please login" />;

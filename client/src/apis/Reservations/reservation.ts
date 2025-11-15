@@ -7,8 +7,8 @@ export function createReservation(data: ReservationPostType) {
 
   const requestData: ReservationPostPayload = {
     ...rest,
-    startDate: data.startDate.toISOString().split("T")[0],
-    endDate: data.endDate.toISOString().split("T")[0],
+    startDate: startDate.toISOString().split("T")[0],
+    endDate: endDate.toISOString().split("T")[0],
   };
 
   return axiosInstance.post<ReservationPostPayload>("/booking", requestData);

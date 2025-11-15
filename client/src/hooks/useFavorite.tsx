@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import { UserType } from "../types/user";
 import useLoginModal from "./useLoginModal";
 import { useCallback, useMemo } from "react";
@@ -15,7 +14,6 @@ const useFavorite = ({ listingId, currentUser }: IUseFavroite) => {
   const userStore = useUserStore(); // Access the store
 
   const setUser = userStore.setUser;
-  const navigate = useNavigate();
 
   const loginModal = useLoginModal();
 
@@ -49,7 +47,7 @@ const useFavorite = ({ listingId, currentUser }: IUseFavroite) => {
         toast.error(error.message);
       }
     },
-    [currentUser, hasFavorited, listingId, loginModal, navigate]
+    [currentUser, hasFavorited, listingId, loginModal, setUser]
   );
 
   return {

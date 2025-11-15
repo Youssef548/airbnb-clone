@@ -1,5 +1,5 @@
 import countries from "world-countries";
-console.log(countries)
+
 const formattedCountries = countries.map((country) => ({
 
   value: country.cca2,

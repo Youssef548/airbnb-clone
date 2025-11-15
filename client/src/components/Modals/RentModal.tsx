@@ -4,7 +4,7 @@ import useRentModal from "../../hooks/useRentModal";
 import Modal from "./Modal";
 import Heading from "../Heading";
 import Map from "../Map";
-import { categories } from "../layouts/Navbar/Categories";
+import { categories } from "../../constants/categories";
 import CategoryInput from "../Inputs/CategoryInput";
 import CountrySelect, { CountrySelectValue } from "../Inputs/CountrySelect";
 import Counter from "../Inputs/Counter";
@@ -64,7 +64,7 @@ const RentModal = () => {
   const description = watch("description") || "";
 
   // Helper to update a value and clear error
-  const setCustomValue = (id: keyof ListingRequestBody, value: any) => {
+  const setCustomValue = (id: keyof ListingRequestBody, value: ListingRequestBody[keyof ListingRequestBody]) => {
     setValue(id, value, {
       shouldValidate: true,
       shouldDirty: true,
@@ -125,9 +125,8 @@ const RentModal = () => {
         toast.success("Listing created successfully!");
         onClose();
       }
-    } catch (err) {
+    } catch {
       toast.error("Failed to create listing. Please try again.");
-      console.error(err);
     } finally {
       setIsLoading(false);
     }

@@ -12,7 +12,7 @@ const EmptyState: React.FC<EmptyState> = (
   {title =  "No Exact matches", subtitle= "Try changing or removing some of your filters", showReset}
 ) => {
 
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
   return <div
   className="

@@ -22,7 +22,7 @@ const FavoritesPage = () => {
         }
       })
       .finally(() => setIsLoading(false));
-  }, []);
+  }, [setListings]);
 
   if (isLoading) {
     return <Loading />;

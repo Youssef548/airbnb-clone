@@ -20,13 +20,11 @@ const TripsPage = () => {
         .then((res) => {
           if (res.status == 200) {
             setReservations(res.data);
-          } else {
-            console.log("SOMETHING WENT WRONG");
           }
         })
         .finally(() => setIsLoading(false));
     }
-  }, []);
+  }, [user]);
 
   if (!user) {
     return <EmptyState title="Unauthorized" subtitle="Please login" />;

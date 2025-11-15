@@ -8,8 +8,7 @@ export const checkOAuthAvailability = async (): Promise<{ google: boolean; githu
   try {
     const response = await axios.get(`${BASEURL}/auth/oauth/availability`);
     return response.data;
-  } catch (error) {
-    console.error("Error checking OAuth availability:", error);
+  } catch {
     return { google: false, github: false };
   }
 };
