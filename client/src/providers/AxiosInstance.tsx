@@ -1,5 +1,9 @@
-import axios, { AxiosInstance, AxiosError } from "axios";
+import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from "axios";
 import { handleUnauthorized } from "../utils/handleUnAuthorized";
+
+interface RetryableRequest extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
 
 // Create an Axios instance
 export const axiosInstance: AxiosInstance = axios.create({
@@ -20,7 +24,7 @@ axiosInstance.interceptors.request.use((config) => {
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
-    const originalRequest = error.config as any;
+    const originalRequest = error.config as RetryableRequest;
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -40,8 +44,7 @@ axiosInstance.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${response.data.authToken}`;
         
         return axiosInstance(originalRequest);
-      } catch (err) {
-        console.error("Failed to refresh token", err);
+      } catch {
         handleUnauthorized(); // Refresh failed → force logout
       }
     }

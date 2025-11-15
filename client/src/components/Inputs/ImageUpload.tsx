@@ -1,9 +1,32 @@
 import { useCallback, useEffect, useRef } from "react";
 import { Icon } from "@iconify/react";
 
+interface CloudinaryUploadResult {
+  event: string;
+  info: {
+    secure_url: string;
+  };
+}
+
+interface CloudinaryWidget {
+  open: () => void;
+  close: () => void;
+}
+
+interface Cloudinary {
+  createUploadWidget: (
+    options: {
+      cloudName: string;
+      uploadPreset: string;
+      maxFiles: number;
+    },
+    callback: (error: Error | null, result: CloudinaryUploadResult) => void
+  ) => CloudinaryWidget;
+}
+
 declare global {
   interface Window {
-    cloudinary: any;
+    cloudinary: Cloudinary;
   }
 }
 
@@ -13,11 +36,11 @@ interface ImageUploadProps {
 }
 
 const ImageUpload: React.FC<ImageUploadProps> = ({ value, onChange }) => {
-  const cloundinaryRef = useRef<any>();
-  const widgetRef = useRef<any>();
+  const cloundinaryRef = useRef<Cloudinary>();
+  const widgetRef = useRef<CloudinaryWidget>();
 
   const handleUpload = useCallback(
-    (result: any) => {
+    (result: CloudinaryUploadResult) => {
       if (result.event === "success") {
         onChange(result.info.secure_url);
       }
@@ -33,7 +56,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ value, onChange }) => {
         uploadPreset: "ml_default",
         maxFiles: 1,
       },
-      (error: any, result: any) => {
+      (error: Error | null, result: CloudinaryUploadResult) => {
         if (!error && result && result.event === "success") {
           handleUpload(result);
         }

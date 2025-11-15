@@ -198,20 +198,21 @@ const RegisterModal = () => {
 
       toast.success("Welcome to Airbnb!");
       registerModal.onClose();
-    } catch (err: any) {
+    } catch (err: unknown) {
       // Safe error handling with type guards
-      if (err.response) {
+      const error = err as { response?: { data?: { message?: string; error?: string }; status?: number }; request?: unknown };
+      if (error.response) {
         // Server responded with an error
-        const errorMessage = err.response.data?.message || err.response.data?.error;
+        const errorMessage = error.response.data?.message || error.response.data?.error;
 
-        if (errorMessage && err.response.status !== 500) {
+        if (errorMessage && error.response.status !== 500) {
           toast.error(errorMessage);
-        } else if (err.response.status === 500) {
+        } else if (error.response.status === 500) {
           toast.error("Server error. Please try again later.");
         } else {
           toast.error("An error occurred. Please try again.");
         }
-      } else if (err.request) {
+      } else if (error.request) {
         // Request was made but no response received (network error)
         toast.error("Network error. Please check your connection.");
       } else {

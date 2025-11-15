@@ -9,7 +9,7 @@ export type ReservationType = {
   startDate: Date;
   endDate: Date;
   status: "confirmed" | "pending" | "cancelled";
-  totalPrice: Number;
+  totalPrice: number;
 };
 
 export type ReservationSafeType = Omit<
