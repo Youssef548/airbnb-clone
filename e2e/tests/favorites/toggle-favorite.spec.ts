@@ -64,9 +64,10 @@ test.describe("Toggle Favorite", () => {
     const firstCard = page.getByTestId("listing-card").first();
     await expect(firstCard).toBeVisible({ timeout: 15_000 });
 
-    // Use force click to bypass any remaining overlay issues
+    // Scroll the card into view first, then click the heart button
     const heartButton = firstCard.getByTestId("heart-button");
-    await heartButton.click({ force: true });
+    await heartButton.scrollIntoViewIfNeeded();
+    await heartButton.click();
 
     // Should open login modal
     await expect(page.getByTestId("modal-title")).toHaveText("Login", {

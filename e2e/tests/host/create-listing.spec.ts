@@ -16,7 +16,7 @@ test.describe("Create Listing (Host)", () => {
     );
 
     // Step 1: CATEGORY — Select a category from the available list
-    // Available categories: Homes, Experiences, cupStrawIcon, airPlane, Music, Football, Fashion, bookIcon, Heart
+    // Available categories: Homes, Experiences, Drinks, Travel, Music, Sports, Fashion, Books, Wellness
     await page.locator("div.font-semibold", { hasText: "Homes" }).first().click();
     await page.getByTestId("btn-next").click();
 

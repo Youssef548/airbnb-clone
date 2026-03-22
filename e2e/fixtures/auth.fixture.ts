@@ -62,6 +62,7 @@ async function dismissModal(page: Page): Promise<void> {
 
 type AuthFixtures = {
   guestPage: Page;
+  guest2Page: Page;
   hostPage: Page;
   loggedOutPage: Page;
 };
@@ -71,6 +72,14 @@ export const test = base.extend<AuthFixtures>({
     const context = await browser.newContext();
     const page = await context.newPage();
     await loginViaAPI(context, page, TEST_USERS.guest);
+    await use(page);
+    await context.close();
+  },
+
+  guest2Page: async ({ browser }, use) => {
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    await loginViaAPI(context, page, TEST_USERS.guest2);
     await use(page);
     await context.close();
   },

@@ -44,7 +44,7 @@ test.describe("Favorites Edge Cases", () => {
     expect(add2.status()).toBe(200);
 
     // Verify it's in favorites
-    const favRes = await ctx.request.get(`${BASE_URL.api}/favorites`);
+    const favRes = await ctx.request.get(`${BASE_URL.api}/favorites?limit=100`);
     const favData = await favRes.json();
     const favorites = favData.favorites || favData;
     const ids = favorites.map((f: { _id: string }) => f._id);
@@ -81,7 +81,7 @@ test.describe("Favorites Edge Cases", () => {
     expect(delRes.status()).toBe(204);
 
     // Guest's favorites should not include the deleted listing
-    const favsRes = await guestCtx.request.get(`${BASE_URL.api}/favorites`);
+    const favsRes = await guestCtx.request.get(`${BASE_URL.api}/favorites?limit=100`);
     const favsData = await favsRes.json();
     const favorites = favsData.favorites || favsData;
     const ids = favorites.map((f: { _id: string }) => f._id);
@@ -210,7 +210,7 @@ test.describe("Favorites Edge Cases", () => {
     await hostCtx.request.delete(`${BASE_URL.api}/listings/${lid1}`);
 
     // Guest's favorites should only have listing B
-    const favsRes = await guestCtx.request.get(`${BASE_URL.api}/favorites`);
+    const favsRes = await guestCtx.request.get(`${BASE_URL.api}/favorites?limit=100`);
     const favsData = await favsRes.json();
     const favorites = favsData.favorites || favsData;
     const ids = favorites.map((f: { _id: string }) => f._id);

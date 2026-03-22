@@ -15,9 +15,10 @@ test.describe("Register Flow", () => {
     // Verify register modal is open
     await expect(page.getByTestId("modal-title")).toHaveText("Register");
 
-    // Fill in registration form
+    // Fill in registration form with a unique email to avoid duplicate errors
+    const uniqueEmail = `e2enew_${Date.now()}@test.com`;
     const newUser = TEST_USERS.newUser;
-    await page.getByTestId("input-email").fill(newUser.email);
+    await page.getByTestId("input-email").fill(uniqueEmail);
     await page.getByTestId("input-username").fill(newUser.username);
     await page.getByTestId("input-password").fill(newUser.password);
 
