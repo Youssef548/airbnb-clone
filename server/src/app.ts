@@ -1,7 +1,10 @@
-// app.js
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
+import helmet from "helmet";
+import mongoSanitize from "express-mongo-sanitize";
+import rateLimit from "express-rate-limit";
+
 dotenv.config();
 
 import errorHandler from "./middleware/error.middleware";
@@ -13,34 +16,52 @@ import passport from "./config/passport";
 
 const app = express();
 
+// Security headers
+app.use(helmet());
+
 // Initialize Passport
 app.use(passport.initialize());
 
+// Parse ALLOWED_ORIGINS as JSON array
+const allowedOrigins: string[] = (() => {
+  try {
+    return process.env.ALLOWED_ORIGINS
+      ? JSON.parse(process.env.ALLOWED_ORIGINS)
+      : [];
+  } catch {
+    return [];
+  }
+})();
+
 app.use(
   cors({
-    origin: (
-      origin: string | undefined,
-      callback: (arg0: Error | null, arg1: boolean | undefined) => void
-    ) => {
-      // Check if the origin is in the allowedOrigins array
-      if (
-        !origin ||
-        (process.env.ALLOWED_ORIGINS &&
-          process.env.ALLOWED_ORIGINS.includes(origin))
-      ) {
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        callback(new Error("Not allowed by CORS"), false);
+        callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
   })
 );
 
-const PORT = process.env.PORT || 3000;
-
 // Middleware setup
-app.use(express.json());
+app.use(express.json({ limit: "10kb" }));
+app.use(express.urlencoded({ extended: true, limit: "10kb" }));
+
+// Sanitize request data against NoSQL injection
+app.use(mongoSanitize());
+
+// Rate limiting
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: "Too many requests, please try again later." },
+});
+app.use("/api/", apiLimiter);
 
 // Routes setup
 app.get("/", (req, res) => res.send("Express on Vercel"));

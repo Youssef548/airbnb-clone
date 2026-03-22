@@ -48,8 +48,7 @@ export const oauthCallback = async (req: Request, res: Response) => {
     const token = jwt.sign(
       {
         userId: user._id,
-        favoriteListingsIds: user.favoriteListingsIds,
-        role: user.role
+        role: user.role,
       },
       JWT_SECRET,
       { expiresIn: "1h" }

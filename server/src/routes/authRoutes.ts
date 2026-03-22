@@ -3,8 +3,9 @@ import express, { Request, Response, NextFunction } from "express";
 import { loginUser, createUser , getMe } from "../controllers/auth.controller";
 import { oauthCallback, oauthFailure, checkOAuthAvailability } from "../controllers/oauth.controller";
 import validateSchema from "../middleware/validationFactory.middleware";
-import { loginUserShema, registerUserSchema } from "../schemas/userSchema";
+import { loginUserSchema, registerUserSchema } from "../schemas/userSchema";
 import { isAuth } from "../middleware/auth.middleware";
+import { authLimiter } from "../middleware/rateLimiter";
 import passport from "../config/passport";
 
 const router = express.Router();
@@ -33,8 +34,8 @@ const checkOAuthConfig = (provider: 'google' | 'github') => {
 };
 
 // Traditional auth routes
-router.post("/login", validateSchema(loginUserShema), loginUser);
-router.post("/register",validateSchema(registerUserSchema), createUser);
+router.post("/login", authLimiter, validateSchema(loginUserSchema), loginUser);
+router.post("/register", authLimiter, validateSchema(registerUserSchema), createUser);
 router.get("/me" , isAuth, getMe);
 
 // OAuth availability check (for frontend to hide/show buttons)

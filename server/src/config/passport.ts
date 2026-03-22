@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as GitHubStrategy } from "passport-github2";
@@ -60,7 +61,7 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
             email: email || `${profile.id}@google.oauth`,
             username: profile.displayName || profile.emails?.[0]?.value.split('@')[0] || `user_${profile.id}`,
             image: profile.photos?.[0]?.value,
-            password: Math.random().toString(36).slice(-8), // Random password (won't be used for OAuth users)
+            password: crypto.randomBytes(32).toString("hex"), // Random password (won't be used for OAuth users)
             role: "guest",
             emailVerified: new Date(),
           });
@@ -117,7 +118,7 @@ if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
             email: email || `${profile.id}@github.oauth`,
             username: profile.username || profile.displayName || `user_${profile.id}`,
             image: profile.photos?.[0]?.value || profile._json.avatar_url,
-            password: Math.random().toString(36).slice(-8), // Random password (won't be used for OAuth users)
+            password: crypto.randomBytes(32).toString("hex"), // Random password (won't be used for OAuth users)
             role: "guest",
             emailVerified: email ? new Date() : undefined,
           });
