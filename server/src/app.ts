@@ -1,9 +1,11 @@
+import compression from "compression";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
+import morgan from "morgan";
 import rateLimit from "express-rate-limit";
 
 dotenv.config();
@@ -12,6 +14,7 @@ import errorHandler from "./middleware/error.middleware";
 import authRoutes from "./routes/authRoutes";
 import bookingRoutes from "./routes/booking.route";
 import favoriteRoutes from "./routes/favorite.route";
+import healthRoute from "./routes/health.route";
 import listingRoutes from "./routes/listing.route";
 import passport from "./config/passport";
 
@@ -19,6 +22,9 @@ const app = express();
 
 // Security headers
 app.use(helmet());
+
+// Request logging
+app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 
 // Initialize Passport
 app.use(passport.initialize());
@@ -49,6 +55,7 @@ app.use(
 
 // Middleware setup
 app.use(cookieParser());
+app.use(compression());
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 
@@ -67,6 +74,7 @@ app.use("/api/", apiLimiter);
 
 // Routes setup
 app.get("/", (req, res) => res.send("Express on Vercel"));
+app.use("/api/health", healthRoute);
 app.use("/api/auth/", authRoutes);
 app.use("/api/listings/", listingRoutes);
 app.use("/api/favorites/", favoriteRoutes);

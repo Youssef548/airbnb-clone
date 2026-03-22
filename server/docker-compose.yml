@@ -1,14 +1,12 @@
-version: '3.8'
-
 services:
   mongodb:
-    image: mongo:latest
-    restart: always
+    image: mongo:7.0
+    restart: unless-stopped
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: secret
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-secret}
     ports:
-      - "27017:27017"
+      - "127.0.0.1:27017:27017"
     volumes:
       - mongo-data:/data/db
 
@@ -16,14 +14,14 @@ services:
     build: .
     depends_on:
       - mongodb
+    restart: unless-stopped
+    env_file:
+      - .env
     environment:
-      - DATABASE_URL=mongodb://admin:secret@mongodb:27017/mydatabase?authSource=admin
-      - TEST_DATABASE_URL=mongodb://admin:secret@mongodb:27017/testdatabase?authSource=admin
+      - DATABASE_URL=mongodb://${MONGO_USERNAME:-admin}:${MONGO_PASSWORD:-secret}@mongodb:27017/mydatabase?authSource=admin
+      - TEST_DATABASE_URL=mongodb://${MONGO_USERNAME:-admin}:${MONGO_PASSWORD:-secret}@mongodb:27017/testdatabase?authSource=admin
     ports:
       - "3000:3000"
-    volumes:
-      - .:/server
-    command: npm run dev
 
 volumes:
   mongo-data:

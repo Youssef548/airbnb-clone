@@ -1,8 +1,9 @@
 node_modules
 .env
 .env.*
-tests
+dist
 *.test.ts
+*.test.tsx
 .git
 .gitignore
 README.md
