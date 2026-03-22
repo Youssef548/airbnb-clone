@@ -21,7 +21,7 @@ const FavoritesClient: React.FC<FavoritesClientProps> = ({
     if (!currentUser) return;
     getFavoriteListings().then((res) => {
       if (res.status === 200) {
-        setListings(res.data);
+        setListings(res.data.favorites);
       }
     });
   }, [currentUser?.favoriteListingsIds]);

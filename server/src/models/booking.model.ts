@@ -1,13 +1,12 @@
-import mongoose from "mongoose";
-import { IListing } from "./listing.model";
+import mongoose, { Document, Types } from "mongoose";
 
 export interface IBooking extends Document {
   startDate: Date;
   endDate: Date;
-  guest: mongoose.Schema.Types.ObjectId;
-  listing: IListing;
-  listingId: IListing;
-  totalPrice: Number;
+  guest: Types.ObjectId;
+  listingId: Types.ObjectId;
+  authorId: Types.ObjectId;
+  totalPrice: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -33,6 +32,12 @@ const BookingSchema = new mongoose.Schema(
     },
   }
 );
+
+// Indexes for common queries
+BookingSchema.index({ listingId: 1 });
+BookingSchema.index({ guest: 1 });
+BookingSchema.index({ authorId: 1 });
+BookingSchema.index({ listingId: 1, startDate: 1, endDate: 1 });
 
 const BookingModel = mongoose.model<IBooking>("Booking", BookingSchema);
 

@@ -51,7 +51,10 @@ const UserSchema = new mongoose.Schema(
     },
   }
 );
-const UserModel: Model<IUser> = mongoose.model<IUser>("User", UserSchema);
+// Sparse indexes for OAuth provider IDs (only index documents that have the field)
+UserSchema.index({ googleId: 1 }, { sparse: true });
+UserSchema.index({ githubId: 1 }, { sparse: true });
 
+const UserModel: Model<IUser> = mongoose.model<IUser>("User", UserSchema);
 
 export { UserModel as User };

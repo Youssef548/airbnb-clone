@@ -56,6 +56,13 @@ const ListingSchema = new mongoose.Schema(
   }
 );
 
+// Indexes for common queries
+ListingSchema.index({ user: 1 });
+ListingSchema.index({ category: 1 });
+ListingSchema.index({ "location.value": 1 });
+ListingSchema.index({ price: 1 });
+ListingSchema.index({ category: 1, "location.value": 1, price: 1 });
+
 // Define the model for the listing
 const ListingModel = mongoose.model<IListing>("Listing", ListingSchema);
 

@@ -53,10 +53,16 @@ export async function getFavoriteListings(
 ) {
   try {
     const cusReq = req as CustomRequest;
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 12;
 
-    const favorites = await getFavoriteListingsService(cusReq.user.userId);
+    const result = await getFavoriteListingsService(
+      cusReq.user.userId,
+      page,
+      limit
+    );
 
-    res.status(200).json(favorites);
+    res.status(200).json(result);
   } catch (error) {
     next(error);
   }

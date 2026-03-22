@@ -7,6 +7,7 @@ import {
   createBooking,
   getMyBookings,
 } from "../controllers/booking.controller";
+import { validateObjectId } from "../middleware/validateObjectId";
 
 const router = Router();
 
@@ -15,6 +16,6 @@ router.get("/", isAuth, getMyBookings)
 
 //TODO: add admin middleware (I didn't create admin role yet)
 // router.get("/", isAdmin, isAuth, getBookings);
-router.delete("/:bookingId", isAuth, cancelBooking);
+router.delete("/:bookingId", isAuth, validateObjectId("bookingId"), cancelBooking);
 
 export default router;

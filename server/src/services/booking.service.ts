@@ -49,46 +49,30 @@ export const createBookingService = async (data: CreateBookingData) => {
   return savedBooking;
 };
 
+const mapBookingWithListing = (reservation: any) => ({
+  ...reservation,
+  listing: reservation.listingId || null,
+  listingId: reservation.listingId?._id || null,
+});
+
 export const getBookingsService = async (filters: Record<string, any>) => {
-  const booksReservation = await Booking.find(filters)
+  const bookings = await Booking.find(filters)
     .populate("listingId")
     .sort({ createdAt: -1 })
+    .lean()
     .exec();
 
-  return booksReservation.map((reservation) => ({
-    ...reservation.toObject(),
-    createdAt: reservation.createdAt.toISOString(),
-    updatedAt: reservation.updatedAt.toISOString(),
-    endDate: reservation.endDate?.toDateString(),
-    listingId: null,
-    listing: reservation.listingId
-      ? {
-        ...reservation.listingId.toObject(),
-        createdAt: reservation.listingId?.createdAt?.toISOString(),
-      }
-      : null,
-  }));
+  return bookings.map(mapBookingWithListing);
 };
 
 export const getMyBookingsService = async (userId: string) => {
   const bookings = await Booking.find({ guest: userId })
     .populate("listingId")
     .sort({ createdAt: -1 })
+    .lean()
     .exec();
 
-  return bookings.map((reservation) => ({
-    ...reservation.toObject(),
-    createdAt: reservation.createdAt.toISOString(),
-    updatedAt: reservation.updatedAt.toISOString(),
-    endDate: reservation.endDate?.toDateString(),
-    listingId: null,
-    listing: reservation.listingId
-      ? {
-        ...reservation.listingId.toObject(),
-        createdAt: reservation.listingId?.createdAt?.toISOString(),
-      }
-      : null,
-  }));
+  return bookings.map(mapBookingWithListing);
 };
 
 export const cancelBookingService = async (
@@ -105,8 +89,9 @@ export const cancelBookingService = async (
   }
 
   const isGuest = booking.guest.toString() === userId;
+  const populatedListing = booking.listingId as any;
   const isListingOwner =
-    booking.listingId && booking.listingId.user.toString() === userId;
+    populatedListing && populatedListing.user?.toString() === userId;
 
   if (!isGuest && !isListingOwner) {
     throw errorHandler(403, "Unauthorized to cancel this booking");

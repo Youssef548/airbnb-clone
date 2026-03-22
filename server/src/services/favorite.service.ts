@@ -61,15 +61,33 @@ export const deleteFavoriteService = async (
   return updatedUser;
 };
 
-export const getFavoriteListingsService = async (userId: string) => {
-  const user = await User.findById(userId);
+export const getFavoriteListingsService = async (
+  userId: string,
+  page: number = 1,
+  limit: number = 12
+) => {
+  const user = await User.findById(userId).lean();
   if (!user) throw errorHandler(500, "Something went wrong");
 
   const favoriteListingIds = user.favoriteListingsIds || [];
-  const favorites = await Listing.find({ _id: { $in: favoriteListingIds } });
+  const totalCount = favoriteListingIds.length;
+  const totalPages = Math.ceil(totalCount / limit);
+  const skip = (page - 1) * limit;
 
-  return favorites.map((favorite) => ({
-    ...favorite.toObject(),
-    createdAt: favorite.createdAt?.toDateString(),
-  }));
+  const favorites = await Listing.find({ _id: { $in: favoriteListingIds } })
+    .skip(skip)
+    .limit(limit)
+    .lean();
+
+  return {
+    favorites,
+    pagination: {
+      currentPage: page,
+      totalPages,
+      totalCount,
+      limit,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1,
+    },
+  };
 };

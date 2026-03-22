@@ -5,9 +5,11 @@ import {
   deleteFavorite,
   getFavoriteListings,
 } from "../controllers/favorite.controller";
+import { validateObjectId } from "../middleware/validateObjectId";
+
 const router = Router();
 
-router.post("/:listingId", isAuth, addFavorite);
-router.delete("/:listingId", isAuth, deleteFavorite);
+router.post("/:listingId", isAuth, validateObjectId("listingId"), addFavorite);
+router.delete("/:listingId", isAuth, validateObjectId("listingId"), deleteFavorite);
 router.get("/", isAuth, getFavoriteListings);
 export default router;
