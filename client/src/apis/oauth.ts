@@ -1,12 +1,16 @@
-import { BASEURL } from "./baseurl";
-import axios from "axios";
+import { axiosInstance } from "../providers/AxiosInstance";
+
+const BASEURL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000/api";
 
 /**
  * Check which OAuth providers are available
  */
-export const checkOAuthAvailability = async (): Promise<{ google: boolean; github: boolean }> => {
+export const checkOAuthAvailability = async (): Promise<{
+  google: boolean;
+  github: boolean;
+}> => {
   try {
-    const response = await axios.get(`${BASEURL}/auth/oauth/availability`);
+    const response = await axiosInstance.get(`/auth/oauth/availability`);
     return response.data;
   } catch (error) {
     console.error("Error checking OAuth availability:", error);

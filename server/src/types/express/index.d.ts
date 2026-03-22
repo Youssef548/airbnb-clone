@@ -1,15 +1,22 @@
-import * as express from 'express';
-import { JwtPayload } from 'jsonwebtoken';
+import { JwtPayload } from "jsonwebtoken";
 
-// Define the structure of our JWT payload
-interface UserJwtPayload extends JwtPayload {
+export interface UserJwtPayload extends JwtPayload {
   userId: string;
+  role: "guest" | "host";
 }
 
 declare global {
   namespace Express {
-    interface Request {
-      user?: UserJwtPayload;
+    // Augment Passport's User interface with our JWT fields (optional to allow Passport docs)
+    interface User {
+      userId?: string;
+      role?: string;
+      _id?: any;
+      email?: string;
+      username?: string;
+      image?: string | null;
+      favoriteListingsIds?: any[];
+      password?: string | null;
     }
   }
 }

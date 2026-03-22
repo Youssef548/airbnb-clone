@@ -1,7 +1,7 @@
 // routes/authRoutes.js
 import express, { Request, Response, NextFunction } from "express";
-import { loginUser, createUser , getMe } from "../controllers/auth.controller";
-import { oauthCallback, oauthFailure, checkOAuthAvailability } from "../controllers/oauth.controller";
+import { loginUser, createUser, getMe, logout } from "../controllers/auth.controller";
+import { oauthCallback, oauthFailure, checkOAuthAvailability, exchangeCode } from "../controllers/oauth.controller";
 import validateSchema from "../middleware/validationFactory.middleware";
 import { loginUserSchema, registerUserSchema } from "../schemas/userSchema";
 import { isAuth } from "../middleware/auth.middleware";
@@ -36,7 +36,11 @@ const checkOAuthConfig = (provider: 'google' | 'github') => {
 // Traditional auth routes
 router.post("/login", authLimiter, validateSchema(loginUserSchema), loginUser);
 router.post("/register", authLimiter, validateSchema(registerUserSchema), createUser);
-router.get("/me" , isAuth, getMe);
+router.get("/me", isAuth, getMe);
+router.post("/logout", logout);
+
+// OAuth code exchange
+router.post("/oauth/exchange", exchangeCode);
 
 // OAuth availability check (for frontend to hide/show buttons)
 router.get("/oauth/availability", checkOAuthAvailability);

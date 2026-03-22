@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
-import { setAuthToken } from "../../utils/authUtils";
 import useUserStore from "../../store/useStore";
+import { exchangeOAuthCode } from "../../apis/auth/auth";
 
 /**
  * OAuth Callback Page
- * Handles the redirect from backend after OAuth authentication
- * Extracts token and user data from URL params and stores them
+ * Handles the redirect from backend after OAuth authentication.
+ * Exchanges the short-lived code for an httpOnly cookie via POST.
  */
 const OAuthCallback = () => {
   const navigate = useNavigate();
@@ -15,35 +15,30 @@ const OAuthCallback = () => {
   const setUser = useUserStore((state) => state.setUser);
 
   useEffect(() => {
-    const token = searchParams.get("token");
-    const userStr = searchParams.get("user");
+    const code = searchParams.get("code");
 
-    if (token && userStr) {
+    if (!code) {
+      toast.error("Authentication failed. Please try again.");
+      navigate("/", { replace: true });
+      return;
+    }
+
+    const exchange = async () => {
       try {
-        // Parse user data from URL
-        const user = JSON.parse(decodeURIComponent(userStr));
-
-        // Store token in localStorage
-        setAuthToken(token);
-
-        // Update user state in Zustand store
-        setUser(user);
-
-        // Show success message
+        const res = await exchangeOAuthCode(code);
+        setUser(res.data.currentUser);
         toast.success("Successfully logged in!");
 
-        // Redirect to home page
+        // Clear URL params
+        window.history.replaceState({}, "", "/");
         navigate("/", { replace: true });
-      } catch (error) {
-        console.error("Error parsing OAuth callback data:", error);
+      } catch {
         toast.error("Authentication failed. Please try again.");
         navigate("/", { replace: true });
       }
-    } else {
-      // No token or user data found
-      toast.error("Authentication failed. Please try again.");
-      navigate("/", { replace: true });
-    }
+    };
+
+    exchange();
   }, [searchParams, navigate, setUser]);
 
   return (

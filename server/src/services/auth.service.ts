@@ -52,7 +52,7 @@ export const createUserService = async (
   password: string,
   username: string,
   role: string = "guest"
-): Promise<SanitizedUser> => {
+): Promise<LoginResponse> => {
   const isExist = await User.findOne({ email });
   if (isExist) {
     throw new Error("The email already used");
@@ -70,6 +70,12 @@ export const createUserService = async (
 
   await user.save();
 
+  const token = jwt.sign(
+    { userId: user._id, role: user.role },
+    JWT_SECRET,
+    { expiresIn: "1h" }
+  );
+
   const sanitizedUser: SanitizedUser = {
     id: user._id.toString(),
     email: user.email,
@@ -78,5 +84,5 @@ export const createUserService = async (
     role: user.role,
   };
 
-  return sanitizedUser;
+  return { token, user: sanitizedUser };
 };

@@ -1,19 +1,32 @@
+import crypto from "crypto";
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { IUser } from "../models/User.model";
 import { SanitizedUser } from "../interfaces/authInterfaces";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
 
+// Temporary store for OAuth code exchange
+const pendingTokens = new Map<
+  string,
+  { token: string; user: SanitizedUser; expiresAt: number }
+>();
+
+// Cleanup expired entries every 5 minutes
+setInterval(() => {
+  const now = Date.now();
+  for (const [code, entry] of pendingTokens) {
+    if (entry.expiresAt < now) {
+      pendingTokens.delete(code);
+    }
+  }
+}, 5 * 60 * 1000);
+
 /**
  * Check if OAuth providers are configured
- * Returns which OAuth providers are available
  */
-export const checkOAuthAvailability = (req: Request, res: Response) => {
+export const checkOAuthAvailability = (_req: Request, res: Response) => {
   const googleAvailable = !!(
     process.env.GOOGLE_CLIENT_ID &&
     process.env.GOOGLE_CLIENT_SECRET &&
@@ -33,15 +46,16 @@ export const checkOAuthAvailability = (req: Request, res: Response) => {
 };
 
 /**
- * OAuth callback handler - generates JWT and redirects to frontend
- * This is called after successful OAuth authentication
+ * OAuth callback - generates a short-lived code and redirects to frontend
  */
 export const oauthCallback = async (req: Request, res: Response) => {
   try {
-    const user = req.user as IUser;
+    const user = req.user as unknown as IUser;
 
     if (!user) {
-      return res.redirect(`${CLIENT_URL}/auth/error?message=Authentication failed`);
+      return res.redirect(
+        `${CLIENT_URL}/auth/error?message=Authentication failed`
+      );
     }
 
     // Generate JWT token
@@ -64,20 +78,59 @@ export const oauthCallback = async (req: Request, res: Response) => {
       role: user.role,
     };
 
-    // Redirect to frontend with token and user data
-    // Frontend will extract these from URL and store them
-    const redirectUrl = `${CLIENT_URL}/auth/callback?token=${token}&user=${encodeURIComponent(JSON.stringify(sanitizedUser))}`;
+    // Generate a short-lived code instead of putting token in URL
+    const code = crypto.randomBytes(32).toString("hex");
+    pendingTokens.set(code, {
+      token,
+      user: sanitizedUser,
+      expiresAt: Date.now() + 60_000, // 1 minute
+    });
 
-    return res.redirect(redirectUrl);
+    return res.redirect(`${CLIENT_URL}/auth/callback?code=${code}`);
   } catch (error) {
     console.error("OAuth callback error:", error);
-    return res.redirect(`${CLIENT_URL}/auth/error?message=Something went wrong`);
+    return res.redirect(
+      `${CLIENT_URL}/auth/error?message=Something went wrong`
+    );
   }
+};
+
+/**
+ * Exchange a short-lived code for an httpOnly cookie with JWT
+ */
+export const exchangeCode = async (req: Request, res: Response) => {
+  const { code } = req.body;
+
+  if (!code) {
+    return res.status(400).json({ message: "Code is required" });
+  }
+
+  const entry = pendingTokens.get(code);
+
+  if (!entry || entry.expiresAt < Date.now()) {
+    pendingTokens.delete(code);
+    return res.status(400).json({ message: "Invalid or expired code" });
+  }
+
+  pendingTokens.delete(code);
+
+  // Set httpOnly cookie with the JWT
+  res.cookie("token", entry.token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax" as const,
+    maxAge: 60 * 60 * 1000,
+    path: "/",
+  });
+
+  return res.status(200).json({ currentUser: entry.user });
 };
 
 /**
  * OAuth failure handler
  */
-export const oauthFailure = (req: Request, res: Response) => {
-  return res.redirect(`${CLIENT_URL}/auth/error?message=Authentication failed`);
+export const oauthFailure = (_req: Request, res: Response) => {
+  return res.redirect(
+    `${CLIENT_URL}/auth/error?message=Authentication failed`
+  );
 };

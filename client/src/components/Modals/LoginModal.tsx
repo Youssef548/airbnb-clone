@@ -8,7 +8,6 @@ import toast from "react-hot-toast";
 import Button from "../Buttons.js";
 import useLoginModal from "../../hooks/useLoginModal.js";
 
-import { setAuthToken } from "../../utils/authUtils";
 import { loginRequest } from "../../apis/login.js";
 import { loginWithGoogle, loginWithGithub, checkOAuthAvailability } from "../../apis/oauth";
 
@@ -143,7 +142,6 @@ const LoginModal = () => {
       .then((res) => {
         toast.success("Logged in successfully");
         loginModal.onClose();
-        setAuthToken(res.data.token);
         setUser(res.data.currentUser);
       })
       .catch((err) => {

@@ -1,18 +1,18 @@
-# Use Node.js base image
 FROM node:18
 
-# Set the working directory
+# Enable pnpm via corepack
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
 WORKDIR /app
 
-# Copy package.json and install dependencies
-COPY package.json package-lock.json ./
-RUN npm install
+# Copy package files and install dependencies
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 
 # Copy the rest of the application
 COPY . .
 
-# Expose the port your app runs on
 EXPOSE 3000
 
-# Start the application
-CMD ["npm", "dev"]
+# Start the development server
+CMD ["pnpm", "run", "dev"]

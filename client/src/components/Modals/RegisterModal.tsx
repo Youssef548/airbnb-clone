@@ -14,7 +14,6 @@ import useLoginModal from "../../hooks/useLoginModal";
 import { registerRequest } from "../../apis/auth/auth";
 import { RequestBodyType } from "../../apis/auth/auth.types";
 import { loginRequest } from "../../apis/login";
-import { setAuthToken } from "../../utils/authUtils";
 import useUserStore from "../../store/useStore";
 
 const RegisterModal = () => {
@@ -192,8 +191,7 @@ const RegisterModal = () => {
 
       const loginResponse = await loginRequest(loginData);
 
-      // Set token and user data
-      setAuthToken(loginResponse.data.token);
+      // Cookie is set automatically by the server
       setUser(loginResponse.data.currentUser);
 
       toast.success("Welcome to Airbnb!");

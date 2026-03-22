@@ -1,13 +1,6 @@
+// Auth utilities - token is now managed via httpOnly cookies
+// These helpers remain for clearing client-side user data
 
-export const setAuthToken = (token: string) => {
-  localStorage.setItem("authToken", token);
+export const clearAuthData = () => {
+  localStorage.removeItem("currentUser");
 };
-
-export const removeAuthToken = () => {
-  localStorage.removeItem("authToken");
-};
-
-export const getAuthToken = () => {
-  return localStorage.getItem("authToken");
-}
-

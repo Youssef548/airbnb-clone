@@ -4,8 +4,8 @@ import MenuItem from "./MenuItem";
 import useRegisterModal from "../../../hooks/useRegisterModal";
 import useLoginModal from "../../../hooks/useLoginModal";
 import { UserType } from "../../../types/user";
-import { removeAuthToken } from "../../../utils/authUtils";
 import useUserStore from "../../../store/useStore";
+import { logoutRequest } from "../../../apis/auth/auth";
 import useRentModal from "../../../hooks/useRentModal";
 import { useNavigate } from "react-router-dom";
 
@@ -125,9 +125,13 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
                 )}
                 <hr />
                 <MenuItem
-                  onClick={() => {
-                    removeAuthToken();
-                    userStore.setUser(null);
+                  onClick={async () => {
+                    try {
+                      await logoutRequest();
+                    } catch {
+                      // Clear locally even if server call fails
+                    }
+                    userStore.clearUser();
                   }}
                   label="Logout"
                 />

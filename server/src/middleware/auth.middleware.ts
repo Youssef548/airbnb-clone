@@ -2,39 +2,30 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { errorHandler } from "../utils/error";
 
-// Import our custom JWT payload type
-import { UserJwtPayload } from '../types/express';
-
-interface AuthenticatedRequest extends Request {
-  user: UserJwtPayload;
+export interface UserJwtPayload {
+  userId: string;
+  role: "guest" | "host";
 }
 
-export const isAuth = (req: Request, res: Response, next: NextFunction) => {
-  const request = req as AuthenticatedRequest;
-  const authHeader = request.headers.authorization;
+export const isAuth = (req: Request, _res: Response, next: NextFunction) => {
+  const token = req.cookies?.token;
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res
-      .status(401)
-      .json({ message: "Authentication token is missing or invalid." });
-   
+  if (!token) {
+    return next(errorHandler(401, "Authentication required."));
   }
 
-  const token = authHeader.split(" ")[1];
   const jwtSecret = process.env.JWT_SECRET;
 
   if (!jwtSecret) {
-    // Handle missing JWT_SECRET environment variable
     console.error("JWT_SECRET is not defined.");
     return next(errorHandler(500, "Internal server error."));
   }
 
   try {
-    const decoded = jwt.verify(token, jwtSecret);
-    request.user = decoded as UserJwtPayload;
+    const decoded = jwt.verify(token, jwtSecret) as UserJwtPayload;
+    req.user = decoded;
     next();
   } catch (error) {
-    console.error(error);
-    return next(errorHandler(401, "Invalid authentication token."));
+    return next(errorHandler(401, "Invalid or expired authentication token."));
   }
 };
