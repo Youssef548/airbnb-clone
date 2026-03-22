@@ -5,6 +5,7 @@ import { getListing } from "../../apis/Listing/listing";
 import Container from "../../components/Container";
 import EmptyState from "../../components/EmptyState";
 import ListingCard from "../../components/Listings/ListingCard";
+import ListingGrid from "../../components/Listings/ListingGrid";
 import Pagination from "../../components/Pagination";
 import useUserStore from "../../store/useStore";
 import ListingStore from "../../store/listingsStore";
@@ -95,18 +96,7 @@ const Home = () => {
 
   return (
     <Container>
-      <div
-        className="
-      mt-10
-      grid
-      grid-cols-1
-      sm:grid-cols-2
-      md:grid-cols-3
-      lg:grid-cols-4
-      xl:grid-cols-5
-      2xl:grid-cols-6
-      gap-8"
-      >
+      <ListingGrid>
         {listings.map((listing: safeListingType) => {
           return (
             <ListingCard
@@ -117,7 +107,7 @@ const Home = () => {
             />
           );
         })}
-      </div>
+      </ListingGrid>
 
       {pagination && <Pagination pagination={pagination} onPageChange={handlePageChange} />}
     </Container>

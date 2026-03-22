@@ -1,6 +1,7 @@
 import { lazy } from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import ToasterProvider from "./providers/ToasterProvider";
+import QueryProvider from "./providers/QueryProvider";
 import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -69,10 +70,10 @@ const routes = [
 
 const App = () => {
   return (
-    <>
+    <QueryProvider>
       <ToasterProvider />
       <RouterProvider router={createBrowserRouter(routes)} />
-    </>
+    </QueryProvider>
   );
 };
 

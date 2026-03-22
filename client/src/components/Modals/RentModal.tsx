@@ -105,6 +105,24 @@ const RentModal = () => {
 
   // Handle form submission for the final step
   const handleSubmitForm = async (data: FieldValues) => {
+    // Client-side bounds validation
+    if (!data.price || data.price < 1) {
+      toast.error("Price must be at least $1.");
+      return;
+    }
+    if (!data.roomCount || data.roomCount < 1) {
+      toast.error("Room count must be at least 1.");
+      return;
+    }
+    if (!data.bathRoomCount || data.bathRoomCount < 1) {
+      toast.error("Bathroom count must be at least 1.");
+      return;
+    }
+    if (!data.guestCount || data.guestCount < 1) {
+      toast.error("Guest count must be at least 1.");
+      return;
+    }
+
     setIsLoading(true);
 
     const listingData: ListingRequestBody = {

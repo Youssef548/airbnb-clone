@@ -1,13 +1,15 @@
-import { Suspense, useEffect } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 
 import Navbar from "./layouts/Navbar/Navbar";
-import RegisterModal from "./Modals/RegisterModal";
-import LoginModal from "./Modals/LoginModal";
 import useUserStore from "../store/useStore";
-import RentModal from "./Modals/RentModal";
-import SearchModal from "./Modals/SearchModal";
 import Loading from "./Loading";
+
+const RegisterModal = lazy(() => import("./Modals/RegisterModal"));
+const LoginModal = lazy(() => import("./Modals/LoginModal"));
+const RentModal = lazy(() => import("./Modals/RentModal"));
+const SearchModal = lazy(() => import("./Modals/SearchModal"));
+
 function Layout() {
   const user = useUserStore((state) => state.user);
   const fetchUser = useUserStore((state) => state.fetchUser);

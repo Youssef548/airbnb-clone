@@ -4,6 +4,7 @@ import { UserType } from "../../types/user";
 import Container from "../../components/Container";
 import Heading from "../../components/Heading";
 import ListingCard from "../../components/Listings/ListingCard";
+import ListingGrid from "../../components/Listings/ListingGrid";
 import { getFavoriteListings } from "../../apis/Favorites/favorite";
 
 interface FavoritesClientProps {
@@ -28,19 +29,7 @@ const FavoritesClient: React.FC<FavoritesClientProps> = ({
   return (
     <Container>
       <Heading title="Favorites" subTitle="List of places you have favorited" />
-      <div
-        className="
-      mt-10
-      grid
-      grid-cols-1
-      sm:grid-cols-2
-      md:grid-cols-3
-      lg:grid-cols-4
-      xl:grid-cols-5
-      2xl:grid-cols-6
-      gap-8
-      "
-      >
+      <ListingGrid>
         {listings.map((list) => (
           <ListingCard
             currentUser={currentUser}
@@ -49,7 +38,7 @@ const FavoritesClient: React.FC<FavoritesClientProps> = ({
             actionId={list._id}
           />
         ))}
-      </div>
+      </ListingGrid>
     </Container>
   );
 };

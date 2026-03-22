@@ -30,3 +30,8 @@ const Image: React.FC<ImageProps> = ({
 };
 
 export default Image;
+
+export const optimizedImageUrl = (url: string, width: number = 400): string => {
+  if (!url || !url.includes("cloudinary")) return url;
+  return url.replace("/upload/", `/upload/w_${width},q_auto,f_auto/`);
+};

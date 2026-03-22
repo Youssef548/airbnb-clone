@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 import { getListingById } from "../../apis/Listing/listing";
 import { ListingType } from "../../types/Listing";
@@ -13,57 +13,41 @@ import Loading from "../../components/Loading";
 
 const ListingPage = () => {
   const user = useUserStore((state) => state.user);
-
   const { listingId = "" } = useParams<string>();
 
-  const [listingData, setListingData] = useState<
-    null | (ListingType & { user: UserType })
-  >(null);
+  const { data, isLoading } = useQuery({
+    queryKey: ["listing", listingId],
+    queryFn: async () => {
+      const [listingRes, reservationsRes] = await Promise.all([
+        getListingById(listingId),
+        getReservation({ listingId }),
+      ]);
 
-  const [reservations, setReservations] = useState<ReservationSafeType[]>();
+      const listingData: (ListingType & { user: UserType }) | null =
+        listingRes.status === 200 ? listingRes.data : null;
 
-  const [isLoading, setIsLoading] = useState(false);
+      const reservations: ReservationSafeType[] =
+        reservationsRes.status === 200 ? reservationsRes.data : [];
 
-  useEffect(() => {
-    setIsLoading(true);
-    getListingById(listingId)
-      .then((res) => {
-        if (res.status === 200) {
-          setListingData(res.data);
-        } else if (res.status === 404) {
-          console.log("Listing not found");
-        }
-      })
-      .finally(() => setIsLoading(false));
-  }, []);
-
-  useEffect(() => {
-    setIsLoading(true);
-    getReservation({ listingId })
-      .then((res) => {
-        if (res.status === 200) {
-          setReservations(res.data);
-        } else if (res.status === 404) {
-          console.log("Reservation not found");
-        }
-      })
-      .finally(() => setIsLoading(false));
-  }, []);
+      return { listingData, reservations };
+    },
+    enabled: !!listingId,
+  });
 
   if (isLoading) {
     return <Loading />;
   }
 
-  if (!listingData) {
+  if (!data?.listingData) {
     return <EmptyState showReset />;
   }
 
   return (
     <div>
       <ListingClient
-        listing={listingData}
+        listing={data.listingData}
         currentUser={user}
-        reservations={reservations}
+        reservations={data.reservations}
       />
     </div>
   );

@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { memo, useCallback, useMemo } from "react";
 import useCountries from "../../hooks/useCountries";
 import { ListingType } from "../../types/Listing";
 import { ReservationSafeType, ReservationType } from "../../types/Reservation";
@@ -7,7 +7,7 @@ import { UserType } from "../../types/user";
 import { useNavigate } from "react-router-dom";
 
 import { format } from "date-fns";
-import Image from "../../utils/Image";
+import Image, { optimizedImageUrl } from "../../utils/Image";
 import HeartButton from "../HeartButton";
 import Button from "../Buttons";
 
@@ -81,7 +81,7 @@ const ListingCard: React.FC<ListingProps> = ({
         >
           <Image
             alt="listing"
-            src={data.imageSrc}
+            src={optimizedImageUrl(data.imageSrc, 400)}
             className="
             object-cover
             w-full
@@ -118,4 +118,4 @@ const ListingCard: React.FC<ListingProps> = ({
   );
 };
 
-export default ListingCard;
+export default memo(ListingCard);
