@@ -33,24 +33,25 @@ const PropertiesClient: React.FC<PropertiesClientProps> = ({
           toast.success("Listing deleted");
           getListing({ userId: currentUser?._id }).then((res) => {
             if (res.status == 200) {
-              setListings(res.data);
-              toast.success("property succuessfully deleted");
+              setListings(res.data.listings || res.data);
             } else {
-              toast.error(res?.data?.error);
+              toast.error("Something went wrong");
             }
           });
         } else {
-          toast.error(res?.data?.error);
+          toast.error("Something went wrong");
         }
       })
-      .catch((err) => {
-        toast.error(err?.response?.data?.error);
+      .catch((error) => {
+        const message =
+          error?.response?.data?.message ?? "Something went wrong";
+        toast.error(message);
       })
       .finally(() => {
         setIsLoading(false);
         setDeletingId("");
       });
-  }, []);
+  }, [currentUser?._id, setListings]);
 
   return (
     <Container>

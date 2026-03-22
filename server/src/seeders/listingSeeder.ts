@@ -420,14 +420,14 @@ export async function seedListings() {
       },
       user: hostUser._id,
     },
-    // cupStrawIcon Category (Cafe/Drinks themed)
+    // Drinks Category (Cafe/Drinks themed)
     {
       title: "Cozy Cafe Apartment in Seattle",
       description:
         "Live above a trendy coffee shop in downtown Seattle. Enjoy complimentary coffee every morning and vibrant cafe culture.",
       imageSrc:
         "https://images.unsplash.com/photo-1501959915551-4e8d30928317?w=800&auto=format&fit=crop",
-      category: "cupStrawIcon",
+      category: "Drinks",
       roomCount: 1,
       bathRoomCount: 1,
       guestCount: 2,
@@ -447,7 +447,7 @@ export async function seedListings() {
         "Studio apartment in the coffee capital of Australia. Walking distance to the best cafes and roasteries in the city.",
       imageSrc:
         "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800&auto=format&fit=crop",
-      category: "cupStrawIcon",
+      category: "Drinks",
       roomCount: 1,
       bathRoomCount: 1,
       guestCount: 2,
@@ -467,7 +467,7 @@ export async function seedListings() {
         "Authentic Italian coffee experience. Located above a historic espresso bar. Learn to make perfect cappuccino from barista masters.",
       imageSrc:
         "https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=800&auto=format&fit=crop",
-      category: "cupStrawIcon",
+      category: "Drinks",
       roomCount: 1,
       bathRoomCount: 1,
       guestCount: 2,
@@ -487,7 +487,7 @@ export async function seedListings() {
         "Traditional Japanese tea house converted into modern apartment. Daily tea ceremony experiences and matcha tasting included.",
       imageSrc:
         "https://images.unsplash.com/photo-1515443961218-a51367888e4b?w=800&auto=format&fit=crop",
-      category: "cupStrawIcon",
+      category: "Drinks",
       roomCount: 1,
       bathRoomCount: 1,
       guestCount: 2,
@@ -507,7 +507,7 @@ export async function seedListings() {
         "Charming canal-side apartment above artisan coffee roastery. Enjoy Dutch pancakes and specialty coffee every morning.",
       imageSrc:
         "https://images.unsplash.com/photo-1559305616-3555abb9b1e6?w=800&auto=format&fit=crop",
-      category: "cupStrawIcon",
+      category: "Drinks",
       roomCount: 1,
       bathRoomCount: 1,
       guestCount: 3,
@@ -521,14 +521,14 @@ export async function seedListings() {
       },
       user: hostUser._id,
     },
-    // airPlane Category (Travel/Airport themed)
+    // Travel Category (Travel/Airport themed)
     {
       title: "Airport Hotel Suite in Singapore",
       description:
         "Modern suite connected to Changi Airport. Perfect for layovers and early flights. 24-hour concierge service.",
       imageSrc:
         "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&auto=format&fit=crop",
-      category: "airPlane",
+      category: "Travel",
       roomCount: 1,
       bathRoomCount: 1,
       guestCount: 2,
@@ -548,7 +548,7 @@ export async function seedListings() {
         "Luxury apartment with views of Emirates Airport runways. Watch planes take off and land from your balcony.",
       imageSrc:
         "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&auto=format&fit=crop",
-      category: "airPlane",
+      category: "Travel",
       roomCount: 2,
       bathRoomCount: 2,
       guestCount: 4,
@@ -568,7 +568,7 @@ export async function seedListings() {
         "Modern apartment with rooftop terrace overlooking flight paths. Perfect for aviation enthusiasts and travelers with early departures.",
       imageSrc:
         "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&auto=format&fit=crop",
-      category: "airPlane",
+      category: "Travel",
       roomCount: 2,
       bathRoomCount: 1,
       guestCount: 4,
@@ -588,7 +588,7 @@ export async function seedListings() {
         "Stay in converted hangar next to Boeing Museum of Flight. Includes private tour of historic aircraft collection.",
       imageSrc:
         "https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?w=800&auto=format&fit=crop",
-      category: "airPlane",
+      category: "Travel",
       roomCount: 1,
       bathRoomCount: 1,
       guestCount: 2,
@@ -608,7 +608,7 @@ export async function seedListings() {
         "Convenient pod-style hotel inside Terminal 5. Perfect for long layovers. Modern amenities and quick access to all terminals.",
       imageSrc:
         "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&auto=format&fit=crop",
-      category: "airPlane",
+      category: "Travel",
       roomCount: 1,
       bathRoomCount: 1,
       guestCount: 2,
@@ -622,14 +622,14 @@ export async function seedListings() {
       },
       user: hostUser._id,
     },
-    // Football Category
+    // Sports Category
     {
       title: "Stadium View Loft in Madrid",
       description:
         "Watch Real Madrid matches from your balcony! Located next to Santiago Bernabéu Stadium. Includes match day tickets.",
       imageSrc:
         "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=800&auto=format&fit=crop",
-      category: "Football",
+      category: "Sports",
       roomCount: 2,
       bathRoomCount: 1,
       guestCount: 4,
@@ -649,7 +649,7 @@ export async function seedListings() {
         "The ultimate home for football fans! Walking distance to Old Trafford. Decorated with memorabilia and sports bar.",
       imageSrc:
         "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&auto=format&fit=crop",
-      category: "Football",
+      category: "Sports",
       roomCount: 3,
       bathRoomCount: 2,
       guestCount: 6,
@@ -669,7 +669,7 @@ export async function seedListings() {
         "Luxury apartment overlooking Camp Nou. Experience matchday atmosphere and explore FC Barcelona museum. Season tickets available.",
       imageSrc:
         "https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=800&auto=format&fit=crop",
-      category: "Football",
+      category: "Sports",
       roomCount: 3,
       bathRoomCount: 2,
       guestCount: 6,
@@ -689,7 +689,7 @@ export async function seedListings() {
         "Modern apartment near Allianz Arena. Perfect for Bayern Munich fans. Walking distance to stadium and beer gardens.",
       imageSrc:
         "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=800&auto=format&fit=crop",
-      category: "Football",
+      category: "Sports",
       roomCount: 2,
       bathRoomCount: 1,
       guestCount: 4,
@@ -709,7 +709,7 @@ export async function seedListings() {
         "Authentic football fan experience near Anfield Stadium. Decorated with Liverpool FC memorabilia. Pub crawl tours available.",
       imageSrc:
         "https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=800&auto=format&fit=crop",
-      category: "Football",
+      category: "Sports",
       roomCount: 3,
       bathRoomCount: 2,
       guestCount: 5,
@@ -723,14 +723,14 @@ export async function seedListings() {
       },
       user: hostUser._id,
     },
-    // bookIcon Category (Library/Reading themed)
+    // Books Category (Library/Reading themed)
     {
       title: "Library Loft in Edinburgh",
       description:
         "Book lover's paradise with floor-to-ceiling bookshelves. Located near historic libraries and literary landmarks.",
       imageSrc:
         "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=800&auto=format&fit=crop",
-      category: "bookIcon",
+      category: "Books",
       roomCount: 2,
       bathRoomCount: 1,
       guestCount: 3,
@@ -750,7 +750,7 @@ export async function seedListings() {
         "Quiet cottage perfect for reading and writing. Features a personal library and study overlooking English gardens.",
       imageSrc:
         "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&auto=format&fit=crop",
-      category: "bookIcon",
+      category: "Books",
       roomCount: 2,
       bathRoomCount: 1,
       guestCount: 2,
@@ -770,7 +770,7 @@ export async function seedListings() {
         "Cozy flat above a historic Irish bookshop. Includes unlimited access to bookstore collection and author reading events.",
       imageSrc:
         "https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=800&auto=format&fit=crop",
-      category: "bookIcon",
+      category: "Books",
       roomCount: 1,
       bathRoomCount: 1,
       guestCount: 2,
@@ -790,7 +790,7 @@ export async function seedListings() {
         "Shakespeare-themed cottage near the Bard's birthplace. Features extensive collection of classic literature and poetry.",
       imageSrc:
         "https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=800&auto=format&fit=crop",
-      category: "bookIcon",
+      category: "Books",
       roomCount: 2,
       bathRoomCount: 1,
       guestCount: 3,
@@ -810,7 +810,7 @@ export async function seedListings() {
         "Academic retreat near Cambridge University libraries. Quiet study space with extensive reference library and reading nook.",
       imageSrc:
         "https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=800&auto=format&fit=crop",
-      category: "bookIcon",
+      category: "Books",
       roomCount: 1,
       bathRoomCount: 1,
       guestCount: 2,
@@ -831,7 +831,7 @@ export async function seedListings() {
         "Charming canal-side suite perfect for couples. Includes gondola ride, champagne, and breakfast in bed service.",
       imageSrc:
         "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=800&auto=format&fit=crop",
-      category: "Heart",
+      category: "Wellness",
       roomCount: 1,
       bathRoomCount: 1,
       guestCount: 2,
@@ -851,7 +851,7 @@ export async function seedListings() {
         "Private island bungalow for two. Includes spa treatments, private beach dinners, and sunset cruises.",
       imageSrc:
         "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&auto=format&fit=crop",
-      category: "Heart",
+      category: "Wellness",
       roomCount: 1,
       bathRoomCount: 1,
       guestCount: 2,
@@ -871,7 +871,7 @@ export async function seedListings() {
         "Intimate cave suite with private plunge pool. Stunning caldera views, couples massage, and romantic sunset dinner on terrace.",
       imageSrc:
         "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=800&auto=format&fit=crop",
-      category: "Heart",
+      category: "Wellness",
       roomCount: 1,
       bathRoomCount: 1,
       guestCount: 2,
@@ -891,7 +891,7 @@ export async function seedListings() {
         "Romantic log cabin in Canadian Rockies. Private hot tub under the stars, fireplace, and breakfast basket delivered daily.",
       imageSrc:
         "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop",
-      category: "Heart",
+      category: "Wellness",
       roomCount: 1,
       bathRoomCount: 1,
       guestCount: 2,
@@ -911,7 +911,7 @@ export async function seedListings() {
         "Fairytale castle suite in French countryside. Includes wine tasting, couples cooking class, and romantic garden picnics.",
       imageSrc:
         "https://images.unsplash.com/photo-1549638441-b787d2e11f14?w=800&auto=format&fit=crop",
-      category: "Heart",
+      category: "Wellness",
       roomCount: 1,
       bathRoomCount: 1,
       guestCount: 2,
@@ -931,7 +931,7 @@ export async function seedListings() {
         "Spectacular views of Mediterranean Sea. Private infinity pool, in-villa spa treatments, and romantic candlelit dinners on terrace.",
       imageSrc:
         "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&auto=format&fit=crop",
-      category: "Heart",
+      category: "Wellness",
       roomCount: 2,
       bathRoomCount: 2,
       guestCount: 2,

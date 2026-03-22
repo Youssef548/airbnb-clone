@@ -11,7 +11,7 @@ const PropertiesPage = () => {
   const user = useUserStore((state) => state.user);
   const { listings, setListings } = ListingStore();
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (user) {
@@ -26,24 +26,26 @@ const PropertiesPage = () => {
           }
         })
         .finally(() => setIsLoading(false));
+    } else {
+      setIsLoading(false);
     }
-  }, []);
+  }, [user]);
 
   if (!user) {
     return <EmptyState title="Unauthorized" subtitle="Please login" />;
+  }
+
+  if (isLoading) {
+    return <Loading />;
   }
 
   if (listings?.length === 0) {
     return (
       <EmptyState
         title="No properties found"
-        subtitle="Looks like you have not made any properties."
+        subtitle="Looks like you have not listed any properties."
       />
     );
-  }
-
-  if (isLoading) {
-    return <Loading />;
   }
 
   return (

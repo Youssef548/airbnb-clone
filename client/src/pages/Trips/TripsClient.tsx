@@ -34,7 +34,7 @@ const TripsClient: React.FC<TripsClientProps> = ({
         setIsLoading(true);
         if (res.status === 204) {
           toast.success("Reservation canceled");
-          getReservation({ userId: currentUser?._id }).then((res) => {
+          getReservation({}).then((res) => {
             if (res.status == 200) {
               setReservations(res.data);
             } else {
@@ -42,17 +42,19 @@ const TripsClient: React.FC<TripsClientProps> = ({
             }
           });
         } else {
-          toast.error(res?.data?.error);
+          toast.error("Something went wrong");
         }
       })
-      .catch((err) => {
-        toast.error(err?.response?.data?.error);
+      .catch((error) => {
+        const message =
+          error?.response?.data?.message ?? "Something went wrong";
+        toast.error(message);
       })
       .finally(() => {
         setIsLoading(false);
         setDeletingId("");
       });
-  }, []);
+  }, [setReservations]);
 
   return (
     <Container>

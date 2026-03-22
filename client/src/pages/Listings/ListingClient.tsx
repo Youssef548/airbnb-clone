@@ -76,11 +76,13 @@ const ListingClient = ({
         setDateRange(initialDateRange);
         navigate("/trips");
       })
-      .catch(() => {
-        toast.error("Something went wrong");
+      .catch((error) => {
+        const message =
+          error?.response?.data?.message ?? "Something went wrong";
+        toast.error(message);
       })
       .finally(() => setIsLoading(false));
-  }, [totalPrice, dateRange, listing?._id, currentUser, useNavigate]);
+  }, [totalPrice, dateRange, listing?._id, currentUser, navigate]);
 
   useEffect(() => {
     if (dateRange.startDate && dateRange.endDate) {

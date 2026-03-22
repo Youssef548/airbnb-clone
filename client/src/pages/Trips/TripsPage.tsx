@@ -11,13 +11,13 @@ const TripsPage = () => {
   const user = useUserStore((state) => state.user);
 
   const [reservations, setReservations] = useState<ReservationSafeType[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (user) {
       setIsLoading(true);
 
-      getReservation({ userId: user._id })
+      getReservation({})
         .then((res) => {
           if (res.status == 200) {
             setReservations(res.data);
@@ -26,11 +26,17 @@ const TripsPage = () => {
           }
         })
         .finally(() => setIsLoading(false));
+    } else {
+      setIsLoading(false);
     }
-  }, []);
+  }, [user]);
 
   if (!user) {
     return <EmptyState title="Unauthorized" subtitle="Please login" />;
+  }
+
+  if (isLoading) {
+    return <Loading />;
   }
 
   if (reservations?.length === 0) {
@@ -40,10 +46,6 @@ const TripsPage = () => {
         subtitle="Looks like you have not made any trips."
       />
     );
-  }
-
-  if (isLoading) {
-    return <Loading />;
   }
 
   return (

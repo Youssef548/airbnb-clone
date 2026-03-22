@@ -44,9 +44,10 @@ const useFavorite = ({ listingId, currentUser }: IUseFavroite) => {
         const response = await request();
         const updatedUser = response.data.data;
         setUser(updatedUser);
-      } catch (err) {
-        const error = err as Error;
-        toast.error(error.message);
+      } catch (err: any) {
+        const message =
+          err?.response?.data?.message ?? "Something went wrong";
+        toast.error(message);
       }
     },
     [currentUser, hasFavorited, listingId, loginModal, navigate]

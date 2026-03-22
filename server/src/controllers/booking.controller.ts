@@ -55,6 +55,24 @@ export async function getMyBookings(
   next: NextFunction
 ) {
   try {
+    const listingId = req.query.listingId as string | undefined;
+    const authorId = req.query.authorId as string | undefined;
+
+    // When listingId is provided, return all bookings for that listing
+    // (needed by listing detail page to show disabled dates from all guests)
+    if (listingId) {
+      const bookings = await getBookingsService({ listingId });
+      return res.status(200).json(bookings);
+    }
+
+    // When authorId is provided, return bookings on that host's properties
+    // (needed by reservations page to show guests' bookings on host's listings)
+    if (authorId) {
+      const bookings = await getBookingsService({ authorId });
+      return res.status(200).json(bookings);
+    }
+
+    // Default: return the current user's bookings as a guest (trips page)
     const bookings = await getMyBookingsService(req.user!.userId!);
     res.status(200).json(bookings);
   } catch (error) {

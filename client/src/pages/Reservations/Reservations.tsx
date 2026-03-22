@@ -11,7 +11,7 @@ const ReservationsPage = () => {
   const user = useUserStore((state) => state.user);
 
   const [reservations, setReservations] = useState<ReservationSafeType[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (user) {
@@ -26,25 +26,28 @@ const ReservationsPage = () => {
           }
         })
         .finally(() => setIsLoading(false));
+    } else {
+      setIsLoading(false);
     }
-  }, []);
+  }, [user]);
 
-  if (reservations?.length === 0) {
-    return (
-      <EmptyState
-        title="No Reservations found"
-        subtitle="Looks like you have not reservations."
-      />
-    );
+  if (!user) {
+    return <EmptyState title="Unauthorized" subtitle="Please login" />;
   }
 
   if (isLoading) {
     return <Loading />;
   }
 
-  if (!user) {
-    return <EmptyState title="Unauthorized" subtitle="Please login" />;
+  if (reservations?.length === 0) {
+    return (
+      <EmptyState
+        title="No Reservations found"
+        subtitle="Looks like you have no reservations on your properties."
+      />
+    );
   }
+
   return (
     <div>
       <ReservationsClient

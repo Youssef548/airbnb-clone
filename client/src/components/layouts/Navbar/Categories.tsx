@@ -25,12 +25,12 @@ export const categories = [
   },
   {
     id: "3",
-    label: "cupStrawIcon",
+    label: "Drinks",
     icon: cupStrawIcon,
   },
   {
     id: "4",
-    label: "airPlane",
+    label: "Travel",
     icon: airplaneIcon,
   },
   {
@@ -40,22 +40,22 @@ export const categories = [
   },
   {
     id: "7",
-    label: "Football",
+    label: "Sports",
     icon: heartIcon,
   },
   {
     id: "8",
     label: "Fashion",
-    icon: cupStrawIcon,
+    icon: starIcon,
   },
   {
     id: "9",
-    label: "bookIcon",
+    label: "Books",
     icon: bookIcon,
   },
   {
     id: "10",
-    label: "Heart",
+    label: "Wellness",
     icon: heartIcon,
   },
 ];
