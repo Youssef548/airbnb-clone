@@ -13,7 +13,7 @@ interface ImageUploadProps {
 }
 
 const ImageUpload: React.FC<ImageUploadProps> = ({ value, onChange }) => {
-  const cloundinaryRef = useRef<any>();
+  const cloudinaryRef = useRef<any>();
   const widgetRef = useRef<any>();
 
   const handleUpload = useCallback(
@@ -26,10 +26,10 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ value, onChange }) => {
   );
 
   useEffect(() => {
-    cloundinaryRef.current = window.cloudinary;
-    widgetRef.current = cloundinaryRef.current.createUploadWidget(
+    cloudinaryRef.current = window.cloudinary;
+    widgetRef.current = cloudinaryRef.current.createUploadWidget(
       {
-        cloudName: import.meta.env.VITE_APP_CLODINARY_CLOUD_NAME as string,
+        cloudName: import.meta.env.VITE_APP_CLOUDINARY_CLOUD_NAME as string,
         uploadPreset: "ml_default",
         maxFiles: 1,
       },

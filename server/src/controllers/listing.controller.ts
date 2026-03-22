@@ -7,18 +7,13 @@ import {
   deleteListingService,
 } from "../services/listing.service";
 
-interface CustomRequest extends Request {
-  user: { userId: string };
-}
-
 export async function createListing(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const cusReq = req as CustomRequest;
-    const listing = await createListingService(cusReq.user.userId, req.body);
+    const listing = await createListingService(req.user!.userId!, req.body);
     res.status(201).json(listing);
   } catch (error) {
     next(error);
@@ -31,7 +26,7 @@ export async function getListings(
   next: NextFunction
 ) {
   try {
-    const listings = await getListingsService(req.query);
+    const listings = await getListingsService(req.query as Record<string, string | undefined>);
     res.status(200).json(listings);
   } catch (error) {
     next(error);
@@ -59,9 +54,8 @@ export async function deleteListing(
 ) {
   try {
     const { listingId } = req.params;
-    const cusReq = req as CustomRequest;
-    await deleteListingService(cusReq.user.userId, listingId);
-    res.status(204).json("Listing deleted successfully");
+    await deleteListingService(req.user!.userId!, listingId);
+    res.status(204).send();
   } catch (error) {
     next(error);
   }

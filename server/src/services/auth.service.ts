@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { User } from "../models/User.model";
 import { LoginResponse, SanitizedUser } from "../interfaces/authInterfaces";
+import { AUTH } from "../config/constants";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -32,7 +33,7 @@ export const loginUserService = async (
   const token = jwt.sign(
     { userId: user._id, role: user.role },
     JWT_SECRET,
-    { expiresIn: "1h" }
+    { expiresIn: AUTH.JWT_EXPIRY }
   );
 
   const sanitizedUser: SanitizedUser = {
@@ -58,7 +59,7 @@ export const createUserService = async (
     throw new Error("The email already used");
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(password, AUTH.SALT_ROUNDS);
 
   const user = new User({
     email,
@@ -73,7 +74,7 @@ export const createUserService = async (
   const token = jwt.sign(
     { userId: user._id, role: user.role },
     JWT_SECRET,
-    { expiresIn: "1h" }
+    { expiresIn: AUTH.JWT_EXPIRY }
   );
 
   const sanitizedUser: SanitizedUser = {

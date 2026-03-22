@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import EmptyState from "../../components/EmptyState";
 import useUserStore from "../../store/useStore";
 import { getListing } from "../../apis/Listing/listing";
@@ -21,7 +22,7 @@ const PropertiesPage = () => {
           if (res.status == 200) {
             setListings(res.data.listings);
           } else {
-            console.log("SOMETHING WENT WRONG");
+            toast.error("Something went wrong");
           }
         })
         .finally(() => setIsLoading(false));

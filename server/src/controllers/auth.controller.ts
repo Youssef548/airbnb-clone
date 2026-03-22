@@ -5,6 +5,7 @@ import {
   CreateUserRequestBody,
 } from "../interfaces/authInterfaces";
 import { User as UserModel } from "../models/User.model";
+import { errorHandler } from "../utils/error";
 
 const COOKIE_OPTIONS = {
   httpOnly: true,
@@ -61,12 +62,12 @@ export const getMe = async (
   try {
     const userId = req.user?.userId;
     if (!userId) {
-      return res.status(401).json({ message: "User not authenticated" });
+      return next(errorHandler(401, "User not authenticated"));
     }
 
     const user = await UserModel.findById(userId).select("-password");
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return next(errorHandler(404, "User not found"));
     }
 
     return res.status(200).json({ user });

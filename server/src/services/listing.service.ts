@@ -1,12 +1,17 @@
 import mongoose from "mongoose";
+import { z } from "zod";
 import { Listing } from "../models/listing.model";
 import { Booking } from "../models/booking.model";
 import { User } from "../models/User.model";
 import { errorHandler } from "../utils/error";
+import { createListingSchema } from "../schemas/listings.schema";
+import { PAGINATION } from "../config/constants";
+
+type CreateListingData = z.infer<typeof createListingSchema>;
 
 export const createListingService = async (
   userId: string,
-  listingData: any
+  listingData: CreateListingData
 ) => {
   const {
     title,
@@ -37,13 +42,19 @@ export const createListingService = async (
   return listing;
 };
 
-export const getListingsService = async (queryParams: any) => {
-  const page = parseInt(queryParams.page) || 1;
-  const limit = parseInt(queryParams.limit) || 12;
+export const getListingsService = async (
+  queryParams: Record<string, string | undefined>
+) => {
+  const page =
+    parseInt(queryParams.page as string) || PAGINATION.DEFAULT_PAGE;
+  const limit = Math.min(
+    parseInt(queryParams.limit as string) || PAGINATION.DEFAULT_LIMIT,
+    PAGINATION.MAX_LIMIT
+  );
   const skip = (page - 1) * limit;
 
   // Build match stage
-  const match: any = {};
+  const match: Record<string, unknown> = {};
   if (queryParams.userId)
     match.user = new mongoose.Types.ObjectId(queryParams.userId);
   if (queryParams.category) match.category = queryParams.category;

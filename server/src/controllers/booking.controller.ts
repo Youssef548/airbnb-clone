@@ -7,20 +7,15 @@ import {
   getMyBookingsService,
 } from "../services/booking.service";
 
-interface CustomRequest extends Request {
-  user: { userId: string };
-}
-
 export async function createBooking(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const cusReq = req as CustomRequest;
     const booking = await createBookingService({
       ...req.body,
-      userId: cusReq.user.userId,
+      userId: req.user!.userId,
     });
     res.status(201).json(booking);
   } catch (error) {
@@ -28,23 +23,23 @@ export async function createBooking(
   }
 }
 
-// this should be for admins only in future not for guests or host
+// Reserved for future admin use — not currently wired to any route
 export async function getBookings(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const filters: Record<string, any> = {};
+    const filters: Record<string, string> = {};
 
     if (req.query.listingId) {
-      filters.listingId = req.query.listingId;
+      filters.listingId = req.query.listingId as string;
     }
     if (req.query.userId) {
-      filters.guest = req.query.userId;
+      filters.guest = req.query.userId as string;
     }
     if (req.query.authorId) {
-      filters.authorId = req.query.authorId;
+      filters.authorId = req.query.authorId as string;
     }
 
     const bookings = await getBookingsService(filters);
@@ -60,8 +55,7 @@ export async function getMyBookings(
   next: NextFunction
 ) {
   try {
-    const cusReq = req as CustomRequest;
-    const bookings = await getMyBookingsService(cusReq.user.userId);
+    const bookings = await getMyBookingsService(req.user!.userId!);
     res.status(200).json(bookings);
   } catch (error) {
     next(error);
@@ -74,12 +68,8 @@ export async function cancelBooking(
   next: NextFunction
 ) {
   try {
-    const cusReq = req as CustomRequest;
-    const message = await cancelBookingService(
-      req.params.bookingId,
-      cusReq.user.userId
-    );
-    res.status(204).json(message);
+    await cancelBookingService(req.params.bookingId, req.user!.userId!);
+    res.status(204).send();
   } catch (error) {
     next(error);
   }

@@ -4,16 +4,17 @@ import { UserType } from "../../types/user";
 import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import toast from "react-hot-toast";
 import ListingCard from "../../components/Listings/ListingCard";
+import ListingGrid from "../../components/Listings/ListingGrid";
 import { safeListingType } from "../../types/Listing";
 import { deleteListing, getListing } from "../../apis/Listing/listing";
 
-interface TripsClieentProps {
+interface PropertiesClientProps {
   listings: safeListingType[];
   setListings: Dispatch<SetStateAction<safeListingType[]>>;
   currentUser?: UserType | null | undefined;
 }
 
-const PropertiesClient: React.FC<TripsClieentProps> = ({
+const PropertiesClient: React.FC<PropertiesClientProps> = ({
   listings = [],
   currentUser,
   setListings,
@@ -54,19 +55,7 @@ const PropertiesClient: React.FC<TripsClieentProps> = ({
   return (
     <Container>
       <Heading title="Properties" subTitle="List of your properties" />
-      <div
-        className="
-      mt-10
-      grid
-      grid-cols-1
-      sm:grid-cols-2
-      md:grid-cols-3
-      lg:grid-cols-4
-      xl:grid-cols-5
-      2xl:grid-cols-6
-      gap-8
-      "
-      >
+      <ListingGrid>
         {listings.map((listing) => {
           return (
             <ListingCard
@@ -80,7 +69,7 @@ const PropertiesClient: React.FC<TripsClieentProps> = ({
             />
           );
         })}
-      </div>
+      </ListingGrid>
     </Container>
   );
 };

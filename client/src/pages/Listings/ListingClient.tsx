@@ -84,14 +84,12 @@ const ListingClient = ({
 
   useEffect(() => {
     if (dateRange.startDate && dateRange.endDate) {
-      console.log(dateRange);
       const dayCount = differenceInCalendarDays(
         dateRange.endDate,
         dateRange.startDate
       );
 
       if (dayCount && listing.price) {
-        console.log(dayCount);
         setTotalPrice(dayCount * listing.price);
       } else {
         setTotalPrice(listing.price);

@@ -9,14 +9,15 @@ import {
   getReservation,
 } from "../../apis/Reservations/reservation";
 import ListingCard from "../../components/Listings/ListingCard";
+import ListingGrid from "../../components/Listings/ListingGrid";
 
-interface TripsClieentProps {
+interface TripsClientProps {
   reservations: ReservationSafeType[];
   setReservations: Dispatch<SetStateAction<ReservationSafeType[]>>;
   currentUser?: UserType | null | undefined;
 }
 
-const TripsClient: React.FC<TripsClieentProps> = ({
+const TripsClient: React.FC<TripsClientProps> = ({
   reservations = [],
   currentUser,
   setReservations,
@@ -37,7 +38,7 @@ const TripsClient: React.FC<TripsClieentProps> = ({
             if (res.status == 200) {
               setReservations(res.data);
             } else {
-              console.log("SOMETHING WENT WRONG");
+              toast.error("Something went wrong");
             }
           });
         } else {
@@ -59,19 +60,7 @@ const TripsClient: React.FC<TripsClieentProps> = ({
         title="Trips"
         subTitle="Where you've been and where you're going"
       />
-      <div
-        className="
-      mt-10
-      grid
-      grid-cols-1
-      sm:grid-cols-2
-      md:grid-cols-3
-      lg:grid-cols-4
-      xl:grid-cols-5
-      2xl:grid-cols-6
-      gap-8
-      "
-      >
+      <ListingGrid>
         {reservations.map((reservation) => {
           return (
             <ListingCard
@@ -86,7 +75,7 @@ const TripsClient: React.FC<TripsClieentProps> = ({
             />
           );
         })}
-      </div>
+      </ListingGrid>
     </Container>
   );
 };

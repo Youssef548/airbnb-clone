@@ -4,10 +4,7 @@ import {
   deleteFavoriteService,
   getFavoriteListingsService,
 } from "../services/favorite.service";
-
-interface CustomRequest extends Request {
-  user: { userId: string };
-}
+import { PAGINATION } from "../config/constants";
 
 export async function addFavorite(
   req: Request,
@@ -16,9 +13,8 @@ export async function addFavorite(
 ) {
   try {
     const { listingId } = req.params;
-    const cusReq = req as CustomRequest;
 
-    const updatedUser = await addFavoriteService(cusReq.user.userId, listingId);
+    const updatedUser = await addFavoriteService(req.user!.userId!, listingId);
 
     res.status(200).json({ data: updatedUser, message: "Success" });
   } catch (error) {
@@ -33,10 +29,9 @@ export async function deleteFavorite(
 ) {
   try {
     const { listingId } = req.params;
-    const cusReq = req as CustomRequest;
 
     const updatedUser = await deleteFavoriteService(
-      cusReq.user.userId,
+      req.user!.userId!,
       listingId
     );
 
@@ -52,12 +47,13 @@ export async function getFavoriteListings(
   next: NextFunction
 ) {
   try {
-    const cusReq = req as CustomRequest;
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 12;
+    const page =
+      parseInt(req.query.page as string) || PAGINATION.DEFAULT_PAGE;
+    const limit =
+      parseInt(req.query.limit as string) || PAGINATION.DEFAULT_LIMIT;
 
     const result = await getFavoriteListingsService(
-      cusReq.user.userId,
+      req.user!.userId!,
       page,
       limit
     );

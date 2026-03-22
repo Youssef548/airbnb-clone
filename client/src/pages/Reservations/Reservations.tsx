@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import EmptyState from "../../components/EmptyState";
 import useUserStore from "../../store/useStore";
 import { getReservation } from "../../apis/Reservations/reservation";
@@ -21,7 +22,7 @@ const ReservationsPage = () => {
           if (res.status == 200) {
             setReservations(res.data);
           } else {
-            console.log("SOMETHING WENT WRONG");
+            toast.error("Something went wrong");
           }
         })
         .finally(() => setIsLoading(false));

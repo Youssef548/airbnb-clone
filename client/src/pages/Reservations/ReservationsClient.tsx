@@ -9,6 +9,7 @@ import {
 } from "../../apis/Reservations/reservation";
 import toast from "react-hot-toast";
 import ListingCard from "../../components/Listings/ListingCard";
+import ListingGrid from "../../components/Listings/ListingGrid";
 
 interface ReservationsProps {
   reservations: ReservationSafeType[];
@@ -34,7 +35,7 @@ const ReservationsClient: React.FC<ReservationsProps> = ({
             if (res.status == 200) {
               setReservations(res.data);
             } else {
-              console.log("SOMETHING WENT WRONG");
+              toast.error("Something went wrong");
             }
           });
         } else {
@@ -48,20 +49,7 @@ const ReservationsClient: React.FC<ReservationsProps> = ({
   return (
     <Container>
       <Heading title="Reservations" subTitle="Bookings on your properties" />
-      <div
-        className="
-      mt-10
-      grid
-      grid-cols-1
-      sm:grid-cols-2
-      md:grid-cols-3
-      lg:grid-cols-4
-      xl:grid-cols-5
-      2xl:grid-cols-6
-      gap-8
-
-      "
-      >
+      <ListingGrid>
         {reservations.map((reservation) => {
           return (
             <ListingCard
@@ -76,7 +64,7 @@ const ReservationsClient: React.FC<ReservationsProps> = ({
             />
           );
         })}
-      </div>
+      </ListingGrid>
     </Container>
   );
 };
