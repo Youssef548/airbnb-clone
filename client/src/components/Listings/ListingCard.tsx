@@ -66,6 +66,7 @@ const ListingCard: React.FC<ListingProps> = ({
   return (
     <div
       onClick={() => navigate(`/listing/${data._id}`)}
+      data-testid="listing-card"
       className="
     col-span-1 cursor-pointer group"
     >

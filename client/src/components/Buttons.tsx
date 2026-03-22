@@ -24,6 +24,7 @@ const Button: React.FC<ButtonProps> = ({
     <button
       disabled={disabled}
       onClick={onClick}
+      data-testid={`btn-${label.toLowerCase().replace(/\s+/g, "-")}`}
       className={`
         relative
         disabled:opacity-70

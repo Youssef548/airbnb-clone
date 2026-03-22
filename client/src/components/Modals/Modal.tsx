@@ -170,7 +170,7 @@ const Modal: React.FC<ModalProps> = ({
                     />
                   </svg>
                 </button>
-                <div className="text-lg font-semibold">{title}</div>
+                <div data-testid="modal-title" className="text-lg font-semibold">{title}</div>
               </div>
               {error && (
                   <div className="bg-red-200 py-4  mt-4 text-center">

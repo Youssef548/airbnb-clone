@@ -50,6 +50,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
         </div>
         <div
           onClick={toggleOpen}
+          data-testid="user-menu-toggle"
           className="
        p-2
        md:py-1
@@ -100,7 +101,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
         text-sm
         "
         >
-          <div className="flex flex-col cursor-pointer">
+          <div data-testid="user-menu-dropdown" className="flex flex-col cursor-pointer">
             {user ? (
               <>
                 <MenuItem onClick={() => navigate("/trips")} label="My trips" />

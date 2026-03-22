@@ -63,9 +63,10 @@ app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 app.use(mongoSanitize());
 
 // Rate limiting
+const isE2E = process.env.E2E_TESTING === "true";
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: isE2E ? 10000 : 100,
   standardHeaders: true,
   legacyHeaders: false,
   message: { message: "Too many requests, please try again later." },

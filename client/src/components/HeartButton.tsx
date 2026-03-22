@@ -18,6 +18,7 @@ const HeartButton: React.FC<HeartButtonProps> = ({
   return (
     <div
       onClick={toggleFavorite}
+      data-testid="heart-button"
       className="
     relative
     hover:opacity-80

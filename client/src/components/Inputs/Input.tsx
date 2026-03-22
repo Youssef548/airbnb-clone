@@ -35,6 +35,7 @@ const Input: React.FC<InputProps> = ({
       )}
       <input
         id={id}
+        data-testid={`input-${id}`}
         disabled={disabled}
         {...register(id, validation || { required, ...(type === "number" && { valueAsNumber: true }) })}
         placeholder=" "

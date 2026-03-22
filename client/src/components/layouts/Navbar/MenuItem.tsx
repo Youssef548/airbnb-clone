@@ -7,6 +7,7 @@ const MenuItem: React.FC<menuItemsProps> = ({ onClick, label }) => {
   return (
     <div
       onClick={onClick}
+      data-testid={`menu-item-${label.toLowerCase().replace(/\s+/g, "-")}`}
       className="
   px-4
   py-2

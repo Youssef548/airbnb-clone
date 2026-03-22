@@ -16,7 +16,7 @@ const FavoritesPage = () => {
     getFavoriteListings()
       .then((res) => {
         if (res.status === 200) {
-          setListings(res.data);
+          setListings(res.data.favorites || res.data);
         } else {
           toast.error("something went wrong");
         }
