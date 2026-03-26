@@ -1,0 +1,13 @@
+import mongoose from "mongoose";
+import { connectDatabase } from "@airbnb/database";
+import { clearDatabase } from "./db-helpers/clearDatabase";
+
+async function main() {
+  await connectDatabase(process.env.TEST_DATABASE_URL as string);
+
+  await clearDatabase();
+
+  await mongoose.connection.close();
+}
+
+main().catch((err) => console.error(err));

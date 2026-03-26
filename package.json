@@ -1,24 +1,29 @@
 {
-  "dependencies": {
-    "bcryptjs": "^2.4.3"
+  "private": true,
+  "scripts": {
+    "prepare": "husky",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
+    "dev": "./dev.sh",
+    "dev:client": "pnpm --filter @airbnb/client dev",
+    "dev:server": "pnpm --filter @airbnb/server dev",
+    "build": "pnpm --filter @airbnb/shared build && pnpm --filter @airbnb/database build && pnpm --filter @airbnb/client build && pnpm --filter @airbnb/server build",
+    "test": "pnpm --filter @airbnb/server test",
+    "lint": "pnpm --filter @airbnb/client lint",
+    "seed": "pnpm --filter @airbnb/database seed"
   },
   "devDependencies": {
     "husky": "^9.1.7",
     "lint-staged": "^16.2.6",
     "prettier": "^3.6.2"
   },
-  "scripts": {
-    "prepare": "husky",
-    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\""
-  },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
       "prettier --write"
     ],
-    "client/**/*.{js,jsx,ts,tsx}": [
+    "packages/client/**/*.{js,jsx,ts,tsx}": [
       "prettier --write"
     ],
-    "server/**/*.{js,ts}": [
+    "packages/server/**/*.{js,ts}": [
       "prettier --write"
     ],
     "**/*.{json,md,yml,yaml}": [

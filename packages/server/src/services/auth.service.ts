@@ -1,0 +1,89 @@
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { User } from "@airbnb/database";
+import { LoginResponse, SanitizedUser } from "@airbnb/shared";
+import { AUTH } from "../config/constants";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+// Ensure JWT_SECRET is loaded at startup
+if (!process.env.JWT_SECRET) {
+  throw new Error(
+    "JWT_SECRET is not defined. Please set it in your .env file."
+  );
+}
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+export const loginUserService = async (
+  email: string,
+  password: string
+): Promise<LoginResponse> => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new Error("Invalid credentials");
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, user.password!);
+  if (!isPasswordValid) {
+    throw new Error("Invalid credentials");
+  }
+
+  const token = jwt.sign(
+    { userId: user._id, role: user.role },
+    JWT_SECRET,
+    { expiresIn: AUTH.JWT_EXPIRY }
+  );
+
+  const sanitizedUser: SanitizedUser = {
+    id: user._id.toString(),
+    email: user.email,
+    username: user.username,
+    image: user.image || null,
+    favoriteListingsIds: user.favoriteListingsIds?.map((id) => id.toString()),
+    role: user.role,
+  };
+
+  return { token, user: sanitizedUser };
+};
+
+export const createUserService = async (
+  email: string,
+  password: string,
+  username: string,
+  role: string = "guest"
+): Promise<LoginResponse> => {
+  const isExist = await User.findOne({ email });
+  if (isExist) {
+    throw new Error("The email already used");
+  }
+
+  const hashedPassword = await bcrypt.hash(password, AUTH.SALT_ROUNDS);
+
+  const user = new User({
+    email,
+    password: hashedPassword,
+    username,
+    image: null,
+    role,
+  });
+
+  await user.save();
+
+  const token = jwt.sign(
+    { userId: user._id, role: user.role },
+    JWT_SECRET,
+    { expiresIn: AUTH.JWT_EXPIRY }
+  );
+
+  const sanitizedUser: SanitizedUser = {
+    id: user._id.toString(),
+    email: user.email,
+    username: user.username,
+    image: user.image || null,
+    role: user.role,
+  };
+
+  return { token, user: sanitizedUser };
+};
