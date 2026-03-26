@@ -68,7 +68,7 @@ const Home = () => {
           }
           window.scrollTo({ top: 0, behavior: "smooth" });
         })
-        .catch((error) => {
+        .catch(() => {
           toast.error("Failed to load listings. Please try again.");
         })
         .finally(() => {
