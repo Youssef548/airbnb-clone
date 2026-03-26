@@ -1,12 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Icon } from "@iconify/react";
 import toast from "react-hot-toast";
-
-declare global {
-  interface Window {
-    cloudinary: any;
-  }
-}
+import { axiosInstance } from "../../providers/AxiosInstance";
 
 interface ImageUploadProps {
   value: string;
@@ -14,74 +9,53 @@ interface ImageUploadProps {
 }
 
 const ImageUpload: React.FC<ImageUploadProps> = ({ value, onChange }) => {
-  const cloudinaryRef = useRef<any>();
-  const widgetRef = useRef<any>();
-  const [isReady, setIsReady] = useState(false);
-
-  const handleUpload = useCallback(
-    (result: any) => {
-      if (result.event === "success") {
-        onChange(result.info.secure_url);
-      }
-    },
-    [onChange]
-  );
-
-  useEffect(() => {
-    const cloudName = import.meta.env.VITE_APP_CLOUDINARY_CLOUD_NAME as string;
-
-    if (!cloudName || cloudName === "test") {
-      console.warn(
-        "Cloudinary cloud name is not configured. Set VITE_APP_CLOUDINARY_CLOUD_NAME in your .env file."
-      );
-      return;
-    }
-
-    if (!window.cloudinary) {
-      console.warn("Cloudinary widget script not loaded.");
-      return;
-    }
-
-    try {
-      cloudinaryRef.current = window.cloudinary;
-      widgetRef.current = cloudinaryRef.current.createUploadWidget(
-        {
-          cloudName,
-          uploadPreset: "ml_default",
-          maxFiles: 1,
-        },
-        (error: any, result: any) => {
-          if (error) {
-            toast.error("Image upload failed. Please try again.");
-            return;
-          }
-          if (result && result.event === "success") {
-            handleUpload(result);
-          }
-        }
-      );
-      setIsReady(true);
-    } catch {
-      toast.error("Failed to initialize image uploader.");
-    }
-  }, [handleUpload]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleClick = () => {
-    const cloudName = import.meta.env.VITE_APP_CLOUDINARY_CLOUD_NAME as string;
+    fileInputRef.current?.click();
+  };
 
-    if (!cloudName || cloudName === "test") {
-      toast.error(
-        "Image upload is not configured. Please set up Cloudinary."
-      );
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const allowed = ["image/jpeg", "image/png", "image/webp"];
+    if (!allowed.includes(file.type)) {
+      toast.error("Only JPEG, PNG, and WebP images are allowed.");
       return;
     }
 
-    if (!isReady || !widgetRef.current) {
-      toast.error("Image uploader is not ready. Please try again.");
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image must be smaller than 5MB.");
       return;
     }
 
-    widgetRef.current.open();
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const res = await axiosInstance.post("/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      // Build full URL: VITE_BACKEND_URL is "http://localhost:3000/api/"
+      // We need "http://localhost:3000" + "/uploads/filename.jpg"
+      const backendUrl = import.meta.env.VITE_BACKEND_URL as string;
+      const serverOrigin = backendUrl.replace(/\/api\/?$/, "");
+      const fullUrl = `${serverOrigin}${res.data.url}`;
+      onChange(fullUrl);
+      toast.success("Image uploaded successfully!");
+    } catch {
+      toast.error("Image upload failed. Please try again.");
+    } finally {
+      setIsUploading(false);
+      // Reset input so the same file can be re-selected
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
   };
 
   return (
@@ -89,14 +63,30 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ value, onChange }) => {
       className="relative cursor-pointer hover:opacity-70 transition border-2 border-dashed p-20 border-neutral-300 flex flex-col justify-center items-center gap-4 text-neutral-600"
       onClick={handleClick}
     >
-      <Icon icon="bx:image-add" fontSize={50} />
-      <div className="font-semibold text-lg">Click to upload</div>
-      {value && (
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        className="hidden"
+        onChange={handleFileChange}
+      />
+      {isUploading ? (
+        <>
+          <Icon icon="eos-icons:loading" fontSize={50} />
+          <div className="font-semibold text-lg">Uploading...</div>
+        </>
+      ) : (
+        <>
+          <Icon icon="bx:image-add" fontSize={50} />
+          <div className="font-semibold text-lg">Click to upload</div>
+        </>
+      )}
+      {value && !isUploading && (
         <div className="absolute inset-0 w-full h-full">
           <img
             src={value}
-            alt="Uploaded Image"
-            className="object-fit w-full h-full z-99"
+            alt="Uploaded image"
+            className="object-cover w-full h-full"
           />
         </div>
       )}

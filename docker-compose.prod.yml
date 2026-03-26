@@ -12,24 +12,26 @@ services:
       - internal
 
   server:
-    image: ${SERVER_IMAGE:-ghcr.io/abdulkhalek-1/airbnb-server:latest}
+    image: ${SERVER_IMAGE:-ghcr.io/youssef548/airbnb-server:latest}
     container_name: airbnb-server
     restart: unless-stopped
     depends_on:
       - mongodb
+    volumes:
+      - uploads:/app/packages/server/uploads
     environment:
       DATABASE_URL: mongodb://${MONGO_USER}:${MONGO_PASS}@mongodb:27017/airbnb?authSource=admin
       JWT_SECRET: ${JWT_SECRET}
       NODE_ENV: production
       PORT: 3000
-      ALLOWED_ORIGINS: '["http://${SERVER_IP}"]'
-      CLIENT_URL: http://${SERVER_IP}
+      ALLOWED_ORIGINS: '["https://airbnb.abdulkhalek.dev"]'
+      CLIENT_URL: https://airbnb.abdulkhalek.dev
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
-      GOOGLE_CALLBACK_URL: http://${SERVER_IP}/api/auth/google/callback
+      GOOGLE_CALLBACK_URL: https://airbnb.abdulkhalek.dev/api/auth/google/callback
       GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-}
       GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-}
-      GITHUB_CALLBACK_URL: http://${SERVER_IP}/api/auth/github/callback
+      GITHUB_CALLBACK_URL: https://airbnb.abdulkhalek.dev/api/auth/github/callback
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
       interval: 30s
@@ -40,18 +42,28 @@ services:
       - internal
 
   client:
-    image: ${CLIENT_IMAGE:-ghcr.io/abdulkhalek-1/airbnb-client:latest}
+    image: ${CLIENT_IMAGE:-ghcr.io/youssef548/airbnb-client:latest}
     container_name: airbnb-client
     restart: unless-stopped
     depends_on:
       - server
-    ports:
-      - "80:80"
     networks:
       - internal
+      - gateway
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.airbnb.rule=Host(`airbnb.abdulkhalek.dev`)"
+      - "traefik.http.routers.airbnb.entrypoints=websecure"
+      - "traefik.http.routers.airbnb.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.airbnb.middlewares=secure-default@file"
+      - "traefik.http.services.airbnb.loadbalancer.server.port=80"
+      - "traefik.docker.network=gateway"
 
 networks:
   internal:
+  gateway:
+    external: true
 
 volumes:
   mongodb_data:
+  uploads:

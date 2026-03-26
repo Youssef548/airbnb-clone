@@ -35,8 +35,8 @@ jobs:
 
       - uses: docker/build-push-action@v6
         with:
-          context: ./server
-          file: ./server/Dockerfile
+          context: .
+          file: ./packages/server/Dockerfile
           push: true
           tags: |
             ${{ env.SERVER_IMAGE }}:${{ steps.tag.outputs.sha }}
@@ -67,15 +67,14 @@ jobs:
 
       - uses: docker/build-push-action@v6
         with:
-          context: ./client
-          file: ./client/Dockerfile.prod
+          context: .
+          file: ./packages/client/Dockerfile.prod
           push: true
           tags: |
             ${{ env.CLIENT_IMAGE }}:${{ steps.tag.outputs.sha }}
             ${{ env.CLIENT_IMAGE }}:latest
           build-args: |
-            VITE_BACKEND_URL=http://${{ secrets.SERVER_HOST }}/api/
-            VITE_APP_CLOUDINARY_CLOUD_NAME=${{ vars.CLOUDINARY_CLOUD_NAME }}
+            VITE_BACKEND_URL=/api/
           cache-from: type=gha,scope=client
           cache-to: type=gha,mode=max,scope=client
 
@@ -98,6 +97,9 @@ jobs:
             # Pull latest compose config
             git fetch origin airbnb-v2
             git reset --hard origin/airbnb-v2
+
+            # Login to GHCR
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin || true
 
             # Pull latest images
             docker pull ${{ env.SERVER_IMAGE }}:latest

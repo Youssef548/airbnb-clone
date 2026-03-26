@@ -37,6 +37,10 @@ Thumbs.db
 todos.tex
 text.todo
 
+# Uploaded images
+packages/server/uploads/*
+!packages/server/uploads/.gitkeep
+
 # E2E test artifacts
 e2e/results/
 e2e/test-results/

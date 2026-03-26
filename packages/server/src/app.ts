@@ -19,9 +19,21 @@ import favoriteRoutes from "./routes/favorite.route";
 import healthRoute from "./routes/health.route";
 import listingRoutes from "./routes/listing.route";
 import reviewRoutes from "./routes/review.route";
+import uploadRoutes from "./routes/upload.route";
 import passport from "./config/passport";
+import path from "path";
 
 const app = express();
+
+// Serve uploaded images BEFORE helmet so they aren't blocked by CSP/CORP
+app.use(
+  "/uploads",
+  (_req, res, next) => {
+    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+    next();
+  },
+  express.static(path.resolve(__dirname, "../uploads"))
+);
 
 // Security headers
 app.use(helmet());
@@ -87,6 +99,7 @@ app.use("/api/listings/", listingRoutes);
 app.use("/api/favorites/", favoriteRoutes);
 app.use("/api/booking/", bookingRoutes);
 app.use("/api/reviews/", reviewRoutes);
+app.use("/api/upload", uploadRoutes);
 
 app.use(errorHandler);
 
