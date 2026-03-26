@@ -41,4 +41,4 @@ WORKDIR /app/packages/server
 
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=3s CMD wget -qO- http://localhost:3000/api/health || exit 1
-CMD ["node", "-r", "tsx/esm", "src/server.ts"]
+CMD ["npx", "tsx", "src/server.ts"]
