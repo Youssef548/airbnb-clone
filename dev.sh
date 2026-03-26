@@ -2,7 +2,7 @@
 
 # Start MongoDB with Docker
 echo "Starting MongoDB..."
-cd server && docker-compose up -d mongodb && cd ..
+docker-compose up -d mongodb
 
 # Wait for MongoDB to be ready
 echo "Waiting for MongoDB to start..."
@@ -19,22 +19,20 @@ trap cleanup INT TERM
 
 # Start server in background
 echo "Starting server on http://localhost:3000..."
-cd server && pnpm run dev &
+pnpm --filter @airbnb/server dev &
 SERVER_PID=$!
-cd ..
 
 # Wait a bit for server to start
 sleep 3
 
 # Start client in background
 echo "Starting client on http://localhost:5173..."
-cd client && pnpm run dev &
+pnpm --filter @airbnb/client dev &
 CLIENT_PID=$!
-cd ..
 
 echo ""
 echo "================================="
-echo "🚀 Development servers running:"
+echo "Development servers running:"
 echo "   Server: http://localhost:3000"
 echo "   Client: http://localhost:5173"
 echo "================================="

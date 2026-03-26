@@ -11,12 +11,12 @@ services:
       - mongo-data:/data/db
 
   server:
-    build: ./server
+    build: ./packages/server
     depends_on:
       - mongodb
     restart: unless-stopped
     env_file:
-      - ./server/.env
+      - ./packages/server/.env
     environment:
       - PORT=3000
       - DATABASE_URL=mongodb://${MONGO_USERNAME:-admin}:${MONGO_PASSWORD:-secret}@mongodb:27017/airbnb?authSource=admin
@@ -29,7 +29,7 @@ services:
       - "3000:3000"
 
   client:
-    build: ./client
+    build: ./packages/client
     depends_on:
       - server
     restart: unless-stopped
