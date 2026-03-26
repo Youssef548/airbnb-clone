@@ -1,10 +1,7 @@
 import mongoose from "mongoose";
 import { z } from "zod";
-import { Listing } from "../models/listing.model";
-import { Booking } from "../models/booking.model";
-import { User } from "../models/User.model";
+import { Listing, Booking, User, createListingSchema } from "@airbnb/database";
 import { errorHandler } from "../utils/error";
-import { createListingSchema } from "../schemas/listings.schema";
 import { PAGINATION } from "../config/constants";
 
 type CreateListingData = z.infer<typeof createListingSchema>;

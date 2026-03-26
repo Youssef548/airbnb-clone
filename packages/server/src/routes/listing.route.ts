@@ -7,7 +7,7 @@ import {
 } from "../controllers/listing.controller";
 import { isAuth } from "../middleware/auth.middleware";
 import validateSchema, { validateQuery } from "../middleware/validationFactory.middleware";
-import { createListingSchema, getListingsQuerySchema } from "../schemas/listings.schema";
+import { createListingSchema, getListingsQuerySchema } from "@airbnb/database";
 import { authorizeRoles } from "../middleware/authorizeRoles";
 import { validateObjectId } from "../middleware/validateObjectId";
 

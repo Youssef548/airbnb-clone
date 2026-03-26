@@ -1,8 +1,8 @@
 import crypto from "crypto";
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { IUser } from "../models/User.model";
-import { SanitizedUser } from "../interfaces/authInterfaces";
+import { IUser } from "@airbnb/database";
+import { SanitizedUser } from "@airbnb/shared";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
@@ -74,7 +74,7 @@ export const oauthCallback = async (req: Request, res: Response) => {
       email: user.email,
       username: user.username,
       image: user.image || null,
-      favoriteListingsIds: user.favoriteListingsIds,
+      favoriteListingsIds: user.favoriteListingsIds?.map((id) => id.toString()),
       role: user.role,
     };
 

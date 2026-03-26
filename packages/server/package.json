@@ -1,5 +1,8 @@
 {
+  "name": "@airbnb/server",
   "dependencies": {
+    "@airbnb/database": "workspace:*",
+    "@airbnb/shared": "workspace:*",
     "@types/bcryptjs": "^2.4.6",
     "@types/passport": "^1.0.17",
     "@types/passport-github2": "^1.2.9",
@@ -30,7 +33,7 @@
     "build": "echo hello world",
     "test": "tsx tests/globalSetup.ts && vitest; tsx tests/globalTeardown.ts",
     "vercel-build": "echo hello world",
-    "seed": "tsx src/scripts/seed.ts"
+    "seed": "pnpm --filter @airbnb/database seed"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

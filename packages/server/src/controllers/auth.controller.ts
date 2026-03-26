@@ -1,10 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { loginUserService, createUserService } from "../services/auth.service";
-import {
-  LoginRequestBody,
-  CreateUserRequestBody,
-} from "../interfaces/authInterfaces";
-import { User as UserModel } from "../models/User.model";
+import { LoginRequestBody, CreateUserRequestBody } from "@airbnb/shared";
+import { User as UserModel } from "@airbnb/database";
 import { errorHandler } from "../utils/error";
 
 const COOKIE_OPTIONS = {

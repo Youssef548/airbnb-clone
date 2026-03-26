@@ -1,5 +1,4 @@
-import { Listing } from "../models/listing.model";
-import { User } from "../models/User.model";
+import { Listing, User } from "@airbnb/database";
 import { errorHandler } from "../utils/error";
 import { PAGINATION } from "../config/constants";
 

@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { User } from "../models/User.model";
-import { LoginResponse, SanitizedUser } from "../interfaces/authInterfaces";
+import { User } from "@airbnb/database";
+import { LoginResponse, SanitizedUser } from "@airbnb/shared";
 import { AUTH } from "../config/constants";
 import dotenv from "dotenv";
 
@@ -41,7 +41,7 @@ export const loginUserService = async (
     email: user.email,
     username: user.username,
     image: user.image || null,
-    favoriteListingsIds: user.favoriteListingsIds,
+    favoriteListingsIds: user.favoriteListingsIds?.map((id) => id.toString()),
     role: user.role,
   };
 

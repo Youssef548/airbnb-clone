@@ -3,7 +3,7 @@ import express, { Request, Response, NextFunction } from "express";
 import { loginUser, createUser, getMe, logout } from "../controllers/auth.controller";
 import { oauthCallback, oauthFailure, checkOAuthAvailability, exchangeCode } from "../controllers/oauth.controller";
 import validateSchema from "../middleware/validationFactory.middleware";
-import { loginUserSchema, registerUserSchema } from "../schemas/userSchema";
+import { loginUserSchema, registerUserSchema } from "@airbnb/database";
 import { isAuth } from "../middleware/auth.middleware";
 import { authLimiter } from "../middleware/rateLimiter";
 import passport from "../config/passport";

@@ -1,6 +1,5 @@
 // services/bookingService.ts
-import { Booking } from "../models/booking.model";
-import { Listing } from "../models/listing.model";
+import { Booking, Listing } from "@airbnb/database";
 import { errorHandler } from "../utils/error";
 
 interface CreateBookingData {
