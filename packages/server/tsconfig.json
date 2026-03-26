@@ -5,6 +5,8 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "outDir": "./dist",
+    "declaration": false,
+    "declarationMap": false,
     "types": ["vitest/globals"]
   },
   "include": ["api/**/*.ts", "src/**/*.ts", "tests/**/*.ts", "tests/setup.ts"],
