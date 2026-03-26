@@ -1,7 +1,17 @@
 // routes/authRoutes.js
 import express, { Request, Response, NextFunction } from "express";
-import { loginUser, createUser, getMe, logout } from "../controllers/auth.controller";
-import { oauthCallback, oauthFailure, checkOAuthAvailability, exchangeCode } from "../controllers/oauth.controller";
+import {
+  loginUser,
+  createUser,
+  getMe,
+  logout,
+} from "../controllers/auth.controller";
+import {
+  oauthCallback,
+  oauthFailure,
+  checkOAuthAvailability,
+  exchangeCode,
+} from "../controllers/oauth.controller";
 import validateSchema from "../middleware/validationFactory.middleware";
 import { loginUserSchema, registerUserSchema } from "@airbnb/database";
 import { isAuth } from "../middleware/auth.middleware";
@@ -11,21 +21,29 @@ import passport from "../config/passport";
 const router = express.Router();
 
 // Middleware to check if OAuth provider is configured
-const checkOAuthConfig = (provider: 'google' | 'github') => {
+const checkOAuthConfig = (provider: "google" | "github") => {
   return (req: Request, res: Response, next: NextFunction) => {
     const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
 
-    if (provider === 'google') {
-      if (!process.env.GOOGLE_CLIENT_ID ||
-          !process.env.GOOGLE_CLIENT_SECRET ||
-          process.env.GOOGLE_CLIENT_ID === "your_google_client_id_here") {
-        return res.redirect(`${CLIENT_URL}/auth/error?message=${encodeURIComponent('Google OAuth is not configured. Please contact the administrator.')}`);
+    if (provider === "google") {
+      if (
+        !process.env.GOOGLE_CLIENT_ID ||
+        !process.env.GOOGLE_CLIENT_SECRET ||
+        process.env.GOOGLE_CLIENT_ID === "your_google_client_id_here"
+      ) {
+        return res.redirect(
+          `${CLIENT_URL}/auth/error?message=${encodeURIComponent("Google OAuth is not configured. Please contact the administrator.")}`
+        );
       }
-    } else if (provider === 'github') {
-      if (!process.env.GITHUB_CLIENT_ID ||
-          !process.env.GITHUB_CLIENT_SECRET ||
-          process.env.GITHUB_CLIENT_ID === "your_github_client_id_here") {
-        return res.redirect(`${CLIENT_URL}/auth/error?message=${encodeURIComponent('GitHub OAuth is not configured. Please contact the administrator.')}`);
+    } else if (provider === "github") {
+      if (
+        !process.env.GITHUB_CLIENT_ID ||
+        !process.env.GITHUB_CLIENT_SECRET ||
+        process.env.GITHUB_CLIENT_ID === "your_github_client_id_here"
+      ) {
+        return res.redirect(
+          `${CLIENT_URL}/auth/error?message=${encodeURIComponent("GitHub OAuth is not configured. Please contact the administrator.")}`
+        );
       }
     }
 
@@ -33,9 +51,152 @@ const checkOAuthConfig = (provider: 'google' | 'github') => {
   };
 };
 
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     summary: Login with email and password
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email, password]
+ *             properties:
+ *               email: { type: string, format: email }
+ *               password: { type: string, minLength: 5 }
+ *     responses:
+ *       200:
+ *         description: Login successful, JWT set in cookie
+ *       400:
+ *         description: Invalid credentials
+ *
+ * /auth/register:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [username, email, password]
+ *             properties:
+ *               username: { type: string, minLength: 3, maxLength: 20 }
+ *               email: { type: string, format: email }
+ *               password: { type: string, minLength: 5 }
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ *       400:
+ *         description: Email already exists
+ *
+ * /auth/me:
+ *   get:
+ *     summary: Get current authenticated user
+ *     tags: [Auth]
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: Current user data
+ *       401:
+ *         description: Not authenticated
+ *
+ * /auth/logout:
+ *   post:
+ *     summary: Logout and clear auth cookie
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: Logged out successfully
+ *
+ * /auth/oauth/exchange:
+ *   post:
+ *     summary: Exchange OAuth authorization code for JWT
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [code]
+ *             properties:
+ *               code: { type: string }
+ *     responses:
+ *       200:
+ *         description: JWT set in cookie
+ *       400:
+ *         description: Invalid or expired code
+ *
+ * /auth/oauth/availability:
+ *   get:
+ *     summary: Check which OAuth providers are configured
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: OAuth availability status
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 google: { type: boolean }
+ *                 github: { type: boolean }
+ *
+ * /auth/google:
+ *   get:
+ *     summary: Initiate Google OAuth flow
+ *     tags: [Auth]
+ *     responses:
+ *       302:
+ *         description: Redirects to Google consent screen
+ *
+ * /auth/google/callback:
+ *   get:
+ *     summary: Google OAuth callback
+ *     tags: [Auth]
+ *     responses:
+ *       302:
+ *         description: Redirects to client with auth code
+ *
+ * /auth/github:
+ *   get:
+ *     summary: Initiate GitHub OAuth flow
+ *     tags: [Auth]
+ *     responses:
+ *       302:
+ *         description: Redirects to GitHub authorization
+ *
+ * /auth/github/callback:
+ *   get:
+ *     summary: GitHub OAuth callback
+ *     tags: [Auth]
+ *     responses:
+ *       302:
+ *         description: Redirects to client with auth code
+ *
+ * /auth/failure:
+ *   get:
+ *     summary: OAuth failure redirect
+ *     tags: [Auth]
+ *     responses:
+ *       302:
+ *         description: Redirects to client error page
+ */
+
 // Traditional auth routes
 router.post("/login", authLimiter, validateSchema(loginUserSchema), loginUser);
-router.post("/register", authLimiter, validateSchema(registerUserSchema), createUser);
+router.post(
+  "/register",
+  authLimiter,
+  validateSchema(registerUserSchema),
+  createUser
+);
 router.get("/me", isAuth, getMe);
 router.post("/logout", logout);
 
@@ -48,16 +209,16 @@ router.get("/oauth/availability", checkOAuthAvailability);
 // Google OAuth routes
 router.get(
   "/google",
-  checkOAuthConfig('google'),
+  checkOAuthConfig("google"),
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
 router.get(
   "/google/callback",
-  checkOAuthConfig('google'),
+  checkOAuthConfig("google"),
   passport.authenticate("google", {
     failureRedirect: "/api/auth/failure",
-    session: false
+    session: false,
   }),
   oauthCallback
 );
@@ -65,16 +226,16 @@ router.get(
 // GitHub OAuth routes
 router.get(
   "/github",
-  checkOAuthConfig('github'),
+  checkOAuthConfig("github"),
   passport.authenticate("github", { scope: ["user:email"] })
 );
 
 router.get(
   "/github/callback",
-  checkOAuthConfig('github'),
+  checkOAuthConfig("github"),
   passport.authenticate("github", {
     failureRedirect: "/api/auth/failure",
-    session: false
+    session: false,
   }),
   oauthCallback
 );
@@ -82,4 +243,4 @@ router.get(
 // OAuth failure route
 router.get("/failure", oauthFailure);
 
-export default router
+export default router;

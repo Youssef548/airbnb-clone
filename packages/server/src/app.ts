@@ -10,12 +10,15 @@ import rateLimit from "express-rate-limit";
 
 dotenv.config();
 
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "./config/swagger";
 import errorHandler from "./middleware/error.middleware";
 import authRoutes from "./routes/authRoutes";
 import bookingRoutes from "./routes/booking.route";
 import favoriteRoutes from "./routes/favorite.route";
 import healthRoute from "./routes/health.route";
 import listingRoutes from "./routes/listing.route";
+import reviewRoutes from "./routes/review.route";
 import passport from "./config/passport";
 
 const app = express();
@@ -73,6 +76,9 @@ const apiLimiter = rateLimit({
 });
 app.use("/api/", apiLimiter);
 
+// API Documentation
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 // Routes setup
 app.get("/", (req, res) => res.send("Express on Vercel"));
 app.use("/api/health", healthRoute);
@@ -80,6 +86,7 @@ app.use("/api/auth/", authRoutes);
 app.use("/api/listings/", listingRoutes);
 app.use("/api/favorites/", favoriteRoutes);
 app.use("/api/booking/", bookingRoutes);
+app.use("/api/reviews/", reviewRoutes);
 
 app.use(errorHandler);
 
