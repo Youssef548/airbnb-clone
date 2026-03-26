@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import Button from "../Buttons";
 
 interface ModalProps {
@@ -61,10 +61,58 @@ const Modal: React.FC<ModalProps> = ({
     secondaryAction();
   }, [secondaryAction, disabled]);
 
+  // Escape key handler
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        handleClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, handleClose]);
+
+  // Focus trap
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isOpen || !modalRef.current) return;
+
+    const modal = modalRef.current;
+    const focusableElements = modal.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    firstElement?.focus();
+
+    const handleTab = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return;
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement?.focus();
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement?.focus();
+        }
+      }
+    };
+
+    modal.addEventListener("keydown", handleTab);
+    return () => modal.removeEventListener("keydown", handleTab);
+  }, [isOpen, showModal]);
+
   if (!isOpen) {
     return null;
   }
-
 
   const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -115,20 +163,24 @@ const Modal: React.FC<ModalProps> = ({
           `}
           >
             <div
+              ref={modalRef}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="modal-title"
               className="
               translate
               h-full
               lg:h-auto
               md:h-auto
-              border-0 
-              rounded-lg 
-              shadow-lg 
-              relative 
-              flex 
-              flex-col 
-              w-full 
-              bg-white 
-              outline-none 
+              border-0
+              rounded-lg
+              shadow-lg
+              relative
+              flex
+              flex-col
+              w-full
+              bg-white
+              outline-none
               focus:outline-none
             "
             >
@@ -147,13 +199,14 @@ const Modal: React.FC<ModalProps> = ({
                 <button
                   className="
                     p-1
-                    border-0 
+                    border-0
                     hover:opacity-70
                     transition
                     absolute
                     left-9
                   "
                   onClick={handleClose}
+                  aria-label="Close"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -170,18 +223,20 @@ const Modal: React.FC<ModalProps> = ({
                     />
                   </svg>
                 </button>
-                <div data-testid="modal-title" className="text-lg font-semibold">{title}</div>
+                <div
+                  id="modal-title"
+                  data-testid="modal-title"
+                  className="text-lg font-semibold"
+                >
+                  {title}
+                </div>
               </div>
               {error && (
-                  <div className="bg-red-200 py-4  mt-4 text-center">
-                    {error}
-                  </div>
-                )}
+                <div className="bg-red-200 py-4  mt-4 text-center">{error}</div>
+              )}
               {/*body*/}
-              <div className="relative p-6 flex-auto">
-                {body}
-              </div>
-             
+              <div className="relative p-6 flex-auto">{body}</div>
+
               {/*footer*/}
               <div className="flex flex-col gap-2 p-6">
                 <div

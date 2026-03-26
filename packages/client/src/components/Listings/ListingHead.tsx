@@ -39,7 +39,7 @@ const ListingHead = ({
   "
       >
         <img
-          alt="image"
+          alt={title}
           src={imageSrc}
           className="w-full h-full"
           style={{ objectFit: "cover", objectPosition: "center" }}

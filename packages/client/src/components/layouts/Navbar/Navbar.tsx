@@ -3,14 +3,17 @@ import Logo from "./Logo";
 import Search from "./Search";
 import UserMenu from "./UserMenu";
 import { UserType } from "@airbnb/shared";
-import Categories from "./Categories"
+import Categories from "./Categories";
 interface NavBarProps {
   user?: UserType | null | undefined;
 }
 
 const Navbar: React.FC<NavBarProps> = ({ user }) => {
   return (
-    <div className=" w-full bg-white z-10 shadow-sm">
+    <nav
+      aria-label="Main navigation"
+      className="w-full bg-white z-10 shadow-sm"
+    >
       <div className="py-4 border-b-[1px]">
         <Container>
           <div
@@ -31,7 +34,7 @@ const Navbar: React.FC<NavBarProps> = ({ user }) => {
       </div>
 
       <Categories />
-    </div>
+    </nav>
   );
 };
 

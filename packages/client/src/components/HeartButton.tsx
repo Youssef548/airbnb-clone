@@ -19,6 +19,8 @@ const HeartButton: React.FC<HeartButtonProps> = ({
     <div
       onClick={toggleFavorite}
       data-testid="heart-button"
+      role="button"
+      aria-label={hasFavorited ? "Remove from favorites" : "Add to favorites"}
       className="
     relative
     hover:opacity-80
