@@ -10,6 +10,7 @@ import { differenceInCalendarDays, eachDayOfInterval } from "date-fns";
 import { createReservation } from "../../apis/Reservations/reservation";
 import toast from "react-hot-toast";
 import ListingReservation from "../../components/Listings/ListingReservation";
+import ReviewsSection from "../../components/Reviews/ReviewsSection";
 import { Range } from "react-date-range";
 
 const initialDateRange = {
@@ -34,7 +35,7 @@ const ListingClient = ({
     return categories.find((item) => item.label === listing.category);
   }, [listing.category]);
 
-  const loginMOdal = useLoginModal();
+  const loginModal = useLoginModal();
 
   const disabledDates = useMemo(() => {
     let dates: Date[] = [];
@@ -58,7 +59,7 @@ const ListingClient = ({
 
   const onCreateReservation = useCallback(() => {
     if (!currentUser) {
-      return loginMOdal.onOpen();
+      return loginModal.onOpen();
     }
 
     setIsLoading(true);
@@ -137,6 +138,14 @@ const ListingClient = ({
               disabledDates={disabledDates}
             />
           </div>
+        </div>
+        <div className="mt-8">
+          <ReviewsSection
+            listingId={listing._id}
+            currentUser={currentUser}
+            averageRating={listing.averageRating}
+            reviewCount={listing.reviewCount}
+          />
         </div>
       </div>
     </Container>

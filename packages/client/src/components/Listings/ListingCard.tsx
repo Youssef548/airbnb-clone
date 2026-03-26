@@ -1,6 +1,11 @@
 import { memo, useCallback, useMemo } from "react";
 import useCountries from "../../hooks/useCountries";
-import { ListingType, ReservationSafeType, ReservationType, UserType } from "@airbnb/shared";
+import {
+  ListingType,
+  ReservationSafeType,
+  ReservationType,
+  UserType,
+} from "@airbnb/shared";
 
 import { useNavigate } from "react-router-dom";
 
@@ -8,6 +13,7 @@ import { format } from "date-fns";
 import Image, { optimizedImageUrl } from "../../utils/Image";
 import HeartButton from "../HeartButton";
 import Button from "../Buttons";
+import StarRating from "../StarRating";
 
 interface ListingProps {
   data: ListingType;
@@ -79,7 +85,7 @@ const ListingCard: React.FC<ListingProps> = ({
         "
         >
           <Image
-            alt="listing"
+            alt={data.title}
             src={optimizedImageUrl(data.imageSrc, 400)}
             className="
             object-cover
@@ -100,6 +106,14 @@ const ListingCard: React.FC<ListingProps> = ({
         <div className="font-light text-neutral-500">
           {reservationDate || data.category}
         </div>
+        {data.averageRating !== undefined && data.averageRating > 0 && (
+          <div className="flex items-center gap-1">
+            <StarRating rating={data.averageRating} size="sm" />
+            <span className="text-neutral-500 text-sm">
+              ({data.reviewCount})
+            </span>
+          </div>
+        )}
         <div className="flex flex-row items-center gap-1">
           <div className="font-semibold">$ {price}</div>
           {!reservation && <div className="font-light">night</div>}
