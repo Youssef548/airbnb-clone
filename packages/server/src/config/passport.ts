@@ -8,7 +8,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // Serialize user for the session
-passport.serializeUser((user: any, done) => {
+passport.serializeUser((user: Express.User, done) => {
   done(null, user._id);
 });
 
@@ -29,7 +29,8 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
       {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: process.env.GOOGLE_CALLBACK_URL || "/api/auth/google/callback",
+        callbackURL:
+          process.env.GOOGLE_CALLBACK_URL || "/api/auth/google/callback",
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
@@ -59,7 +60,10 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
           const newUser = new User({
             googleId: profile.id,
             email: email || `${profile.id}@google.oauth`,
-            username: profile.displayName || profile.emails?.[0]?.value.split('@')[0] || `user_${profile.id}`,
+            username:
+              profile.displayName ||
+              profile.emails?.[0]?.value.split("@")[0] ||
+              `user_${profile.id}`,
             image: profile.photos?.[0]?.value,
             password: crypto.randomBytes(32).toString("hex"), // Random password (won't be used for OAuth users)
             role: "guest",
@@ -83,10 +87,23 @@ if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
       {
         clientID: process.env.GITHUB_CLIENT_ID,
         clientSecret: process.env.GITHUB_CLIENT_SECRET,
-        callbackURL: process.env.GITHUB_CALLBACK_URL || "/api/auth/github/callback",
+        callbackURL:
+          process.env.GITHUB_CALLBACK_URL || "/api/auth/github/callback",
         scope: ["user:email"],
       },
-      async (accessToken: string, refreshToken: string, profile: any, done: any) => {
+      async (
+        accessToken: string,
+        refreshToken: string,
+        profile: {
+          id: string;
+          displayName?: string;
+          username?: string;
+          emails?: { value: string }[];
+          photos?: { value: string }[];
+          _json?: { avatar_url?: string };
+        },
+        done: (err: Error | null, user?: object) => void
+      ) => {
         try {
           // Check if user already exists with this GitHub ID
           let user = await User.findOne({ githubId: profile.id });
@@ -116,7 +133,8 @@ if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
           const newUser = new User({
             githubId: profile.id,
             email: email || `${profile.id}@github.oauth`,
-            username: profile.username || profile.displayName || `user_${profile.id}`,
+            username:
+              profile.username || profile.displayName || `user_${profile.id}`,
             image: profile.photos?.[0]?.value || profile._json.avatar_url,
             password: crypto.randomBytes(32).toString("hex"), // Random password (won't be used for OAuth users)
             role: "guest",

@@ -48,7 +48,12 @@ export const createBookingService = async (data: CreateBookingData) => {
   return savedBooking;
 };
 
-const mapBookingWithListing = (reservation: any) => ({
+interface PopulatedBooking {
+  listingId: { _id: string; [key: string]: unknown } | null;
+  [key: string]: unknown;
+}
+
+const mapBookingWithListing = (reservation: PopulatedBooking) => ({
   ...reservation,
   listing: reservation.listingId || null,
   listingId: reservation.listingId?._id || null,
