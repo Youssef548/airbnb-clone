@@ -4,6 +4,7 @@ export * from "./types/user";
 export * from "./types/listing";
 export * from "./types/reservation";
 export * from "./types/auth";
+export * from "./types/review";
 
 // Constants
 export * from "./constants/roles";

@@ -21,6 +21,8 @@ export interface IListing extends Document {
   user: mongoose.Types.ObjectId;
   reviews?: mongoose.Types.ObjectId[];
   bookings?: IBooking[];
+  averageRating: number;
+  reviewCount: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -46,6 +48,8 @@ const ListingSchema = new mongoose.Schema(
     user: { type: mongoose.Types.ObjectId, ref: "User", required: true },
     reviews: [{ type: mongoose.Types.ObjectId, ref: "Review" }],
     bookings: [{ type: mongoose.Types.ObjectId, ref: "Booking" }],
+    averageRating: { type: Number, default: 0 },
+    reviewCount: { type: Number, default: 0 },
   },
   {
     timestamps: {

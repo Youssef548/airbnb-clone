@@ -15,6 +15,8 @@ export type ListingType = {
   user: UserType;
   reviews: string[];
   bookings: string[];
+  averageRating?: number;
+  reviewCount?: number;
 };
 
 export type safeListingType = Omit<ListingType, "createdAt"> & {
