@@ -6,6 +6,20 @@ import { PAGINATION } from "../config/constants";
 
 type CreateListingData = z.infer<typeof createListingSchema>;
 
+function getSortStage(sortBy?: string): Record<string, 1 | -1> {
+  switch (sortBy) {
+    case "price_asc":
+      return { price: 1 };
+    case "price_desc":
+      return { price: -1 };
+    case "rating":
+      return { averageRating: -1 };
+    case "newest":
+    default:
+      return { _id: -1 };
+  }
+}
+
 export const createListingService = async (
   userId: string,
   listingData: CreateListingData
@@ -42,8 +56,7 @@ export const createListingService = async (
 export const getListingsService = async (
   queryParams: Record<string, string | undefined>
 ) => {
-  const page =
-    parseInt(queryParams.page as string) || PAGINATION.DEFAULT_PAGE;
+  const page = parseInt(queryParams.page as string) || PAGINATION.DEFAULT_PAGE;
   const limit = Math.min(
     parseInt(queryParams.limit as string) || PAGINATION.DEFAULT_LIMIT,
     PAGINATION.MAX_LIMIT
@@ -63,6 +76,16 @@ export const getListingsService = async (
     match.bathRoomCount = { $gte: parseInt(queryParams.bathRoomCount) };
   if (queryParams.locationValue)
     match["location.value"] = queryParams.locationValue;
+  if (queryParams.minPrice)
+    match.price = {
+      ...(match.price as object),
+      $gte: parseInt(queryParams.minPrice as string),
+    };
+  if (queryParams.maxPrice)
+    match.price = {
+      ...(match.price as object),
+      $lte: parseInt(queryParams.maxPrice as string),
+    };
 
   const pipeline: mongoose.PipelineStage[] = [{ $match: match }];
 
@@ -100,7 +123,11 @@ export const getListingsService = async (
   pipeline.push({
     $facet: {
       metadata: [{ $count: "totalCount" }],
-      listings: [{ $sort: { _id: -1 } }, { $skip: skip }, { $limit: limit }],
+      listings: [
+        { $sort: getSortStage(queryParams.sortBy as string) },
+        { $skip: skip },
+        { $limit: limit },
+      ],
     },
   });
 

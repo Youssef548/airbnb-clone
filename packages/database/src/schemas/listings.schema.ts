@@ -22,7 +22,6 @@ const locationSchema = z.object({
   }),
 });
 
-
 export const createListingSchema = z.object({
   title: z.string({
     required_error: "Title is required",
@@ -91,4 +90,16 @@ export const getListingsQuerySchema = z.object({
   locationValue: z.string().optional(),
   startDate: z.string().optional(),
   endDate: z.string().optional(),
+  minPrice: z
+    .string()
+    .optional()
+    .transform((val) => (val ? parseInt(val, 10) : undefined)),
+  maxPrice: z
+    .string()
+    .optional()
+    .transform((val) => (val ? parseInt(val, 10) : undefined)),
+  sortBy: z
+    .enum(["newest", "price_asc", "price_desc", "rating"])
+    .optional()
+    .default("newest"),
 });

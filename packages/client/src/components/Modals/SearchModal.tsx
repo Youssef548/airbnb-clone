@@ -15,7 +15,8 @@ import Counter from "../Inputs/Counter";
 enum STEPS {
   LOCATION = 0,
   DATE = 1,
-  INFO = 2,
+  PRICE = 2,
+  INFO = 3,
 }
 
 const SearchModal = () => {
@@ -27,6 +28,8 @@ const SearchModal = () => {
   const [guestCount, setGuestCount] = useState(1);
   const [roomCount, setRoomCount] = useState(1);
   const [bathRoomCount, setBathRoomCount] = useState(1);
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
   const [dateRange, setDateRange] = useState<Range>({
     startDate: new Date(),
     endDate: new Date(),
@@ -61,6 +64,9 @@ const SearchModal = () => {
       page: "1", // Reset to page 1 when searching
     };
 
+    if (minPrice) updatedQuery.minPrice = minPrice;
+    if (maxPrice) updatedQuery.maxPrice = maxPrice;
+
     if (dateRange.startDate) {
       updatedQuery.startDate = formatISO(dateRange.startDate);
     }
@@ -80,6 +86,8 @@ const SearchModal = () => {
     guestCount,
     roomCount,
     bathRoomCount,
+    minPrice,
+    maxPrice,
     dateRange,
     onNext,
     setSearchParams,
@@ -136,6 +144,51 @@ const SearchModal = () => {
     [location, setLocation]
   );
 
+  const PriceContent = useMemo(
+    () => (
+      <div className="flex flex-col gap-8">
+        <Heading title="Price Range" subTitle="Set your budget per night" />
+        <div className="flex gap-4">
+          <div className="flex-1">
+            <label
+              htmlFor="minPrice"
+              className="block text-sm font-medium text-neutral-700 mb-1"
+            >
+              Min Price
+            </label>
+            <input
+              id="minPrice"
+              type="number"
+              min="0"
+              placeholder="0"
+              value={minPrice}
+              onChange={(e) => setMinPrice(e.target.value)}
+              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+            />
+          </div>
+          <div className="flex-1">
+            <label
+              htmlFor="maxPrice"
+              className="block text-sm font-medium text-neutral-700 mb-1"
+            >
+              Max Price
+            </label>
+            <input
+              id="maxPrice"
+              type="number"
+              min="0"
+              placeholder="Any"
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(e.target.value)}
+              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+            />
+          </div>
+        </div>
+      </div>
+    ),
+    [minPrice, maxPrice]
+  );
+
   const InfoContent = useMemo(
     () => (
       <div className="flex flex-col gap-8">
@@ -171,10 +224,11 @@ const SearchModal = () => {
   const stepComponents = useMemo(
     () => ({
       [STEPS.LOCATION]: LocationContent,
-      [STEPS.INFO]: InfoContent,
       [STEPS.DATE]: DateContent,
+      [STEPS.PRICE]: PriceContent,
+      [STEPS.INFO]: InfoContent,
     }),
-    [LocationContent, DateContent, InfoContent]
+    [LocationContent, DateContent, PriceContent, InfoContent]
   );
 
   const getStepComponent = useCallback(
