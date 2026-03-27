@@ -24,14 +24,14 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       NODE_ENV: production
       PORT: 3000
-      ALLOWED_ORIGINS: '["https://airbnb.abdulkhalek.dev"]'
-      CLIENT_URL: https://airbnb.abdulkhalek.dev
+      ALLOWED_ORIGINS: '["https://yfawzy.dev"]'
+      CLIENT_URL: https://yfawzy.dev/projects/airbnb
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
-      GOOGLE_CALLBACK_URL: https://airbnb.abdulkhalek.dev/api/auth/google/callback
+      GOOGLE_CALLBACK_URL: https://yfawzy.dev/api/auth/google/callback
       GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-}
       GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-}
-      GITHUB_CALLBACK_URL: https://airbnb.abdulkhalek.dev/api/auth/github/callback
+      GITHUB_CALLBACK_URL: https://yfawzy.dev/api/auth/github/callback
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
       interval: 30s
@@ -52,10 +52,11 @@ services:
       - gateway
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.airbnb.rule=Host(`airbnb.abdulkhalek.dev`)"
+      - "traefik.http.routers.airbnb.rule=Host(`yfawzy.dev`) && PathPrefix(`/projects/airbnb`)"
       - "traefik.http.routers.airbnb.entrypoints=websecure"
       - "traefik.http.routers.airbnb.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.airbnb.middlewares=secure-default@file"
+      - "traefik.http.routers.airbnb.middlewares=airbnb-strip@docker,secure-default@file"
+      - "traefik.http.middlewares.airbnb-strip.stripprefix.prefixes=/projects/airbnb"
       - "traefik.http.services.airbnb.loadbalancer.server.port=80"
       - "traefik.docker.network=gateway"
 

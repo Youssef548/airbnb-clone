@@ -72,7 +72,9 @@ const App = () => {
   return (
     <QueryProvider>
       <ToasterProvider />
-      <RouterProvider router={createBrowserRouter(routes)} />
+      <RouterProvider
+        router={createBrowserRouter(routes, { basename: "/projects/airbnb" })}
+      />
     </QueryProvider>
   );
 };
