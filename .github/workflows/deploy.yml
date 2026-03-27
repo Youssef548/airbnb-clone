@@ -129,7 +129,7 @@ jobs:
             # Seed database (runs only once — flag file persists across deploys)
             if [ ! -f ${{ env.DEPLOY_PATH }}/.seed-done ]; then
               echo "Running database seed..."
-              docker exec airbnb-server sh -c "cd /app && npx tsx packages/database/src/scripts/seed.ts"
+              docker exec airbnb-server sh -c "cd /app && ./packages/database/node_modules/.bin/tsx packages/database/src/scripts/seed.ts"
               touch ${{ env.DEPLOY_PATH }}/.seed-done
               echo "Seed complete."
             else
