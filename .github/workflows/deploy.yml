@@ -7,8 +7,6 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  SERVER_IMAGE: ghcr.io/${{ github.repository_owner }}/airbnb-server
-  CLIENT_IMAGE: ghcr.io/${{ github.repository_owner }}/airbnb-client
   DEPLOY_PATH: /opt/airbnb-clone
 
 jobs:
@@ -31,7 +29,9 @@ jobs:
 
       - name: Generate image tag
         id: tag
-        run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+        run: |
+          echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "owner=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
 
       - uses: docker/build-push-action@v6
         with:
@@ -39,8 +39,8 @@ jobs:
           file: ./packages/server/Dockerfile
           push: true
           tags: |
-            ${{ env.SERVER_IMAGE }}:${{ steps.tag.outputs.sha }}
-            ${{ env.SERVER_IMAGE }}:latest
+            ghcr.io/${{ steps.tag.outputs.owner }}/airbnb-server:${{ steps.tag.outputs.sha }}
+            ghcr.io/${{ steps.tag.outputs.owner }}/airbnb-server:latest
           cache-from: type=gha,scope=server
           cache-to: type=gha,mode=max,scope=server
 
@@ -63,7 +63,9 @@ jobs:
 
       - name: Generate image tag
         id: tag
-        run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+        run: |
+          echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "owner=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
 
       - uses: docker/build-push-action@v6
         with:
@@ -71,8 +73,8 @@ jobs:
           file: ./packages/client/Dockerfile.prod
           push: true
           tags: |
-            ${{ env.CLIENT_IMAGE }}:${{ steps.tag.outputs.sha }}
-            ${{ env.CLIENT_IMAGE }}:latest
+            ghcr.io/${{ steps.tag.outputs.owner }}/airbnb-client:${{ steps.tag.outputs.sha }}
+            ghcr.io/${{ steps.tag.outputs.owner }}/airbnb-client:latest
           build-args: |
             VITE_BACKEND_URL=/api/
           cache-from: type=gha,scope=client
@@ -102,8 +104,9 @@ jobs:
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin || true
 
             # Pull latest images
-            docker pull ${{ env.SERVER_IMAGE }}:latest
-            docker pull ${{ env.CLIENT_IMAGE }}:latest
+            OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+            docker pull ghcr.io/${OWNER}/airbnb-server:latest
+            docker pull ghcr.io/${OWNER}/airbnb-client:latest
 
             # Restart services
             docker compose -f docker-compose.prod.yml up -d
