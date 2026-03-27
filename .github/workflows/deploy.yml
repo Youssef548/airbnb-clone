@@ -76,7 +76,7 @@ jobs:
             ghcr.io/${{ steps.tag.outputs.owner }}/airbnb-client:${{ steps.tag.outputs.sha }}
             ghcr.io/${{ steps.tag.outputs.owner }}/airbnb-client:latest
           build-args: |
-            VITE_BACKEND_URL=/api/
+            VITE_BACKEND_URL=/projects/airbnb/api/
           cache-from: type=gha,scope=client
           cache-to: type=gha,mode=max,scope=client
 
